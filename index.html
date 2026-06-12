@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Explainable Metric Human Annotation</title>
+    <link rel="stylesheet" href="styles.css?v=20260612-app-clean">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="title-block">
+        <h1>Explainable Metric Human Annotation</h1>
+        <div id="progressText" class="progress-text">Loading dataset...</div>
+      </div>
+
+      <div class="topbar-actions">
+        <label class="annotator-field">
+          <span>Annotator ID</span>
+          <input id="annotatorId" type="text" autocomplete="off" placeholder="required">
+        </label>
+        <button id="exportBtn" class="button primary" type="button">Export JSON</button>
+        <button id="resetCurrentBtn" class="button" type="button">Reset Current Sample</button>
+        <button id="resetAllBtn" class="button danger" type="button">Reset All Progress</button>
+      </div>
+    </header>
+
+    <main class="page">
+      <div id="statusPanel" class="status-panel" aria-live="polite"></div>
+      <section id="samplePanel" class="sample-panel"></section>
+    </main>
+
+    <footer class="bottom-nav">
+      <button id="prevBtn" class="button" type="button">Save &amp; Previous</button>
+      <button id="saveBtn" class="button primary" type="button">Save</button>
+      <button id="nextBtn" class="button primary" type="button">Save &amp; Next</button>
+    </footer>
+
+    <script src="app.js?v=20260612-app-clean"></script>
+  </body>
+</html>
