@@ -193,9 +193,11 @@ for h in HIWIS:
 
 # ---- FINAL flow: login -> dashboard -> sample (image + text + parts) ----
 chk("B01 login is the first screen", 'id="login"' in html and 'id="dash"' in html)
-chk("B02 login lands on the dashboard, never a sample",
-    "renderDash();                       // always land on the dashboard" in js
-    or ("renderDash()" in js and "never a sample" in js))
+_b02 = js[js.index("async function start(bundle)"):js.index("function wire()")]
+chk("B02 login lands on the dashboard, never a sample or the examples",
+    "renderDash()" in _b02
+    and "openSample(" not in _b02
+    and "openTutorial(" not in _b02)
 chk("B03 no separate text-only decomposition PAGE",
     "DECOMPOSITION — TEXT ONLY" not in html and 'id="phaseA"' not in html
     and "decomposition_label" not in js)

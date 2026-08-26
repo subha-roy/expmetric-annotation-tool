@@ -268,12 +268,20 @@ class TestAppIsolation(unittest.TestCase):
             self.assertIn(f'id="{el}"', self.html, f"missing entry point #{el}")
             self.assertIn(f"$('{el}')", self.js, f"#{el} is not wired up")
 
-    def test_tutorial_shown_once_on_first_login(self):
-        self.assertIn("tutSeenKey()", self.js)
+    def test_login_lands_on_the_dashboard_not_the_examples(self):
+        """Signing in must show the home dashboard. The worked examples are opt-in."""
         i = self.js.index("async function start(bundle)")
         j = self.js.index("function wire()", i)
-        self.assertIn("openTutorial(0)", self.js[i:j],
-                      "first login should open the worked examples")
+        block = self.js[i:j]
+        self.assertIn("renderDash()", block)
+        self.assertNotIn("openTutorial(", block,
+                         "sign-in must not open the worked examples automatically")
+
+    def test_examples_are_reachable_only_on_demand(self):
+        """Every openTutorial call must hang off an explicit user action."""
+        for el in ("tutAgain", "menuTut", "guideTutLink"):
+            self.assertIn(f"$('{el}')", self.js)
+        self.assertIn("b.addEventListener('click', () => openTutorial(i));", self.js)
 
     def test_dashboard_hides_the_tutorial_view(self):
         i = self.js.index("function renderDash()")

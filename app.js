@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const APP_VERSION = '5.2.0';
+const APP_VERSION = '5.3.0';
 // Bundled parts changed (phrase-level decomposition) AND the flow changed, so the cache
 // namespace must move with them: stale part-level state can never resurface.
 const CONTENT_VERSION = 'decomp-phrase-v2+flow-v5-dualjudgment';
@@ -336,8 +336,6 @@ function renderOverall() {
 let TUT = { list: null, i: 0 };
 
 
-const tutSeenKey = () => (S ? dbName(S.bundle) + ':tutseen' : 'visexmem:tutseen');
-
 async function loadTutorial() {
   if (TUT.list) return TUT.list;
   const r = await fetch('examples/tutorial_examples.json', { cache: 'no-store' });
@@ -468,7 +466,6 @@ async function openTutorial(i) {
 }
 
 function exitTutorial() {
-  try { localStorage.setItem(tutSeenKey(), '1'); } catch {}
   $('tutorial').classList.add('hidden');
   renderDash();
 }
@@ -633,11 +630,9 @@ async function start(bundle) {
   $('whoName').textContent = bundle.annotator_name;
   chip('ok', 'Saved');
   try { await loadTutorial(); } catch {}   // never block sign-in on the examples
-  renderDash();                       // always land on the dashboard, never a sample
-  // First visit only: show the worked examples before any real sample.
-  let seen = true;
-  try { seen = localStorage.getItem(tutSeenKey()) === '1'; } catch {}
-  if (!seen) await openTutorial(0);
+  // Sign-in always lands on the dashboard. The worked examples are opt-in, from the
+  // cards, the menu or the guide -- never opened for the annotator automatically.
+  renderDash();
 }
 
 function wire() {
