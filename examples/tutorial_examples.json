@@ -9,6 +9,8 @@
       "example_id": "ex_1",
       "display_name": "Example 1",
       "alignment_label": "High alignment",
+      "label_tone": "",
+      "teaching_point": "",
       "image": "examples/images/ex_1.jpeg",
       "image_origin": "real",
       "image_sha256": "bcf2897189336fd358a4c8ca1bff90df00b70f25e175aee87354a647f9ad2853",
@@ -117,6 +119,8 @@
       "example_id": "ex_2",
       "display_name": "Example 2",
       "alignment_label": "Partial alignment",
+      "label_tone": "",
+      "teaching_point": "",
       "image": "examples/images/ex_2.jpeg",
       "image_origin": "real",
       "image_sha256": "eef48768c3c53e0b3c8f51836d3e311bdc9a9bfffb7693f07b188a04cb216469",
@@ -243,6 +247,8 @@
       "example_id": "ex_3",
       "display_name": "Example 3",
       "alignment_label": "Weak alignment",
+      "label_tone": "",
+      "teaching_point": "",
       "image": "examples/images/ex_3.jpeg",
       "image_origin": "synthetic",
       "image_sha256": "9935e6623f5a24c7d40baca0d588a8407f6c96a903f5e2d66681ee2dcf0235ed",
@@ -360,6 +366,161 @@
       ],
       "overall_alignment": 2,
       "overall_note": "The Shiba Inu, beret, turtleneck, and wall are present, but the beret is black rather than red, the turtleneck is black rather than blue, and the wall is light-colored brick rather than green wood. The lower body is outside the frame, so the sitting posture cannot be judged confidently.",
+      "annotated_by": "VisExMEM research team",
+      "annotation_provenance": "Reference answers specified by the research team, informed by a GPT-5.6-Sol pass over the same rubric.",
+      "annotation_guideline_version": "visexmem-human-guideline-1.0",
+      "read_only": true
+    },
+    {
+      "example_id": "ex_4",
+      "display_name": "Example 4",
+      "alignment_label": "Decomposition quality",
+      "label_tone": "info",
+      "teaching_point": "Decomposition quality and image support are independent: this example pairs every decomposition label with a high support score, and a Reasonable decomposition with a support score of 0.",
+      "image": "examples/images/ex_4.png",
+      "image_origin": "real",
+      "image_sha256": "d7500a85382e89ce34849304ed139515b7096495021494eeaf08b28ba05b54d9",
+      "image_phash": "a21c8e8c8d9bcdad",
+      "text": "A woman in a red shirt is holding a blue umbrella beside a brown dog, while standing on a wet sidewalk in front of a yellow bus.",
+      "parts": [
+        {
+          "part_id": "p1",
+          "type": "object",
+          "text": "woman",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": ""
+        },
+        {
+          "part_id": "p2",
+          "type": "attribute",
+          "text": "red shirt",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": ""
+        },
+        {
+          "part_id": "p3",
+          "type": "attribute",
+          "text": "blue umbrella",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": ""
+        },
+        {
+          "part_id": "p4",
+          "type": "attribute",
+          "text": "brown dog",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": ""
+        },
+        {
+          "part_id": "p5",
+          "type": "attribute",
+          "text": "wet sidewalk",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": ""
+        },
+        {
+          "part_id": "p6",
+          "type": "object",
+          "text": "bus",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": ""
+        },
+        {
+          "part_id": "p7",
+          "type": "attribute",
+          "text": "yellow bus",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "",
+          "support_score": 0,
+          "support_note": "The text correctly decomposes to 'yellow bus', but the visible bus is red."
+        },
+        {
+          "part_id": "p8",
+          "type": "relation",
+          "text": "woman holding a blue umbrella",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": ""
+        },
+        {
+          "part_id": "p9",
+          "type": "spatial",
+          "text": "woman beside a brown dog",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": ""
+        },
+        {
+          "part_id": "p10",
+          "type": "relation",
+          "text": "woman standing on a wet sidewalk",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": ""
+        },
+        {
+          "part_id": "p11",
+          "type": "spatial",
+          "text": "woman in front of a yellow bus",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "",
+          "support_score": 2,
+          "support_note": "The woman is in front of a bus, but the required yellow attribute is incorrect."
+        },
+        {
+          "part_id": "p12",
+          "type": "relation",
+          "text": "woman in a red shirt holding a blue umbrella beside a brown dog",
+          "decomp_quality": "Needs split",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": "It combines several independently checkable claims, although the complete statement is visually supported."
+        },
+        {
+          "part_id": "p13",
+          "type": "action",
+          "text": "holding",
+          "decomp_quality": "Needs merge",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": "The action is visually present, but as a decomposition it loses who is holding what."
+        },
+        {
+          "part_id": "p14",
+          "type": "attribute",
+          "text": "shirt that is red",
+          "decomp_quality": "Redundant",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": "It repeats the visual claim already represented by 'red shirt'."
+        },
+        {
+          "part_id": "p15",
+          "type": "action",
+          "text": "smiling woman",
+          "decomp_quality": "Not entailed",
+          "decomp_note": "",
+          "support_score": 4,
+          "support_note": "The original text never says the woman is smiling, but the image clearly shows her smiling."
+        }
+      ],
+      "overall_alignment": 4,
+      "overall_note": "The woman, red shirt, blue umbrella, brown dog, wet sidewalk, and described actions and spatial relations are clearly supported. The meaningful mismatch is the bus colour: the text specifies a yellow bus, while the image shows a red bus.",
       "annotated_by": "VisExMEM research team",
       "annotation_provenance": "Reference answers specified by the research team, informed by a GPT-5.6-Sol pass over the same rubric.",
       "annotation_guideline_version": "visexmem-human-guideline-1.0",

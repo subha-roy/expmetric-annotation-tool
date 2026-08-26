@@ -326,3 +326,8 @@ details.guide ul{margin:8px 0 0;padding-left:20px} details.guide li{margin-botto
   text-transform:uppercase;background:var(--accent-solid);color:#fff;
   padding:3px 10px;border-radius:99px;margin-bottom:8px}
 .tutnote b{display:block;margin-bottom:3px}
+.whlab.info{background:var(--accent-soft);color:var(--accent-dark);
+  border:1px solid var(--accent-solid)}
+.tutteach{margin:12px 0 0;padding:10px 13px;border-radius:8px;
+  background:var(--accent-soft);border:1px solid var(--accent-solid);
+  color:var(--ink);font-size:13.5px;line-height:1.55}

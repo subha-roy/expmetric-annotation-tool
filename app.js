@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const APP_VERSION = '5.3.0';
+const APP_VERSION = '5.4.0';
 // Bundled parts changed (phrase-level decomposition) AND the flow changed, so the cache
 // namespace must move with them: stale part-level state can never resurface.
 const CONTENT_VERSION = 'decomp-phrase-v2+flow-v5-dualjudgment';
@@ -331,7 +331,7 @@ function renderOverall() {
 }
 
 /* ---------------- tutorial (practice only) ----------------
-   Read-only walkthrough of three GPT-annotated examples. It has its own state, never
+   Read-only walkthrough of the worked examples. It has its own state, never
    touches S.ann / IndexedDB / the export, and is not part of items(). */
 let TUT = { list: null, i: 0 };
 
@@ -414,6 +414,9 @@ function renderTutorial() {
     const n = document.createElement('p'); n.className = 'tutwhy'; n.textContent = ex.overall_note;
     ov.append(n);
   }
+  const tp = $('tutTeach');
+  tp.textContent = ex.teaching_point || '';
+  tp.classList.toggle('hidden', !ex.teaching_point);
 
   $('tutPrev').disabled = TUT.i === 0;
   $('tutNext').disabled = TUT.i === TUT.list.length - 1;
@@ -440,7 +443,7 @@ function renderWorkedCards() {
     n.className = 'whn';
     n.textContent = ex.display_name || `Example ${i + 1}`;
     const l = document.createElement('span');
-    l.className = 'whlab ' + (WH_TONE[ex.overall_alignment] || 'part');
+    l.className = 'whlab ' + (ex.label_tone || WH_TONE[ex.overall_alignment] || 'part');
     l.textContent = ex.alignment_label || '';
     const m = document.createElement('span');
     m.className = 'whmeta';

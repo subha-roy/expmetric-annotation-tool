@@ -28,10 +28,12 @@ EXPECTED_CAPTIONS = {
             "red ball near its front paws.",
     "ex_3": "A Shiba Inu wearing a red beret and a blue turtleneck sits in front "
             "of a green wooden wall.",
+    "ex_4": "A woman in a red shirt is holding a blue umbrella beside a brown dog, "
+            "while standing on a wet sidewalk in front of a yellow bus.",
 }
-EXPECTED_OVERALL = {"ex_1": 5, "ex_2": 3, "ex_3": 2}
+EXPECTED_OVERALL = {"ex_1": 5, "ex_2": 3, "ex_3": 2, "ex_4": 4}
 EXPECTED_LABEL = {"ex_1": "High alignment", "ex_2": "Partial alignment",
-                  "ex_3": "Weak alignment"}
+                  "ex_3": "Weak alignment", "ex_4": "Decomposition quality"}
 # the frozen reference answers, transcribed independently of the builder
 EXPECTED_PARTS = {
     "ex_1": [("object", "man", 4), ("object", "bicycle", 4),
@@ -57,8 +59,26 @@ EXPECTED_PARTS = {
              ("relation", "Shiba Inu wearing a blue turtleneck", 2),
              ("action", "Shiba Inu sits", "Cannot judge"),
              ("spatial", "Shiba Inu in front of a wall", 4)],
+    "ex_4": [("object", "woman", 4), ("attribute", "red shirt", 4),
+             ("attribute", "blue umbrella", 4), ("attribute", "brown dog", 4),
+             ("attribute", "wet sidewalk", 4), ("object", "bus", 4),
+             ("attribute", "yellow bus", 0),
+             ("relation", "woman holding a blue umbrella", 4),
+             ("spatial", "woman beside a brown dog", 4),
+             ("relation", "woman standing on a wet sidewalk", 4),
+             ("spatial", "woman in front of a yellow bus", 2),
+             ("relation", "woman in a red shirt holding a blue umbrella beside a "
+              "brown dog", 4),
+             ("action", "holding", 4), ("attribute", "shirt that is red", 4),
+             ("action", "smiling woman", 4)],
 }
-EXPECTED_ORIGIN = {"ex_1": "real", "ex_2": "real", "ex_3": "synthetic"}
+# ex_4 exists to show the two judgements are independent, so its labels vary
+EXPECTED_DECOMP = {
+    "ex_4": ["Reasonable"] * 11 + ["Needs split", "Needs merge", "Redundant",
+                                   "Not entailed"],
+}
+EXPECTED_ORIGIN = {"ex_1": "real", "ex_2": "real", "ex_3": "synthetic",
+                   "ex_4": "real"}
 # a phrase-level unit is not a proposition
 SENTENCE_STYLE = [
     re.compile(r"^\s*there\s+(is|are)\b", re.I),
@@ -72,8 +92,9 @@ class TestExamples(unittest.TestCase):
         self.j = load()
         self.ex = self.j["examples"]
 
-    def test_exactly_three_examples_in_order(self):
-        self.assertEqual([e["example_id"] for e in self.ex], ["ex_1", "ex_2", "ex_3"])
+    def test_exactly_four_examples_in_order(self):
+        self.assertEqual([e["example_id"] for e in self.ex],
+                         ["ex_1", "ex_2", "ex_3", "ex_4"])
 
     def test_captions_are_verbatim_from_the_specification(self):
         for e in self.ex:
@@ -154,11 +175,31 @@ class TestExamples(unittest.TestCase):
             self.assertEqual(got, EXPECTED_PARTS[e["example_id"]],
                              f"{e['example_id']} parts drifted from the frozen answers")
 
-    def test_every_decomposition_label_is_reasonable(self):
+    def test_decomposition_labels_are_the_frozen_ones(self):
+        for e in self.ex:
+            got = [p["decomp_quality"] for p in e["parts"]]
+            want = EXPECTED_DECOMP.get(e["example_id"], ["Reasonable"] * len(got))
+            self.assertEqual(got, want,
+                             f"{e['example_id']} decomposition labels changed")
+
+    def test_ex_4_demonstrates_independent_judgements(self):
+        """Its whole purpose: every decomposition label paired with a high support
+        score, plus a Reasonable part the image contradicts."""
+        e = next(x for x in self.ex if x["example_id"] == "ex_4")
+        pairs = {(p["decomp_quality"], p["support_score"]) for p in e["parts"]}
+        for lab in ("Needs split", "Needs merge", "Redundant", "Not entailed"):
+            self.assertIn((lab, 4), pairs, f"ex_4 must pair {lab} with support 4")
+        self.assertIn(("Reasonable", 0), pairs,
+                      "ex_4 must pair Reasonable with support 0")
+
+    def test_reasons_are_present_where_the_spec_gave_one(self):
+        want = {("ex_4", "p7"), ("ex_4", "p11"), ("ex_4", "p12"),
+                ("ex_4", "p13"), ("ex_4", "p14"), ("ex_4", "p15")}
         for e in self.ex:
             for p in e["parts"]:
-                self.assertEqual(p["decomp_quality"], "Reasonable",
-                                 f"{e['example_id']}/{p['part_id']} label changed")
+                if (e["example_id"], p["part_id"]) in want:
+                    self.assertTrue(p["support_note"].strip(),
+                                    f"{e['example_id']}/{p['part_id']} lost its reason")
 
     def test_cannot_judge_parts_carry_their_explanation(self):
         cj = [(e["example_id"], p) for e in self.ex for p in e["parts"]
@@ -179,7 +220,7 @@ class TestExamples(unittest.TestCase):
 
     def test_display_names_are_human_facing(self):
         self.assertEqual([e["display_name"] for e in self.ex],
-                         ["Example 1", "Example 2", "Example 3"])
+                         ["Example 1", "Example 2", "Example 3", "Example 4"])
 
 
 class TestIndependenceFromBenchmark(unittest.TestCase):
