@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>VisExMEM Human Annotation</title>
-<link rel="stylesheet" href="styles.css?v=10">
+<link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body>
 
@@ -116,13 +116,15 @@
 
           <section class="gsec worked">
             <h4>Worked examples</h4>
-            <p>Three complete image–text pairs, annotated with exactly this rubric by
-            GPT-5.6-Sol: every atomic statement carries both judgements and a short
-            reason, and each pair ends with an overall score. They are the fastest way to
-            calibrate before you start.</p>
+            <p>Three complete image–text pairs illustrating how to apply this rubric.
+            Every atomic statement includes both judgements and a short explanation, and
+            each pair ends with an overall alignment score. Please review them before
+            starting your annotation.</p>
             <p><button class="btn primary" id="guideTutLink">View worked examples</button></p>
-            <p class="ghint">Practice only — they are not benchmark samples, never count
-            towards your progress, and never appear in your export.</p>
+            <p class="ghint">These are calibration examples only. They are not benchmark
+            samples, do not count toward your progress, and do not appear in your export.
+            The reference ratings illustrate how to use the rubric; make your own careful
+            judgements on the real samples.</p>
           </section>
 
           <section class="gsec">
@@ -143,17 +145,16 @@
 
           <section class="gsec">
             <h4>B · How to read an atomic statement</h4>
-            <p>Statements are written as short <b>phrases</b>, not full sentences — you will
-            see <span class="gclaim">green hay</span>, not “The hay is green.” Each phrase
-            carries exactly one claim; read it as an assertion about the scene the text
-            describes.</p>
+            <p>Atomic statements are written as short visually checkable semantic units,
+            not necessarily full sentences. You may see <span class="gclaim">green hay</span>
+            rather than “The hay is green.” Read every statement exactly as written.</p>
             <table class="gtable">
-              <tr><td class="gk2">object</td><td>something exists — <span class="gclaim">a wooden bench</span></td></tr>
-              <tr><td class="gk2">attribute</td><td>a property bound to something — <span class="gclaim">red shirt</span></td></tr>
+              <tr><td class="gk2">object</td><td>something is present — <span class="gclaim">bench</span></td></tr>
+              <tr><td class="gk2">attribute</td><td>a property bound to something — <span class="gclaim">wooden bench</span></td></tr>
               <tr><td class="gk2">count</td><td>how many — <span class="gclaim">three dogs</span></td></tr>
-              <tr><td class="gk2">action</td><td>what is happening — <span class="gclaim">the woman is pouring tea</span></td></tr>
-              <tr><td class="gk2">relation</td><td>who does what to whom — <span class="gclaim">the dog chasing the cat</span></td></tr>
-              <tr><td class="gk2">spatial</td><td>where things are — <span class="gclaim">the lamp above the table</span></td></tr>
+              <tr><td class="gk2">action</td><td>what is happening — <span class="gclaim">woman pouring tea</span></td></tr>
+              <tr><td class="gk2">relation</td><td>how entities participate or interact — <span class="gclaim">dog chasing cat</span></td></tr>
+              <tr><td class="gk2">spatial</td><td>where entities are relative to one another — <span class="gclaim">lamp above table</span></td></tr>
             </table>
             <p class="gcallout"><b>Direction and binding matter.</b>
             <span class="gclaim">the dog chasing the cat</span> is a different claim from
@@ -162,18 +163,23 @@
             <span class="gclaim">blue shirt, red hat</span>. Judge the statement exactly as
             written. If a statement is negative — <span class="gclaim">no people</span> — it
             is supported when the image really does show none.</p>
+            <p>Some information is intentionally repeated across different kinds of
+            statements to preserve meaning and binding. For example,
+            <span class="gclaim">dog</span> and <span class="gclaim">brown dog</span> may
+            both be valid atomic statements. Do not mark a statement <b>Redundant</b> merely
+            because it contains an entity that also appears in another statement.</p>
           </section>
 
           <section class="gsec">
-            <h4>C · Judgement 1 — Decomposition quality <span class="ghint">(text only)</span></h4>
+            <h4>C · Judgement 1 — Decomposition quality — judge against the original text</h4>
             <p>Is this statement a good atomic unit of the <b>original text</b>? This
             question has <b>nothing to do with the image</b> — answer it as if you had never
             seen the picture.</p>
             <table class="gtable">
               <tr><td class="gk2">Reasonable</td><td>A single, self-contained claim that the text really makes.</td></tr>
               <tr><td class="gk2">Needs split</td><td>Carries more than one claim that should be judged separately.</td></tr>
-              <tr><td class="gk2">Needs merge</td><td>Too fragmentary to mean anything on its own; belongs with another part.</td></tr>
-              <tr><td class="gk2">Redundant</td><td>Repeats a claim another part already covers.</td></tr>
+              <tr><td class="gk2">Needs merge</td><td>Too fragmented or incomplete to preserve the intended meaning or binding on its own; it should be combined with another part.</td></tr>
+              <tr><td class="gk2">Redundant</td><td>Repeats essentially the same visual claim already represented elsewhere. Normal overlap needed to preserve object, attribute, or relation binding is not redundancy.</td></tr>
               <tr><td class="gk2">Not entailed</td><td>States something the text does not actually say.</td></tr>
             </table>
             <p class="ghint">A statement can be a perfectly good decomposition and still be
@@ -197,6 +203,10 @@
             attributes, counts, bindings, roles, and relations.</b> A statement is only
             fully supported when every element of it holds — the right object, the right
             attribute bound to it, the right number, and the right direction.</p>
+            <p class="gcallout">Use <b>Cannot judge</b> only when the visual evidence is
+            genuinely insufficient to make the judgement. Difficulty or uncertainty about
+            how to interpret otherwise visible evidence is not, by itself, a reason to
+            choose Cannot judge.</p>
             <p class="gcallout">Give the image-support score <b>even when</b> you marked the
             statement Needs split, Needs merge, Redundant or Not entailed. The two
             judgements are separate, and statements are never rewritten.</p>
@@ -204,15 +214,19 @@
               <p class="gex-h">Worked examples</p>
               <p><span class="gclaim">red shirt</span>
                  image clearly shows a red shirt → <b>4</b> ·
-                 the shirt is red but partly in shadow → <b>3</b> ·
+                 the shirt appears red, but lighting makes its colour somewhat uncertain
+                 → <b>3</b> ·
                  image clearly shows a blue shirt → <b>0</b> ·
                  the shirt is mostly hidden and its colour cannot reasonably be
                  determined → <b>Cannot judge</b></p>
               <p><span class="gclaim">three dogs</span>
-                 exactly three clearly visible dogs → <b>4</b> ·
-                 three dogs but one is heavily cropped → <b>3</b> ·
-                 only two dogs visible → <b>1</b> ·
-                 no dogs at all → <b>0</b></p>
+                 exactly three dogs are clearly identifiable → <b>4</b> ·
+                 three appear to be present, but one is partly occluded and there is minor
+                 uncertainty → <b>3</b> ·
+                 only two dogs are clearly present and the image clearly establishes that
+                 there is no third dog → <b>0</b> ·
+                 only two dogs are visible, but framing or occlusion genuinely prevents
+                 determining whether a third dog is present → <b>Cannot judge</b></p>
               <p><span class="gclaim">the dog chasing the cat</span>
                  both animals present and the direction is clear → <b>4</b> ·
                  both present but the direction is genuinely ambiguous → <b>2</b> ·
@@ -251,16 +265,15 @@
           <section class="gsec">
             <h4>F · Cannot judge vs Skip for now vs Technical issue</h4>
             <div class="gcards">
-              <div class="gcard"><b>Cannot judge</b><span>I can see the sample normally, but
-              the image genuinely does not give enough evidence for <em>this one
-              statement</em>.</span></div>
+              <div class="gcard"><b>Cannot judge</b><span>I can see the sample normally,
+              but the image genuinely does not provide enough evidence for
+              <em>this one atomic statement</em>.</span></div>
               <div class="gcard"><b>Skip for now</b><span>I want to postpone the
-              <em>whole sample</em> and come back to it later. It stays in your assignment,
-              shows red on the dashboard, and the app moves you on to the next
-              sample.</span></div>
+              <em>whole sample</em> and return to it later. It stays in my assignment and
+              appears red on the dashboard.</span></div>
               <div class="gcard"><b>Technical issue</b><span>Something is actually broken —
-              the image will not load, the image is corrupt, the text is malformed, or the
-              app misbehaves.</span></div>
+              for example, the image does not load, the image is corrupted, the text is
+              malformed, or the app is not functioning correctly.</span></div>
             </div>
             <p class="ghint">These are three different things. <em>Cannot judge</em> is not
             a way to avoid a hard decision, and a broken sample is not a skip.</p>
@@ -427,6 +440,6 @@
   </main>
 </div>
 
-<script src="app.js?v=10"></script>
+<script src="app.js?v=11"></script>
 </body>
 </html>

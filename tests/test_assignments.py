@@ -300,7 +300,11 @@ chk("G06 guide says extra unmentioned objects do not lower the score",
     "should not\n            automatically reduce the score" in html
     or "should not automatically reduce the score" in " ".join(html.split()))
 chk("G07 guide explains phrase-level statements",
-    "green hay" in html and "not “The hay is green.”" in html)
+    "green hay" in html and "The hay is green." in html
+    and "visually checkable semantic units" in html)
+chk("G07b guide says repetition across statements is not redundancy",
+    "Do not mark a statement <b>Redundant</b> merely" in html
+    and "brown dog" in html)
 chk("G08 guide states binding and direction matter",
     "Direction and binding matter" in html)
 chk("G09 guide points at the worked examples",
@@ -337,7 +341,7 @@ chk("J10 support scale unchanged at 0-4 + cannot judge",
     "for (let v = 0; v <= 4; v++)" in js and "'cannot_judge'" in js)
 chk("J11 overall scale unchanged at 1-5", "OVERALL_MIN = 1, OVERALL_MAX = 5" in js)
 chk("J12 guide explains decomposition quality against the TEXT",
-    "Judgement 1 — Decomposition quality" in html and "(text only)" in html
+    "Judgement 1 — Decomposition quality — judge against the original text" in html
     and "nothing to do with the image" in html
     and all(w in html for w in ("Needs split", "Needs merge", "Redundant", "Not entailed")))
 chk("J13 guide explains image support against the IMAGE",

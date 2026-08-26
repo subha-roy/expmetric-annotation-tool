@@ -261,8 +261,8 @@ details.guide ul{margin:8px 0 0;padding-left:20px} details.guide li{margin-botto
   padding:10px 13px;font-size:13.5px !important;color:#5a4a20 !important;margin-top:4px !important}
 .gcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:4px 0 8px}
 .gcard{background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:11px 13px}
-.gcard b{display:block;font-size:13.5px;margin-bottom:4px;color:var(--ink)}
-.gcard span{font-size:13px;color:var(--ink-2);line-height:1.45}
+.gcard b{display:block;font-size:13.5px;margin-bottom:6px;color:var(--ink)}
+.gcard span{display:block;font-size:13px;color:var(--ink-2);line-height:1.45}
 .ovchosen{margin:8px 0 0;font-size:13.5px;font-weight:600;color:var(--accent-solid);min-height:1.2em}
 
 /* ---------------- two judgments per part card ---------------- */
