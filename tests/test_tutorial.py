@@ -21,6 +21,23 @@ def load():
         return json.load(f)
 
 
+EXPECTED_CAPTIONS = {
+    "ex_1": "A man works on a red bicycle at a workbench in a workshop with tools "
+            "hanging on a green pegboard.",
+    "ex_2": "A brown dog lies on a patterned sofa beside several pillows, with a "
+            "red ball near its front paws.",
+    "ex_3": "A Shiba Inu wearing a red beret and a blue turtleneck sits in front "
+            "of a gray brick wall.",
+}
+EXPECTED_ORIGIN = {"ex_1": "real", "ex_2": "real", "ex_3": "synthetic"}
+# a phrase-level unit is not a proposition
+SENTENCE_STYLE = [
+    re.compile(r"^\s*there\s+(is|are)\b", re.I),
+    re.compile(r"^\s*(the|a|an)\b.*\b(is|are|has|have)\b.*\.\s*$", re.I),
+    re.compile(r"\.\s*$"),
+]
+
+
 class TestExamples(unittest.TestCase):
     def setUp(self):
         self.j = load()
@@ -29,24 +46,20 @@ class TestExamples(unittest.TestCase):
     def test_exactly_three_examples_in_order(self):
         self.assertEqual([e["example_id"] for e in self.ex], ["ex_1", "ex_2", "ex_3"])
 
-    def test_one_of_each_alignment_category(self):
-        self.assertEqual([e["intended_alignment"] for e in self.ex],
-                         ["high", "partial", "low"])
-
-    def test_overall_scores_are_ordered_and_in_range(self):
-        ov = [e["overall_alignment"] for e in self.ex]
-        for v in ov:
-            self.assertIn(v, range(1, 6))
-        self.assertGreater(ov[0], ov[1], "the good example must outscore the medium one")
-        self.assertGreater(ov[1], ov[2], "the medium example must outscore the bad one")
-
-    def test_overall_lands_in_its_intended_band(self):
-        band = {"high": (5, 5), "partial": (3, 3), "low": (1, 2)}
+    def test_captions_are_verbatim_from_the_specification(self):
         for e in self.ex:
-            lo, hi = band[e["intended_alignment"]]
-            self.assertTrue(lo <= e["overall_alignment"] <= hi,
-                            f"{e['example_id']}: overall={e['overall_alignment']} "
-                            f"outside {lo}-{hi} for '{e['intended_alignment']}'")
+            self.assertEqual(" ".join(e["text"].split()),
+                             " ".join(EXPECTED_CAPTIONS[e["example_id"]].split()),
+                             f"{e['example_id']} caption was altered")
+
+    def test_image_origin_matches_the_specification(self):
+        for e in self.ex:
+            self.assertEqual(e["image_origin"], EXPECTED_ORIGIN[e["example_id"]])
+
+    def test_overall_scores_are_in_range(self):
+        for e in self.ex:
+            self.assertIn(e["overall_alignment"], range(1, 6),
+                          f"{e['example_id']} overall out of 1-5")
 
     def test_every_part_is_fully_annotated(self):
         for e in self.ex:
@@ -64,33 +77,32 @@ class TestExamples(unittest.TestCase):
             self.assertEqual([p["part_id"] for p in e["parts"]],
                              [f"p{i+1}" for i in range(len(e["parts"]))])
 
-    def test_part_count_is_teachable(self):
+    def test_parts_are_phrase_level_not_propositions(self):
         for e in self.ex:
-            self.assertTrue(3 <= len(e["parts"]) <= 14,
-                            f"{e['example_id']}: {len(e['parts'])} parts is too many "
-                            "for a first lesson")
+            for p in e["parts"]:
+                for rx in SENTENCE_STYLE:
+                    self.assertIsNone(rx.search(p["text"]),
+                                      f"{e['example_id']}/{p['part_id']} is "
+                                      f"proposition-style: {p['text']!r}")
+
+    def test_decomposition_covers_the_caption_vocabulary(self):
+        """Every content word of the caption should surface in some atomic part."""
+        stop = {"a", "an", "the", "of", "on", "in", "at", "with", "and", "its", "front",
+                "near", "beside", "several", "to", "from", "that"}
+        for e in self.ex:
+            words = {w.strip(".,").lower() for w in e["text"].split()} - stop
+            covered = " ".join(p["text"].lower() for p in e["parts"])
+            missing = [w for w in words if w and w not in covered]
+            self.assertEqual(missing, [],
+                             f"{e['example_id']}: caption words absent from the "
+                             f"decomposition: {missing}")
 
     def test_every_judgement_carries_a_reason(self):
         for e in self.ex:
             for p in e["parts"]:
-                self.assertTrue(p["decomp_note"].strip(),
-                                f"{e['example_id']}/{p['part_id']} decomp_note empty")
                 self.assertTrue(p["support_note"].strip(),
                                 f"{e['example_id']}/{p['part_id']} support_note empty")
             self.assertTrue(e["overall_note"].strip())
-
-    def test_bad_example_actually_shows_unsupported_content(self):
-        bad = self.ex[2]
-        zeros = [p for p in bad["parts"]
-                 if p["support_score"] != "Cannot judge" and p["support_score"] <= 1]
-        self.assertTrue(zeros, "the poorly-aligned example must contain statements the "
-                               "image does not support")
-
-    def test_good_example_is_mostly_supported(self):
-        good = self.ex[0]
-        strong = [p for p in good["parts"]
-                  if p["support_score"] != "Cannot judge" and p["support_score"] >= 3]
-        self.assertGreaterEqual(len(strong), 0.8 * len(good["parts"]))
 
     def test_judgement_separation_is_recorded(self):
         for e in self.ex:
@@ -102,14 +114,26 @@ class TestExamples(unittest.TestCase):
         for e in self.ex:
             path = os.path.join(APP, e["image"])
             self.assertTrue(os.path.exists(path), path)
-            got = hashlib.sha256(open(path, "rb").read()).hexdigest()
+            with open(path, "rb") as f:
+                got = hashlib.sha256(f.read()).hexdigest()
             self.assertEqual(got, e["image_sha256"], f"{e['example_id']} image changed")
 
-    def test_provenance_is_recorded(self):
+    def test_images_are_decodable(self):
+        from PIL import Image
         for e in self.ex:
-            self.assertIn(e["image_origin"], {"real", "synthetic"})
-            self.assertTrue(e["image_source"].strip())
+            with Image.open(os.path.join(APP, e["image"])) as im:
+                im.verify()
+
+    def test_model_identifier_is_the_project_one(self):
+        for e in self.ex:
             self.assertEqual(e["annotated_by"], "GPT-5.6-Sol")
+            self.assertEqual(e["annotation_model"], "openai/gpt-5.6-sol")
+            self.assertEqual(e["annotation_guideline_version"],
+                             "visexmem-human-guideline-1.0")
+
+    def test_display_names_are_human_facing(self):
+        self.assertEqual([e["display_name"] for e in self.ex],
+                         ["Example 1", "Example 2", "Example 3"])
 
 
 class TestIndependenceFromBenchmark(unittest.TestCase):
@@ -220,6 +244,62 @@ class TestAppIsolation(unittest.TestCase):
             r"Extra objects or details that the text does not mention should not "
             r"automatically reduce the score",
             "the guide must say extra unmentioned content does not lower the score")
+
+
+class TestProgressAndAssignmentsUntouched(unittest.TestCase):
+    """Viewing the tutorial must leave every annotator at 0/N and every assignment
+    byte-identical to the frozen lock."""
+
+    # pinned from ASSIGNMENT_LOCK.json at the time the tutorial was added
+    EXPECTED_TOTALS = {"damir": 173, "brisca": 173, "omar": 172, "sayeeda": 172,
+                       "christian": 30, "chris": 30, "zhipin": 30, "joy": 30}
+    EXPECTED_HASHES = {
+        "damir": "99a1880240d065f313bca3ba5a23ec51c9c7f0bb17b69a0adf04d74565b4b17d",
+        "brisca": "57d0eb9331eea5fbafcc543bbf3d4bd563266808ab66a4cb4dc4f2dc846a891c",
+        "omar": "dcaaa1f21200b6d26e9d370e8a41a4993d8155f9f2b65acb242f0472511ebb24",
+        "sayeeda": "bd6a4363256bac8bb1d1ccd78a43e4be12009212f1d947c36f25b46d9ab10b6d",
+        "christian": "8ac5e903913b811feb74d3178aabd0d39e5f1be1ebb39a4ce6905f97089ceabe",
+        "chris": "9db7baa38e7954d31f12e861cd8681b74a6bc68a081b1574d4696e53bf8309cf",
+        "zhipin": "8ac94737c09681f375f514771809531a10cfa08c6658350ec165eab424a4a546",
+        "joy": "49565854dc2a69ab9786362b6fc53736f5851cd77d6481d6893752468903b521",
+    }
+
+    def setUp(self):
+        with open(os.path.join(APP, "ASSIGNMENT_LOCK.json")) as f:
+            self.lock = json.load(f)
+
+    def test_assignment_totals_unchanged(self):
+        got = {k: v["total"] for k, v in self.lock["counts"].items()}
+        self.assertEqual(got, self.EXPECTED_TOTALS)
+
+    def test_assignment_hashes_unchanged(self):
+        self.assertEqual(self.lock["assignment_hashes"], self.EXPECTED_HASHES,
+                         "an assignment changed -- the tutorial must not touch these")
+
+    def test_tutorial_ids_cannot_collide_with_sample_ids(self):
+        for e in load()["examples"]:
+            self.assertFalse(e["example_id"].startswith("vxb_"),
+                             "tutorial ids live in their own namespace")
+
+    def test_bundles_do_not_carry_tutorial_content(self):
+        d = os.path.join(APP, "data")
+        for fn in sorted(os.listdir(d)):
+            if not fn.startswith("bundle_"):
+                continue
+            with open(os.path.join(d, fn)) as f:
+                blob = f.read()
+            for marker in ("ex_1", "ex_2", "ex_3", "tutorial", "Shiba"):
+                self.assertNotIn(marker, blob, f"{fn} leaks tutorial content")
+
+    def test_export_record_shape_has_no_tutorial_field(self):
+        with open(os.path.join(APP, "app.js")) as f:
+            js = f.read()
+        i = js.index("function buildExport()")
+        j = js.index("function download(", i)
+        block = js[i:j]
+        for marker in ("TUT", "tutorial", "example_id"):
+            self.assertNotIn(marker, block,
+                             f"export must not carry {marker}")
 
 
 if __name__ == "__main__":

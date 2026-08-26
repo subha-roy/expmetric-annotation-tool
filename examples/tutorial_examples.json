@@ -3,340 +3,424 @@
   "guideline_version": "visexmem-human-guideline-1.0",
   "annotation_model": "openai/gpt-5.6-sol",
   "annotated_by": "GPT-5.6-Sol",
-  "note": "Practice examples. Not part of the 600-sample benchmark and never exported with human annotations.",
+  "note": "Practice examples. Not part of the 600-sample benchmark, never counted in progress and never present in exported human annotations.",
   "examples": [
     {
       "example_id": "ex_1",
-      "alignment_category": "good",
-      "intended_alignment": "high",
-      "image": "examples/images/ex_1.jpg",
+      "display_name": "Example 1",
+      "image": "examples/images/ex_1.jpeg",
       "image_origin": "real",
-      "image_source": "Objects365 (CC-BY)",
-      "image_sha256": "b3e7e774a51ae305299867c68d696c0ad76414218dfc9cdd60f70672a705066b",
-      "image_phash": "b4744bb6649b461b",
-      "text": "A broad-shaded lamp stands above the dark foreground desk, while books fill the shelving unit behind the desk.",
+      "image_source": "supplied for the tutorial",
+      "image_sha256": "bcf2897189336fd358a4c8ca1bff90df00b70f25e175aee87354a647f9ad2853",
+      "image_phash": "93938024ed7d9ba5",
+      "text": "A man works on a red bicycle at a workbench in a workshop with tools hanging on a green pegboard.",
       "parts": [
         {
           "part_id": "p1",
           "type": "object",
-          "text": "lamp",
+          "text": "man",
           "decomp_quality": "Reasonable",
-          "decomp_note": "identifies the lamp",
+          "decomp_note": "explicit object",
           "support_score": 4,
-          "support_note": "Lamp clearly visible on the right"
+          "support_note": "Two men are clearly visible"
         },
         {
           "part_id": "p2",
-          "type": "attribute",
-          "text": "broad-shaded lamp",
+          "type": "object",
+          "text": "bicycle",
           "decomp_quality": "Reasonable",
-          "decomp_note": "captures the broad shade",
+          "decomp_note": "explicit object",
           "support_score": 4,
-          "support_note": "Lamp has a broad shade"
+          "support_note": "Several bicycles are clearly visible"
         },
         {
           "part_id": "p3",
-          "type": "object",
-          "text": "desk",
+          "type": "attribute",
+          "text": "red bicycle",
           "decomp_quality": "Reasonable",
-          "decomp_note": "identifies the desk",
+          "decomp_note": "explicit color attribute",
           "support_score": 4,
-          "support_note": "Desk clearly visible"
+          "support_note": "A prominent bicycle has a red frame"
         },
         {
           "part_id": "p4",
-          "type": "attribute",
-          "text": "dark desk",
+          "type": "object",
+          "text": "workbench",
           "decomp_quality": "Reasonable",
-          "decomp_note": "captures the desk's darkness",
+          "decomp_note": "explicit object",
           "support_score": 4,
-          "support_note": "Desk is visibly dark"
+          "support_note": "A workbench is clearly visible on the right"
         },
         {
           "part_id": "p5",
-          "type": "spatial",
-          "text": "foreground desk",
+          "type": "object",
+          "text": "workshop",
           "decomp_quality": "Reasonable",
-          "decomp_note": "captures the desk's foreground position",
+          "decomp_note": "explicit setting",
           "support_score": 4,
-          "support_note": "Desk occupies the foreground"
+          "support_note": "The setting is clearly a bicycle workshop"
         },
         {
           "part_id": "p6",
           "type": "object",
-          "text": "books",
+          "text": "tools",
           "decomp_quality": "Reasonable",
-          "decomp_note": "identifies the books",
+          "decomp_note": "explicit objects",
           "support_score": 4,
-          "support_note": "Numerous books are visible"
+          "support_note": "Many tools are clearly visible"
         },
         {
           "part_id": "p7",
           "type": "object",
-          "text": "shelving unit",
+          "text": "pegboard",
           "decomp_quality": "Reasonable",
-          "decomp_note": "identifies the shelving unit",
+          "decomp_note": "explicit object",
           "support_score": 4,
-          "support_note": "Shelving unit clearly visible"
+          "support_note": "A perforated pegboard is visible behind the bench"
         },
         {
           "part_id": "p8",
-          "type": "action",
-          "text": "stands",
-          "decomp_quality": "Needs merge",
-          "decomp_note": "lacks the standing subject and relation",
+          "type": "attribute",
+          "text": "green pegboard",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "explicit color attribute",
           "support_score": 4,
-          "support_note": "Lamp stands over the work surface"
+          "support_note": "The pegboard is clearly green"
         },
         {
           "part_id": "p9",
           "type": "action",
-          "text": "fill",
+          "text": "works",
           "decomp_quality": "Needs merge",
-          "decomp_note": "lacks the filling subject and object",
-          "support_score": 3,
-          "support_note": "Books occupy much of the shelving"
+          "decomp_note": "action lacks its object",
+          "support_score": 4,
+          "support_note": "Both men appear actively engaged in work"
         },
         {
           "part_id": "p10",
-          "type": "spatial",
-          "text": "lamp stands above the desk",
-          "decomp_quality": "Reasonable",
-          "decomp_note": "captures the lamp-desk spatial relation",
+          "type": "action",
+          "text": "hanging",
+          "decomp_quality": "Needs merge",
+          "decomp_note": "action lacks its subject and support",
           "support_score": 4,
-          "support_note": "Lamp is clearly above the desk"
+          "support_note": "Numerous tools visibly hang from the board"
         },
         {
           "part_id": "p11",
           "type": "relation",
-          "text": "books fill the shelving unit",
+          "text": "man works on a red bicycle",
           "decomp_quality": "Reasonable",
-          "decomp_note": "captures the books-shelving relation",
-          "support_score": 3,
-          "support_note": "Books fill several shelf sections"
+          "decomp_note": "complete stated action relation",
+          "support_score": 4,
+          "support_note": "The left man is working on the red bicycle"
         },
         {
           "part_id": "p12",
           "type": "spatial",
-          "text": "shelving unit behind the desk",
+          "text": "man at a workbench",
           "decomp_quality": "Reasonable",
-          "decomp_note": "captures the shelving-desk spatial relation",
+          "decomp_note": "explicit spatial relation",
           "support_score": 4,
-          "support_note": "Shelving unit is behind the desk"
-        }
-      ],
-      "overall_alignment": 5,
-      "overall_note": "The image clearly represents the lamp, foreground desk, and book-filled shelving in the stated arrangement.",
-      "annotated_by": "GPT-5.6-Sol",
-      "annotation_model": "openai/gpt-5.6-sol",
-      "annotation_guideline_version": "visexmem-human-guideline-1.0",
-      "decomp_quality_call_saw_image": false,
-      "image_support_call_saw_image": true,
-      "band_matched": true
-    },
-    {
-      "example_id": "ex_2",
-      "alignment_category": "medium",
-      "intended_alignment": "partial",
-      "image": "examples/images/ex_2.jpg",
-      "image_origin": "real",
-      "image_source": "Objects365 (CC-BY)",
-      "image_sha256": "17b0e74572d5e3b6ad44cb15d6dc0403c4a8b365a81909c24b4c93d309c50eba",
-      "image_phash": "9cd3669929269ad3",
-      "text": "A lit lamp with a dark red shade stands between a wooden chair and the fireplace.",
-      "parts": [
-        {
-          "part_id": "p1",
-          "type": "object",
-          "text": "lamp",
-          "decomp_quality": "Reasonable",
-          "decomp_note": "clearly identifies the lamp",
-          "support_score": 4,
-          "support_note": "A lamp is clearly visible."
+          "support_note": "The right man is positioned at the workbench"
         },
         {
-          "part_id": "p2",
-          "type": "attribute",
-          "text": "lit lamp",
-          "decomp_quality": "Reasonable",
-          "decomp_note": "faithfully captures the lit state",
-          "support_score": 4,
-          "support_note": "The lamp is visibly illuminated."
-        },
-        {
-          "part_id": "p3",
-          "type": "object",
-          "text": "shade",
-          "decomp_quality": "Reasonable",
-          "decomp_note": "clearly identifies the shade",
-          "support_score": 4,
-          "support_note": "The lamp has a clearly visible shade."
-        },
-        {
-          "part_id": "p4",
-          "type": "attribute",
-          "text": "dark red shade",
-          "decomp_quality": "Reasonable",
-          "decomp_note": "faithfully captures the shade color",
-          "support_score": 0,
-          "support_note": "The shade appears light cream, not dark red."
-        },
-        {
-          "part_id": "p5",
-          "type": "object",
-          "text": "chair",
-          "decomp_quality": "Reasonable",
-          "decomp_note": "clearly identifies the chair",
-          "support_score": 4,
-          "support_note": "A chair is clearly visible beside the lamp."
-        },
-        {
-          "part_id": "p6",
-          "type": "attribute",
-          "text": "wooden chair",
-          "decomp_quality": "Reasonable",
-          "decomp_note": "faithfully captures the chair material",
-          "support_score": 4,
-          "support_note": "The chair left of the lamp is visibly wooden."
-        },
-        {
-          "part_id": "p7",
-          "type": "object",
-          "text": "fireplace",
-          "decomp_quality": "Reasonable",
-          "decomp_note": "clearly identifies the fireplace",
-          "support_score": 4,
-          "support_note": "A fireplace is clearly visible on the right."
-        },
-        {
-          "part_id": "p8",
-          "type": "action",
-          "text": "stands",
-          "decomp_quality": "Needs merge",
-          "decomp_note": "lacks the lamp as its subject",
-          "support_score": 4,
-          "support_note": "The lamp stands upright on a table."
-        },
-        {
-          "part_id": "p9",
-          "type": "relation",
-          "text": "lamp with a dark red shade",
-          "decomp_quality": "Needs split",
-          "decomp_note": "combines attachment and shade color",
-          "support_score": 1,
-          "support_note": "The lamp has a shade, but it is not dark red."
-        },
-        {
-          "part_id": "p10",
+          "part_id": "p13",
           "type": "spatial",
-          "text": "lamp between a wooden chair and the fireplace",
-          "decomp_quality": "Needs split",
-          "decomp_note": "combines position with chair material",
+          "text": "workbench in a workshop",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "explicit spatial relation",
           "support_score": 4,
-          "support_note": "The lamp is between the wooden chair and fireplace."
+          "support_note": "The workbench is clearly inside the workshop"
+        },
+        {
+          "part_id": "p14",
+          "type": "relation",
+          "text": "tools hanging on a green pegboard",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "complete stated relation",
+          "support_score": 4,
+          "support_note": "Tools clearly hang on the green pegboard"
         }
       ],
       "overall_alignment": 3,
-      "overall_note": "The objects and spatial arrangement match, but the shade color clearly does not.",
+      "overall_note": "The scene contains all described elements, but the man working on the red bicycle is not the man at the workbench.",
       "annotated_by": "GPT-5.6-Sol",
       "annotation_model": "openai/gpt-5.6-sol",
       "annotation_guideline_version": "visexmem-human-guideline-1.0",
       "decomp_quality_call_saw_image": false,
-      "image_support_call_saw_image": true,
-      "band_matched": true
+      "image_support_call_saw_image": true
     },
     {
-      "example_id": "ex_3",
-      "alignment_category": "bad",
-      "intended_alignment": "low",
-      "image": "examples/images/ex_3.jpg",
-      "image_origin": "synthetic",
-      "image_source": "DiffusionDB (CC0)",
-      "image_sha256": "7b46926898ed6ca3eeddbbbc2ce0c42a419775264935c0f4709211757405f146",
-      "image_phash": "b1b44cf2c49ac799",
-      "text": "A front-facing blue-green humanoid with purple eyes appears against a pink background.",
+      "example_id": "ex_2",
+      "display_name": "Example 2",
+      "image": "examples/images/ex_2.jpeg",
+      "image_origin": "real",
+      "image_source": "supplied for the tutorial",
+      "image_sha256": "eef48768c3c53e0b3c8f51836d3e311bdc9a9bfffb7693f07b188a04cb216469",
+      "image_phash": "a94cd2bf3cb2460b",
+      "text": "A brown dog lies on a patterned sofa beside several pillows, with a red ball near its front paws.",
       "parts": [
         {
           "part_id": "p1",
           "type": "object",
-          "text": "humanoid",
+          "text": "dog",
           "decomp_quality": "Reasonable",
-          "decomp_note": "clear object unit",
+          "decomp_note": "identifies the dog",
           "support_score": 4,
-          "support_note": "A humanoid figure is clearly depicted"
+          "support_note": "A dog is clearly visible."
         },
         {
           "part_id": "p2",
           "type": "attribute",
-          "text": "front-facing humanoid",
+          "text": "brown dog",
           "decomp_quality": "Reasonable",
-          "decomp_note": "clear orientation attribute",
+          "decomp_note": "binds brown color to the dog",
           "support_score": 4,
-          "support_note": "The humanoid directly faces the viewer"
+          "support_note": "The dog has clearly brown fur."
         },
         {
           "part_id": "p3",
-          "type": "attribute",
-          "text": "blue-green humanoid",
+          "type": "object",
+          "text": "sofa",
           "decomp_quality": "Reasonable",
-          "decomp_note": "clear color attribute",
-          "support_score": 2,
-          "support_note": "Cyan highlights appear, but the figure is mainly pink-purple"
+          "decomp_note": "identifies the sofa",
+          "support_score": 4,
+          "support_note": "A sofa is clearly visible."
         },
         {
           "part_id": "p4",
-          "type": "object",
-          "text": "eyes",
+          "type": "attribute",
+          "text": "patterned sofa",
           "decomp_quality": "Reasonable",
-          "decomp_note": "clear object unit",
+          "decomp_note": "binds the pattern to the sofa",
           "support_score": 4,
-          "support_note": "Two eyes are clearly visible"
+          "support_note": "The sofa has a clear geometric pattern."
         },
         {
           "part_id": "p5",
-          "type": "attribute",
-          "text": "purple eyes",
+          "type": "object",
+          "text": "pillows",
           "decomp_quality": "Reasonable",
-          "decomp_note": "clear color attribute",
-          "support_score": 3,
-          "support_note": "The eyes appear dark blue-purple"
+          "decomp_note": "identifies the pillows",
+          "support_score": 4,
+          "support_note": "Multiple pillows are clearly visible."
         },
         {
           "part_id": "p6",
-          "type": "object",
-          "text": "background",
+          "type": "count",
+          "text": "several pillows",
           "decomp_quality": "Reasonable",
-          "decomp_note": "clear scene element",
+          "decomp_note": "captures the pillow quantity",
           "support_score": 4,
-          "support_note": "A clear background surrounds the figure"
+          "support_note": "Several pillows surround the dog."
         },
         {
           "part_id": "p7",
-          "type": "attribute",
-          "text": "pink background",
+          "type": "object",
+          "text": "ball",
           "decomp_quality": "Reasonable",
-          "decomp_note": "clear background color",
+          "decomp_note": "identifies the ball",
           "support_score": 0,
-          "support_note": "The background is blue-green rather than pink"
+          "support_note": "No ball is visible."
         },
         {
           "part_id": "p8",
-          "type": "spatial",
-          "text": "humanoid against a pink background",
+          "type": "attribute",
+          "text": "red ball",
           "decomp_quality": "Reasonable",
-          "decomp_note": "clear figure-background relation",
+          "decomp_note": "binds red color to the ball",
           "support_score": 0,
-          "support_note": "The humanoid is not set against a pink background"
+          "support_note": "No red ball is visible."
+        },
+        {
+          "part_id": "p9",
+          "type": "object",
+          "text": "front paws",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "identifies the front paws",
+          "support_score": 3,
+          "support_note": "The dog's front paw area is partly visible."
+        },
+        {
+          "part_id": "p10",
+          "type": "action",
+          "text": "lies",
+          "decomp_quality": "Needs merge",
+          "decomp_note": "action lacks its dog subject",
+          "support_score": 4,
+          "support_note": "The dog is clearly lying down."
+        },
+        {
+          "part_id": "p11",
+          "type": "spatial",
+          "text": "brown dog on a patterned sofa",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "captures the dog-sofa relation",
+          "support_score": 4,
+          "support_note": "The brown dog lies directly on the patterned sofa."
+        },
+        {
+          "part_id": "p12",
+          "type": "spatial",
+          "text": "brown dog beside several pillows",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "captures the dog-pillow relation",
+          "support_score": 4,
+          "support_note": "The dog lies beside several pillows."
+        },
+        {
+          "part_id": "p13",
+          "type": "spatial",
+          "text": "red ball near the dog's front paws",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "captures the ball-paw relation",
+          "support_score": 0,
+          "support_note": "No red ball appears near the front paws."
         }
       ],
-      "overall_alignment": 2,
-      "overall_note": "The front-facing humanoid matches, but the stated figure and background colors are largely reversed.",
+      "overall_alignment": 4,
+      "overall_note": "The dog, sofa, posture, and pillows match well, but the red ball is absent.",
       "annotated_by": "GPT-5.6-Sol",
       "annotation_model": "openai/gpt-5.6-sol",
       "annotation_guideline_version": "visexmem-human-guideline-1.0",
       "decomp_quality_call_saw_image": false,
-      "image_support_call_saw_image": true,
-      "band_matched": true
+      "image_support_call_saw_image": true
+    },
+    {
+      "example_id": "ex_3",
+      "display_name": "Example 3",
+      "image": "examples/images/ex_3.jpeg",
+      "image_origin": "synthetic",
+      "image_source": "supplied for the tutorial",
+      "image_sha256": "9935e6623f5a24c7d40baca0d588a8407f6c96a903f5e2d66681ee2dcf0235ed",
+      "image_phash": "ec9273878e38d961",
+      "text": "A Shiba Inu wearing a red beret and a blue turtleneck sits in front of a gray brick wall.",
+      "parts": [
+        {
+          "part_id": "p1",
+          "type": "object",
+          "text": "Shiba Inu",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "clear object unit",
+          "support_score": 4,
+          "support_note": "A Shiba Inu is clearly visible."
+        },
+        {
+          "part_id": "p2",
+          "type": "object",
+          "text": "beret",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "clear object unit",
+          "support_score": 4,
+          "support_note": "A beret is clearly visible."
+        },
+        {
+          "part_id": "p3",
+          "type": "attribute",
+          "text": "red beret",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "faithful color attribute",
+          "support_score": 0,
+          "support_note": "The beret is black, not red."
+        },
+        {
+          "part_id": "p4",
+          "type": "object",
+          "text": "turtleneck",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "clear object unit",
+          "support_score": 4,
+          "support_note": "A turtleneck is clearly visible."
+        },
+        {
+          "part_id": "p5",
+          "type": "attribute",
+          "text": "blue turtleneck",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "faithful color attribute",
+          "support_score": 0,
+          "support_note": "The turtleneck is black, not blue."
+        },
+        {
+          "part_id": "p6",
+          "type": "object",
+          "text": "wall",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "clear object unit",
+          "support_score": 4,
+          "support_note": "A wall is visible behind the dog."
+        },
+        {
+          "part_id": "p7",
+          "type": "attribute",
+          "text": "brick wall",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "faithful material attribute",
+          "support_score": 4,
+          "support_note": "The wall has a clear brick pattern."
+        },
+        {
+          "part_id": "p8",
+          "type": "attribute",
+          "text": "gray wall",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "faithful color attribute",
+          "support_score": 2,
+          "support_note": "The wall appears white or very light gray."
+        },
+        {
+          "part_id": "p9",
+          "type": "action",
+          "text": "wearing",
+          "decomp_quality": "Needs merge",
+          "decomp_note": "wearing lacks its object binding",
+          "support_score": 4,
+          "support_note": "The dog is visibly wearing clothing and a hat."
+        },
+        {
+          "part_id": "p10",
+          "type": "action",
+          "text": "sits",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "clear stated action",
+          "support_score": 3,
+          "support_note": "The dog's upright pose suggests it is sitting."
+        },
+        {
+          "part_id": "p11",
+          "type": "relation",
+          "text": "Shiba Inu wearing a red beret",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "clear wearing relation",
+          "support_score": 2,
+          "support_note": "The dog wears a beret, but it is black rather than red."
+        },
+        {
+          "part_id": "p12",
+          "type": "relation",
+          "text": "Shiba Inu wearing a blue turtleneck",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "clear wearing relation",
+          "support_score": 2,
+          "support_note": "The dog wears a turtleneck, but it is black rather than blue."
+        },
+        {
+          "part_id": "p13",
+          "type": "spatial",
+          "text": "Shiba Inu in front of a gray brick wall",
+          "decomp_quality": "Reasonable",
+          "decomp_note": "clear spatial relation",
+          "support_score": 3,
+          "support_note": "The dog is clearly in front of a brick wall that appears very light gray."
+        }
+      ],
+      "overall_alignment": 3,
+      "overall_note": "The subject, clothing types, pose, and brick-wall setting match, but both specified clothing colors are wrong.",
+      "annotated_by": "GPT-5.6-Sol",
+      "annotation_model": "openai/gpt-5.6-sol",
+      "annotation_guideline_version": "visexmem-human-guideline-1.0",
+      "decomp_quality_call_saw_image": false,
+      "image_support_call_saw_image": true
     }
   ]
 }

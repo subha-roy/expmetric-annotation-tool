@@ -334,9 +334,6 @@ function renderOverall() {
    touches S.ann / IndexedDB / the export, and is not part of items(). */
 let TUT = { list: null, i: 0 };
 
-const TUT_BADGE = { high: 'A well-aligned pair', partial: 'A partly-aligned pair',
-                    low: 'A poorly-aligned pair' };
-
 
 const tutSeenKey = () => (S ? dbName(S.bundle) + ':tutseen' : 'visexmem:tutseen');
 
@@ -360,10 +357,11 @@ function renderTutorial() {
   const ex = TUT.list[TUT.i];
   $('tutNow').textContent = String(TUT.i + 1);
   $('tutAll').textContent = String(TUT.list.length);
-  $('tutBadge').textContent = TUT_BADGE[ex.intended_alignment] || '';
+  $('tutBadge').textContent = 'practice only — not counted';
+  $('tutName').textContent = ex.display_name || `Example ${TUT.i + 1}`;
   $('tutText').textContent = ex.text;
   $('tutSrc').textContent =
-    `${ex.image_origin === 'synthetic' ? 'Synthetic image' : 'Photograph'} · ${ex.image_source}`
+    `${ex.image_origin === 'synthetic' ? 'Synthetic image' : 'Photograph'}`
     + ' · reference annotation by GPT-5.6-Sol';
   const img = $('tutImg'); img.src = ex.image;
 

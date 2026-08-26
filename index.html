@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>VisExMEM Human Annotation</title>
-<link rel="stylesheet" href="styles.css?v=7">
+<link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
 
@@ -45,7 +45,7 @@
   <main class="wrap">
     <div id="menu" class="card hidden" style="margin-bottom:18px"><div class="card-b">
       <div class="actions">
-        <button class="btn sm" id="menuTut">View examples again</button>
+        <button class="btn sm" id="menuTut">View examples</button>
         <button class="btn sm" id="backupBtn">Download backup</button>
         <button class="btn sm" id="importBtn">Import backup</button>
         <input id="importFile" type="file" accept="application/json" class="hidden">
@@ -75,7 +75,7 @@
 
       <div class="toolbar">
         <button class="btn primary" id="continueBtn">Continue annotation</button>
-        <button class="btn" id="tutAgain">View examples again</button>
+        <button class="btn" id="tutAgain">View examples</button>
         <button class="btn hidden" id="reviewSkipBtn">Review skipped samples</button>
         <div class="spacer"></div>
         <div class="jump">
@@ -105,10 +105,16 @@
         <summary>Annotation guide</summary>
         <div class="guide-body">
 
-          <p class="gcallout">New here? Work through the
-          <b><a href="#" id="guideTutLink">three worked examples</a></b> first — they show a
-          well-aligned, a partly-aligned and a poorly-aligned pair annotated end to end.
-          They are practice only and never count towards your progress.</p>
+          <section class="gsec worked">
+            <h4>Worked examples</h4>
+            <p>Three complete image–text pairs, annotated with exactly this rubric by
+            GPT-5.6-Sol: every atomic statement carries both judgements and a short
+            reason, and each pair ends with an overall score. They are the fastest way to
+            calibrate before you start.</p>
+            <p><button class="btn primary" id="guideTutLink">View examples</button></p>
+            <p class="ghint">Practice only — they are not benchmark samples, never count
+            towards your progress, and never appear in your export.</p>
+          </section>
 
           <section class="gsec">
             <h4>A · What you are doing</h4>
@@ -252,7 +258,7 @@
               progress, red = skipped, purple = technical issue, grey = not started.</li>
               <li>Completed samples can be <b>reopened and corrected</b> at any point.</li>
               <li>The three worked examples stay available under
-              <b>View examples again</b> — they never affect your counts or your export.</li>
+              <b>View examples</b> — they never affect your counts or your export.</li>
               <li>Use the <b>same browser and device</b> where practical, and do not clear
               site data before exporting.</li>
               <li><b>Download backup</b> from the menu at any time; when everything is
@@ -271,6 +277,7 @@
       <div class="samplebar">
         <button class="btn sm" id="tutExit">← Dashboard</button>
         <div class="pos">Example <b id="tutNow">—</b> of <b id="tutAll">—</b></div>
+        <div class="tutname" id="tutName">—</div>
         <div class="muted" id="tutBadge">—</div>
         <div class="spacer"></div>
         <button class="btn sm" id="tutPrev">Previous</button>
@@ -402,6 +409,6 @@
   </main>
 </div>
 
-<script src="app.js?v=7"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>

@@ -296,3 +296,7 @@ details.guide ul{margin:8px 0 0;padding-left:20px} details.guide li{margin-botto
   color:var(--ink-2);font-size:13.5px;line-height:1.55}
 #tutOverall .ovchosen{margin:10px 0 0;font-weight:600;color:var(--ink)}
 #tutSrc{margin-top:10px}
+.gsec.worked{background:var(--accent-soft);border:1px solid var(--accent-solid);
+  border-radius:var(--radius);padding:14px 16px}
+.gsec.worked h4{margin-top:0}
+.tutname{font-size:13.5px;color:var(--accent-dark);font-weight:600}
