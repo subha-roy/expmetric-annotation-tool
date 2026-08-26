@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>VisExMEM Human Annotation</title>
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
 
@@ -45,6 +45,7 @@
   <main class="wrap">
     <div id="menu" class="card hidden" style="margin-bottom:18px"><div class="card-b">
       <div class="actions">
+        <button class="btn sm" id="menuTut">View examples again</button>
         <button class="btn sm" id="backupBtn">Download backup</button>
         <button class="btn sm" id="importBtn">Import backup</button>
         <input id="importFile" type="file" accept="application/json" class="hidden">
@@ -74,6 +75,7 @@
 
       <div class="toolbar">
         <button class="btn primary" id="continueBtn">Continue annotation</button>
+        <button class="btn" id="tutAgain">View examples again</button>
         <button class="btn hidden" id="reviewSkipBtn">Review skipped samples</button>
         <div class="spacer"></div>
         <div class="jump">
@@ -103,81 +105,108 @@
         <summary>Annotation guide</summary>
         <div class="guide-body">
 
+          <p class="gcallout">New here? Work through the
+          <b><a href="#" id="guideTutLink">three worked examples</a></b> first — they show a
+          well-aligned, a partly-aligned and a poorly-aligned pair annotated end to end.
+          They are practice only and never count towards your progress.</p>
+
           <section class="gsec">
             <h4>A · What you are doing</h4>
             <p>For every sample you see an <b>image</b>, the <b>original text</b>, and the
             <b>atomic statements</b> extracted from that text. Your task is to:</p>
             <ol class="gsteps">
-              <li>for <em>each</em> atomic statement give <b>two</b> judgements — whether
-              it is a good decomposition of the text, and how strongly the image supports
-              it;</li>
+              <li>for <em>each</em> atomic statement give <b>two independent
+              judgements</b> — whether it is a good decomposition of the text, and how
+              strongly the image supports it;</li>
               <li>then, once every statement has both, give <em>one</em> overall text–image
-              alignment score.</li>
+              alignment score for the pair.</li>
             </ol>
+            <p class="ghint">There is no right answer key. We are measuring careful human
+            judgement, so be consistent with yourself rather than trying to guess what
+            somebody else would say.</p>
           </section>
 
           <section class="gsec">
-            <h4>B · Decomposition quality — judged against the text</h4>
-            <p>First, is this statement a good atomic unit of the <b>original text</b>?
-            This has nothing to do with the image.</p>
+            <h4>B · How to read an atomic statement</h4>
+            <p>Statements are written as short <b>phrases</b>, not full sentences — you will
+            see <span class="gclaim">green hay</span>, not “The hay is green.” Each phrase
+            carries exactly one claim; read it as an assertion about the scene the text
+            describes.</p>
             <table class="gtable">
-              <tr><td class="gk2">Reasonable</td><td>A good atomic visual unit.</td></tr>
-              <tr><td class="gk2">Needs split</td><td>Contains multiple claims that should be separated.</td></tr>
-              <tr><td class="gk2">Needs merge</td><td>Should be combined with another part to make a meaningful unit.</td></tr>
-              <tr><td class="gk2">Redundant</td><td>Duplicates information already represented by another part.</td></tr>
-              <tr><td class="gk2">Not entailed</td><td>Introduces information the text does not actually state.</td></tr>
+              <tr><td class="gk2">object</td><td>something exists — <span class="gclaim">a wooden bench</span></td></tr>
+              <tr><td class="gk2">attribute</td><td>a property bound to something — <span class="gclaim">red shirt</span></td></tr>
+              <tr><td class="gk2">count</td><td>how many — <span class="gclaim">three dogs</span></td></tr>
+              <tr><td class="gk2">action</td><td>what is happening — <span class="gclaim">the woman is pouring tea</span></td></tr>
+              <tr><td class="gk2">relation</td><td>who does what to whom — <span class="gclaim">the dog chasing the cat</span></td></tr>
+              <tr><td class="gk2">spatial</td><td>where things are — <span class="gclaim">the lamp above the table</span></td></tr>
             </table>
+            <p class="gcallout"><b>Direction and binding matter.</b>
+            <span class="gclaim">the dog chasing the cat</span> is a different claim from
+            <span class="gclaim">the cat chasing the dog</span>, and
+            <span class="gclaim">red shirt, blue hat</span> is different from
+            <span class="gclaim">blue shirt, red hat</span>. Judge the statement exactly as
+            written. If a statement is negative — <span class="gclaim">no people</span> — it
+            is supported when the image really does show none.</p>
           </section>
 
           <section class="gsec">
-            <h4>C · Image support — judged against the image</h4>
-            <p>Second, and <b>independently</b>: how strongly does the image support that
-            same statement?</p>
+            <h4>C · Judgement 1 — Decomposition quality <span class="ghint">(text only)</span></h4>
+            <p>Is this statement a good atomic unit of the <b>original text</b>? This
+            question has <b>nothing to do with the image</b> — answer it as if you had never
+            seen the picture.</p>
             <table class="gtable">
-              <tr><td class="gk">0</td><td>Unsupported / contradicted</td></tr>
-              <tr><td class="gk">1</td><td>Weak support</td></tr>
-              <tr><td class="gk">2</td><td>Partial support</td></tr>
-              <tr><td class="gk">3</td><td>Strong support</td></tr>
-              <tr><td class="gk">4</td><td>Full support</td></tr>
-              <tr><td class="gk">?</td><td>Cannot judge</td></tr>
+              <tr><td class="gk2">Reasonable</td><td>A single, self-contained claim that the text really makes.</td></tr>
+              <tr><td class="gk2">Needs split</td><td>Carries more than one claim that should be judged separately.</td></tr>
+              <tr><td class="gk2">Needs merge</td><td>Too fragmentary to mean anything on its own; belongs with another part.</td></tr>
+              <tr><td class="gk2">Redundant</td><td>Repeats a claim another part already covers.</td></tr>
+              <tr><td class="gk2">Not entailed</td><td>States something the text does not actually say.</td></tr>
+            </table>
+            <p class="ghint">A statement can be a perfectly good decomposition and still be
+            contradicted by the image, or a poor decomposition that the image happens to
+            support. Keep the two judgements apart.</p>
+          </section>
+
+          <section class="gsec">
+            <h4>D · Judgement 2 — Image support <span class="ghint">(image only)</span></h4>
+            <p>How strongly does the <b>image</b> support that same statement, taken exactly
+            as written?</p>
+            <table class="gtable">
+              <tr><td class="gk">0</td><td><b>Not supported / contradicted.</b> The image clearly does not support the statement, or clearly shows something incompatible with it.</td></tr>
+              <tr><td class="gk">1</td><td><b>Weakly supported.</b> Little supporting evidence; the image is mostly inconsistent with the statement.</td></tr>
+              <tr><td class="gk">2</td><td><b>Partially supported.</b> Part of the claim holds, but an important part is missing, unclear or inconsistent.</td></tr>
+              <tr><td class="gk">3</td><td><b>Strongly supported.</b> Mostly supported, with only minor uncertainty or incompleteness.</td></tr>
+              <tr><td class="gk">4</td><td><b>Fully supported.</b> Clearly and completely supported.</td></tr>
+              <tr><td class="gk">?</td><td><b>Cannot judge.</b> The image genuinely does not give enough evidence — severe occlusion, the content is outside the frame, or the view is simply insufficient.</td></tr>
             </table>
             <p class="gcallout">Give the image-support score <b>even when</b> you marked the
             statement Needs split, Needs merge, Redundant or Not entailed. The two
-            judgements are separate, and the statements are never rewritten.</p>
-            <details class="gsub"><summary>Full definitions</summary>
-              <ul>
-                <li><b>0 — Not supported / contradicted.</b> The image clearly does not
-                support the statement, or clearly shows something incompatible with it.</li>
-                <li><b>1 — Weakly supported.</b> Little supporting visual evidence; the
-                image is mostly inconsistent with the statement.</li>
-                <li><b>2 — Partially supported.</b> Some of the statement is supported, but
-                an important part is missing, unclear or inconsistent.</li>
-                <li><b>3 — Strongly supported.</b> Mostly supported, with only minor
-                uncertainty or incompleteness.</li>
-                <li><b>4 — Fully supported.</b> Clearly and completely supported.</li>
-                <li><b>Cannot judge.</b> The image genuinely does not give enough visual
-                evidence — severe occlusion, the relevant content is outside the frame, or
-                the view is simply insufficient.</li>
-              </ul>
-            </details>
+            judgements are separate, and statements are never rewritten.</p>
             <div class="gex">
-              <p class="gex-h">Examples</p>
+              <p class="gex-h">Worked examples</p>
               <p><span class="gclaim">red shirt</span>
                  image clearly shows a red shirt → <b>4</b> ·
+                 the shirt is red but partly in shadow → <b>3</b> ·
                  image clearly shows a blue shirt → <b>0</b> ·
                  the shirt is mostly hidden and its colour cannot reasonably be
                  determined → <b>Cannot judge</b></p>
               <p><span class="gclaim">three dogs</span>
                  exactly three clearly visible dogs → <b>4</b> ·
-                 only two dogs visible → a low score on the scale above, chosen
-                 consistently for the evidence you can actually see</p>
-              <p class="ghint">These are guides, not rules for every ambiguous case — use
-              the scale consistently and trust your judgement.</p>
+                 three dogs but one is heavily cropped → <b>3</b> ·
+                 only two dogs visible → <b>1</b> ·
+                 no dogs at all → <b>0</b></p>
+              <p><span class="gclaim">the dog chasing the cat</span>
+                 both animals present and the direction is clear → <b>4</b> ·
+                 both present but the direction is genuinely ambiguous → <b>2</b> ·
+                 the cat is plainly chasing the dog → <b>0</b></p>
+              <p class="ghint">These are calibration aids, not rules for every ambiguous
+              case — use the scale consistently and trust your judgement.</p>
             </div>
           </section>
 
           <section class="gsec">
-            <h4>D · Overall alignment (1–5)</h4>
+            <h4>E · Overall alignment (1–5)</h4>
+            <p>After the statements, judge the <b>whole pair</b>: how well does the image
+            represent the text as a whole?</p>
             <table class="gtable">
               <tr><td class="gk">1</td><td><b>Not aligned.</b> The image substantially contradicts the text or fails to represent its important content.</td></tr>
               <tr><td class="gk">2</td><td><b>Weakly aligned.</b> Some relevant content is present, but major parts of the text are incorrect, missing or inconsistent.</td></tr>
@@ -185,19 +214,28 @@
               <tr><td class="gk">4</td><td><b>Well aligned.</b> Most of the text is correctly represented, with only minor mismatches, omissions or uncertainty.</td></tr>
               <tr><td class="gk">5</td><td><b>Fully aligned.</b> The image clearly and accurately represents the complete text, with no meaningful mismatch.</td></tr>
             </table>
-            <p class="gcallout">Do not mechanically average the atomic scores. This is your
-            judgement of the complete image–text pair after inspecting the details.</p>
+            <p class="gcallout"><b>Extra objects or details that the text does not mention
+            should not automatically reduce the score.</b> A caption describes a scene; it
+            is not required to be an exhaustive inventory of it. Lower the score for what
+            the text claims and the image does not deliver — contradictions, missing
+            important content, wrong attributes, counts, relations or directions — not for
+            additional things that simply happen to be in the picture. Extra content matters
+            only when it actively conflicts with the text.</p>
+            <p class="ghint">Do not mechanically average the atomic scores. A single wrong
+            binding in a short text can matter more than several minor omissions in a long
+            one. This is your judgement of the complete pair after inspecting the details.</p>
           </section>
 
           <section class="gsec">
-            <h4>E · Cannot judge vs Skip for now vs Technical issue</h4>
+            <h4>F · Cannot judge vs Skip for now vs Technical issue</h4>
             <div class="gcards">
               <div class="gcard"><b>Cannot judge</b><span>I can see the sample normally, but
               the image genuinely does not give enough evidence for <em>this one
               statement</em>.</span></div>
               <div class="gcard"><b>Skip for now</b><span>I want to postpone the
-              <em>whole sample</em> and come back to it later. It stays in your assignment
-              and shows red on the dashboard.</span></div>
+              <em>whole sample</em> and come back to it later. It stays in your assignment,
+              shows red on the dashboard, and the app moves you on to the next
+              sample.</span></div>
               <div class="gcard"><b>Technical issue</b><span>Something is actually broken —
               the image will not load, the image is corrupt, the text is malformed, or the
               app misbehaves.</span></div>
@@ -207,16 +245,18 @@
           </section>
 
           <section class="gsec">
-            <h4>F · Navigating and saving</h4>
+            <h4>G · Navigating, saving and exporting</h4>
             <ul>
               <li>Your work <b>saves automatically</b> — you can close the tab and return.</li>
               <li>Return to the dashboard at any time; green = completed, amber = in
               progress, red = skipped, purple = technical issue, grey = not started.</li>
-              <li>Completed samples can be <b>reopened and corrected</b>.</li>
+              <li>Completed samples can be <b>reopened and corrected</b> at any point.</li>
+              <li>The three worked examples stay available under
+              <b>View examples again</b> — they never affect your counts or your export.</li>
               <li>Use the <b>same browser and device</b> where practical, and do not clear
               site data before exporting.</li>
               <li><b>Download backup</b> from the menu at any time; when everything is
-              finished, use <b>Export final annotations</b>.</li>
+              finished, use <b>Export final annotations</b> and send us that file.</li>
             </ul>
           </section>
 
@@ -224,6 +264,46 @@
       </details>
 
       <div id="grids"></div>
+    </section>
+
+    <!-- ---------- TUTORIAL (practice only, never exported) ---------- -->
+    <section id="tutorial" class="hidden">
+      <div class="samplebar">
+        <button class="btn sm" id="tutExit">← Dashboard</button>
+        <div class="pos">Example <b id="tutNow">—</b> of <b id="tutAll">—</b></div>
+        <div class="muted" id="tutBadge">—</div>
+        <div class="spacer"></div>
+        <button class="btn sm" id="tutPrev">Previous</button>
+        <button class="btn sm" id="tutNext">Next</button>
+      </div>
+
+      <div class="tutnote">
+        <b>Worked example — practice only.</b> These three pairs were annotated with the
+        same rubric you will use. Nothing here is saved, counted or exported. Read the
+        image, then the statements, then the reasoning underneath each judgement.
+      </div>
+
+      <div class="sample-grid">
+        <div class="media-col">
+          <div class="image-frame" id="tutFrame"><img id="tutImg" alt="tutorial image"></div>
+          <p class="hint" id="tutSrc">—</p>
+        </div>
+        <div class="anno-col">
+          <div class="card"><div class="card-b">
+            <h3 class="ch">Original text</h3>
+            <p class="captext" id="tutText">—</p>
+          </div></div>
+          <div id="tutParts"></div>
+          <div class="card"><div class="card-b">
+            <h3 class="ch">Overall alignment</h3>
+            <div id="tutOverall"></div>
+          </div></div>
+          <div class="actions" style="margin-top:16px">
+            <div class="spacer"></div>
+            <button class="btn primary" id="tutDone">Start annotating</button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ---------- SAMPLE ---------- -->
@@ -322,6 +402,6 @@
   </main>
 </div>
 
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>

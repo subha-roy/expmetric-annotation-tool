@@ -286,13 +286,23 @@ chk("S08 content version is the final dual-judgment version",
     "flow-v5-dualjudgment" in js)
 # ---- improved guide (spec section 21) ----
 for _sec in ("A · What you are doing",
-             "B · Decomposition quality — judged against the text",
-             "C · Image support — judged against the image",
-             "D · Overall alignment (1–5)",
-             "E · Cannot judge vs Skip for now vs Technical issue",
-             "F · Navigating and saving"):
+             "B · How to read an atomic statement",
+             "C · Judgement 1 — Decomposition quality",
+             "D · Judgement 2 — Image support",
+             "E · Overall alignment (1–5)",
+             "F · Cannot judge vs Skip for now vs Technical issue",
+             "G · Navigating, saving and exporting"):
     chk(f"G01 guide section {_sec[:1]}", _sec in html)
 chk("G02 guide has worked examples", "red shirt" in html and "three dogs" in html)
+chk("G06 guide says extra unmentioned objects do not lower the score",
+    "should not\n            automatically reduce the score" in html
+    or "should not automatically reduce the score" in " ".join(html.split()))
+chk("G07 guide explains phrase-level statements",
+    "green hay" in html and "not “The hay is green.”" in html)
+chk("G08 guide states binding and direction matter",
+    "Direction and binding matter" in html)
+chk("G09 guide points at the worked examples",
+    'id="guideTutLink"' in html)
 chk("G03 guide states not to average", "Do not mechanically average" in html)
 chk("G04 compact scale reference on the sample screen", 'class="scalebar"' in html)
 chk("G05 full definitions collapsible on the sample screen",
@@ -325,10 +335,11 @@ chk("J10 support scale unchanged at 0-4 + cannot judge",
     "for (let v = 0; v <= 4; v++)" in js and "'cannot_judge'" in js)
 chk("J11 overall scale unchanged at 1-5", "OVERALL_MIN = 1, OVERALL_MAX = 5" in js)
 chk("J12 guide explains decomposition quality against the TEXT",
-    "Decomposition quality — judged against the text" in html
+    "Judgement 1 — Decomposition quality" in html and "(text only)" in html
+    and "nothing to do with the image" in html
     and all(w in html for w in ("Needs split", "Needs merge", "Redundant", "Not entailed")))
 chk("J13 guide explains image support against the IMAGE",
-    "Image support — judged against the image" in html)
+    "Judgement 2 — Image support" in html and "(image only)" in html)
 chk("J14 guide states the two judgments are independent",
     "Give the image-support score <b>even when</b>" in html)
 chk("J15 part card layout keeps cards compact",

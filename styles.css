@@ -282,3 +282,17 @@ details.guide ul{margin:8px 0 0;padding-left:20px} details.guide li{margin-botto
 .gtable .gk2{width:auto;white-space:nowrap;text-align:left;font-weight:600;color:var(--ink);
   background:var(--surface-3);border-radius:6px;padding:5px 9px}
 .sb-k{color:var(--muted)}
+
+/* ---------------- tutorial (practice only) ---------------- */
+.tutnote{margin:0 0 16px;padding:12px 15px;border-radius:var(--radius);
+  background:var(--accent-soft);border:1px solid var(--accent-solid);
+  color:var(--ink);font-size:14px;line-height:1.55}
+.tutnote b{color:var(--accent-dark)}
+/* fixed chips: they display GPT's reference answer and are deliberately not clickable */
+.opt.tutfixed{cursor:default;pointer-events:none}
+.opt.tutfixed[aria-pressed="false"]{opacity:.4}
+.tutwhy{margin:8px 0 0;padding:9px 12px;border-left:3px solid var(--line-2);
+  background:var(--surface-2);border-radius:0 6px 6px 0;
+  color:var(--ink-2);font-size:13.5px;line-height:1.55}
+#tutOverall .ovchosen{margin:10px 0 0;font-weight:600;color:var(--ink)}
+#tutSrc{margin-top:10px}

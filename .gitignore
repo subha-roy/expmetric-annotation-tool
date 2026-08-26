@@ -18,3 +18,6 @@ visexmem_backup_*.json
 .DS_Store
 __pycache__/
 *.pyc
+
+# ---- researcher-only previews, never publish ----
+preview_*.html

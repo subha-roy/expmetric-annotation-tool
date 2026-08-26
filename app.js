@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const APP_VERSION = '5.0.0';
+const APP_VERSION = '5.1.0';
 // Bundled parts changed (phrase-level decomposition) AND the flow changed, so the cache
 // namespace must move with them: stale part-level state can never resurface.
 const CONTENT_VERSION = 'decomp-phrase-v2+flow-v5-dualjudgment';
@@ -145,6 +145,7 @@ const LABEL = { done: 'completed', prog: 'in progress', skip: 'skipped — needs
 const MARK = { done: '✓', prog: '◐', skip: '↺', tech: '⚑', pending: '' };
 
 function renderDash() {
+  $('tutorial').classList.add('hidden');
   const c = counts(), n = items().length;
   $('dashName').textContent = S.bundle.annotator_name;
   $('dashSub').textContent = `${c.done} of ${n} samples completed`;
@@ -227,6 +228,7 @@ function openSample(i) {
   renderSample();
   $('dash').classList.add('hidden');
   $('donePanel').classList.add('hidden');
+  $('tutorial').classList.add('hidden');
   $('sample').classList.remove('hidden');
   window.scrollTo({ top: 0 });
 }
@@ -325,6 +327,120 @@ function renderOverall() {
       persist(cur().sample_id); renderOverall();
     }, 'num'));
   }
+}
+
+/* ---------------- tutorial (practice only) ----------------
+   Read-only walkthrough of three GPT-annotated examples. It has its own state, never
+   touches S.ann / IndexedDB / the export, and is not part of items(). */
+let TUT = { list: null, i: 0 };
+
+const TUT_BADGE = { high: 'A well-aligned pair', partial: 'A partly-aligned pair',
+                    low: 'A poorly-aligned pair' };
+
+
+const tutSeenKey = () => (S ? dbName(S.bundle) + ':tutseen' : 'visexmem:tutseen');
+
+async function loadTutorial() {
+  if (TUT.list) return TUT.list;
+  const r = await fetch('examples/tutorial_examples.json', { cache: 'no-store' });
+  const j = await r.json();
+  TUT.list = j.examples || [];
+  return TUT.list;
+}
+
+function tutChip(text, cls) {
+  const b = document.createElement('span');
+  b.className = 'opt tutfixed' + (cls ? ' ' + cls : '');
+  b.setAttribute('aria-pressed', 'true');
+  b.textContent = text;
+  return b;
+}
+
+function renderTutorial() {
+  const ex = TUT.list[TUT.i];
+  $('tutNow').textContent = String(TUT.i + 1);
+  $('tutAll').textContent = String(TUT.list.length);
+  $('tutBadge').textContent = TUT_BADGE[ex.intended_alignment] || '';
+  $('tutText').textContent = ex.text;
+  $('tutSrc').textContent =
+    `${ex.image_origin === 'synthetic' ? 'Synthetic image' : 'Photograph'} · ${ex.image_source}`
+    + ' · reference annotation by GPT-5.6-Sol';
+  const img = $('tutImg'); img.src = ex.image;
+
+  const host = $('tutParts'); host.textContent = '';
+  ex.parts.forEach((p) => {
+    const d = document.createElement('div'); d.className = 'part answered';
+    const top = document.createElement('div'); top.className = 'part-top';
+    const tg = document.createElement('span'); tg.className = 'tag'; tg.textContent = p.type;
+    const cl = document.createElement('div'); cl.className = 'claim'; cl.textContent = p.text;
+    top.append(tg, cl); d.append(top);
+
+    const r1 = document.createElement('div'); r1.className = 'jrow';
+    const l1 = document.createElement('span'); l1.className = 'jlab';
+    l1.textContent = 'Decomposition';
+    const o1 = document.createElement('div'); o1.className = 'opts';
+    o1.append(tutChip(p.decomp_quality, 'dq'));
+    r1.append(l1, o1); d.append(r1);
+    if (p.decomp_note) {
+      const n = document.createElement('p'); n.className = 'tutwhy';
+      n.textContent = p.decomp_note; d.append(n);
+    }
+
+    const r2 = document.createElement('div'); r2.className = 'jrow';
+    const l2 = document.createElement('span'); l2.className = 'jlab';
+    l2.textContent = 'Image support';
+    const o2 = document.createElement('div'); o2.className = 'opts';
+    o2.append(tutChip(String(p.support_score),
+      p.support_score === 'Cannot judge' ? 'cj' : 'num'));
+    r2.append(l2, o2); d.append(r2);
+    if (p.support_note) {
+      const n = document.createElement('p'); n.className = 'tutwhy';
+      n.textContent = p.support_note; d.append(n);
+    }
+    host.append(d);
+  });
+
+  const ov = $('tutOverall'); ov.textContent = '';
+  const row = document.createElement('div'); row.className = 'opts';
+  for (let v = OVERALL_MIN; v <= OVERALL_MAX; v++) {
+    const b = tutChip(String(v), 'num');
+    if (v !== ex.overall_alignment) b.setAttribute('aria-pressed', 'false');
+    row.append(b);
+  }
+  ov.append(row);
+  const lab = document.createElement('p'); lab.className = 'ovchosen';
+  lab.textContent = validOverall(ex.overall_alignment)
+    ? `${ex.overall_alignment} — ${OVERALL_LABEL[ex.overall_alignment]}` : '';
+  ov.append(lab);
+  if (ex.overall_note) {
+    const n = document.createElement('p'); n.className = 'tutwhy'; n.textContent = ex.overall_note;
+    ov.append(n);
+  }
+
+  $('tutPrev').disabled = TUT.i === 0;
+  $('tutNext').disabled = TUT.i === TUT.list.length - 1;
+  $('tutDone').textContent = TUT.i === TUT.list.length - 1
+    ? 'Start annotating' : 'Skip the examples';
+  window.scrollTo({ top: 0 });
+}
+
+async function openTutorial(i) {
+  try { await loadTutorial(); } catch { return false; }
+  if (!TUT.list.length) return false;
+  TUT.i = Math.max(0, Math.min(i || 0, TUT.list.length - 1));
+  $('dash').classList.add('hidden');
+  $('sample').classList.add('hidden');
+  $('donePanel').classList.add('hidden');
+  $('menu').classList.add('hidden');
+  $('tutorial').classList.remove('hidden');
+  renderTutorial();
+  return true;
+}
+
+function exitTutorial() {
+  try { localStorage.setItem(tutSeenKey(), '1'); } catch {}
+  $('tutorial').classList.add('hidden');
+  renderDash();
 }
 
 /* ---------------- actions ---------------- */
@@ -487,6 +603,10 @@ async function start(bundle) {
   $('whoName').textContent = bundle.annotator_name;
   chip('ok', 'Saved');
   renderDash();                       // always land on the dashboard, never a sample
+  // First visit only: show the worked examples before any real sample.
+  let seen = true;
+  try { seen = localStorage.getItem(tutSeenKey()) === '1'; } catch {}
+  if (!seen) await openTutorial(0);
 }
 
 function wire() {
@@ -496,6 +616,14 @@ function wire() {
   $('logoutBtn').addEventListener('click', () => location.reload());
 
   $('toDash').addEventListener('click', renderDash);
+  $('tutAgain').addEventListener('click', () => openTutorial(0));
+  $('menuTut').addEventListener('click', () => openTutorial(0));
+  $('tutPrev').addEventListener('click', () => { TUT.i--; renderTutorial(); });
+  $('tutNext').addEventListener('click', () => { TUT.i++; renderTutorial(); });
+  $('tutExit').addEventListener('click', exitTutorial);
+  $('tutDone').addEventListener('click', exitTutorial);
+  const gl = $('guideTutLink');
+  if (gl) gl.addEventListener('click', (e) => { e.preventDefault(); openTutorial(0); });
   $('prevBtn').addEventListener('click', () => openSample(S.idx - 1));
   $('nextBtn').addEventListener('click', () => openSample(S.idx + 1));
   $('completeBtn').addEventListener('click', completeSample);
