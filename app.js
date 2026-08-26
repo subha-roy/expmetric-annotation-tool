@@ -359,7 +359,12 @@ function skipForNow() {
   const it = cur(), r = rec();
   if (r.status !== 'completed') { r.skipped_for_now = true; r.status = 'skipped_for_now'; }
   persist(it.sample_id);
-  renderDash();
+  // Postponing a sample should keep the annotator moving, not bounce them to the
+  // dashboard. Go to the next sample; at the end of the queue fall back to the first
+  // still-unfinished one, and only show the dashboard when nothing is left.
+  if (S.idx + 1 < items().length) { openSample(S.idx + 1); return; }
+  const nxt = items().findIndex((x) => ['pending', 'prog'].includes(statusOf(x)));
+  if (nxt >= 0) openSample(nxt); else renderDash();
 }
 function continueAnnotation() {
   const prog = items().findIndex((it) => statusOf(it) === 'prog');

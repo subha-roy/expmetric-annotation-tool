@@ -224,6 +224,11 @@ chk("B16 legend present", 'class="legend"' in html and 'Skipped — needs revisi
 chk("B17 skip is worded 'Skip for now'", "Skip for now" in html)
 # statusOf() returns exactly one bucket per sample, so a skipped sample can never land
 # in the completed count; completion also clears the skip flag.
+chk("B17b skip advances to the next sample, not the dashboard",
+    "if (S.idx + 1 < items().length) { openSample(S.idx + 1); return; }" in js
+    and "keep the annotator moving" in js)
+chk("B17c skip still falls back sensibly at the end of the queue",
+    "const nxt = items().findIndex((x) => ['pending', 'prog'].includes(statusOf(x)));" in js)
 chk("B18 skipped is NOT counted as completed",
     "if (r.status === 'completed') return 'done';" in js
     and "if (r.skipped_for_now) return 'skip';" in js
