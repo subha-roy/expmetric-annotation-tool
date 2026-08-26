@@ -13,7 +13,7 @@ bundle in the browser.
    click any number to jump straight to it.
 3. In a sample: the **image is on the left and stays put** while you scroll the
    statements on the right. Rate every statement 0–4 for how strongly the image supports
-   it, or choose *Cannot judge*. The overall **1–7** question appears at the bottom once
+   it, or choose *Cannot judge*. The overall **1–5** alignment question appears at the bottom once
    every statement is rated. Then press **Save & complete**.
 4. **Skip for now** postpones a sample — it stays in your assignment and turns red on the
    dashboard until you finish it.

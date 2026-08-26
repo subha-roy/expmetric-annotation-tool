@@ -155,6 +155,39 @@ chk("A30 app never references private construction fields", not _hits, str(_hits
 chk("A31 app never labels a sample as common/unique",
     not re.search(r"\b(is_common|common_sample|iaa)\b", js, re.I))
 
+
+# ---- FINAL assignment matrix (spec section 10) ----
+_D = {x: samples[x]["_difficulty"] for x in samples}
+_R = {x: samples[x]["direction"] for x in samples}
+_cd = collections.Counter(_D[x] for x in common)
+for _k in ("easy", "medium", "hard"):
+    chk(f"M01 common {_k} = 10", _cd[_k] == 10, _cd[_k])
+for _dr in ("i2t", "t2i"):
+    for _df in ("easy", "medium", "hard"):
+        _n = sum(1 for x in common if _R[x] == _dr and _D[x] == _df)
+        chk(f"M02 common {_dr} {_df} = 5", _n == 5, _n)
+_WANT = {("i2t", "easy"): [24, 24, 24, 23], ("t2i", "easy"): [24, 24, 23, 24],
+         ("i2t", "medium"): [24, 23, 24, 24], ("t2i", "medium"): [23, 24, 24, 24],
+         ("i2t", "hard"): [24, 24, 23, 24], ("t2i", "hard"): [24, 24, 24, 23]}
+for _cell, _exp in _WANT.items():
+    _got = [sum(1 for x in per[h]["unique_ids"]
+                if _R[x] == _cell[0] and _D[x] == _cell[1]) for h in HIWIS]
+    chk(f"M03 unique {_cell[0]} {_cell[1]}", _got == _exp, f"{_got} != {_exp}")
+_EXPD = {"damir": {"easy": 48, "medium": 47, "hard": 48},
+         "brisca": {"easy": 48, "medium": 47, "hard": 48},
+         "omar": {"easy": 47, "medium": 48, "hard": 47},
+         "sayeeda": {"easy": 47, "medium": 48, "hard": 47}}
+_EXPR = {"damir": {"i2t": 72, "t2i": 71}, "brisca": {"i2t": 71, "t2i": 72},
+         "omar": {"i2t": 71, "t2i": 71}, "sayeeda": {"i2t": 71, "t2i": 71}}
+for h in HIWIS:
+    chk(f"M04 {h} unique difficulty balance",
+        dict(collections.Counter(_D[x] for x in per[h]["unique_ids"])) == _EXPD[h])
+    chk(f"M05 {h} unique direction balance",
+        dict(collections.Counter(_R[x] for x in per[h]["unique_ids"])) == _EXPR[h])
+    _t = collections.Counter(_D[x] for x in per[h]["queue"])
+    chk(f"M06 {h} total difficulty = unique + 10/10/10",
+        all(_t[k] == _EXPD[h][k] + 10 for k in ("easy", "medium", "hard")), dict(_t))
+
 # ---- FINAL flow: login -> dashboard -> sample (image + text + parts) ----
 chk("B01 login is the first screen", 'id="login"' in html and 'id="dash"' in html)
 chk("B02 login lands on the dashboard, never a sample",
@@ -174,7 +207,8 @@ chk("B07 image is contained, never cropped", 'object-fit:contain' in css.replace
 chk("B08 original text shown prominently", 'caption-box' in html and 'Original text' in html)
 chk("B09 part scale is 0-4 plus Cannot judge",
     "for (let v = 0; v <= 4; v++)" in js and "'cannot_judge'" in js)
-chk("B10 overall scale is 1-7", "for (let v = 1; v <= 7; v++)" in js)
+chk("B10 overall scale is 1-5",
+    "for (let v = OVERALL_MIN; v <= OVERALL_MAX; v++)" in js)
 chk("B11 overall is locked until every part is rated",
     "allRated" in js and 'id="ovLock"' in html)
 chk("B12 sample cannot complete without the overall score",
@@ -206,10 +240,10 @@ chk("B24 final export blocks while work is outstanding",
     "outstanding > 0" in js and "still require review" in js)
 chk("B25 export carries index, status, scores, technical state and revisions",
     all(k in js for k in ("assignment_index", "status:", "part_support:",
-                          "human_overall_alignment_1_to_7", "technical_issue",
+                          "human_overall_alignment_1_to_5", "technical_issue",
                           "revision_count")))
 chk("B26 content version bumped so stale cache cannot resurface",
-    "CONTENT_VERSION" in js and "flow-v3" in js)
+    "CONTENT_VERSION" in js and "flow-v4-overall1to5" in js)
 chk("B27 cache namespace includes annotator, assignment hash and version",
     "annotator_id}_${b.assignment_hash" in js and "CONTENT_VERSION}" in js)
 chk("B28 no private benchmark metadata in the app",
@@ -223,6 +257,37 @@ chk("B31 backup import validates annotator, assignment and schema",
     "different annotator" in js and "different assignment" in js and "different schema" in js)
 chk("B32 technical issue is separate from cannot-judge and skip",
     'id="techBox"' in html and "technical_issue" in js and "skipped_for_now" in js)
+
+
+# ---- overall scale is 1-5 and nothing else (spec section 29) ----
+chk("S01 overall bounds are 1..5", "OVERALL_MIN = 1, OVERALL_MAX = 5" in js)
+chk("S02 loop offers exactly 1..5",
+    "for (let v = OVERALL_MIN; v <= OVERALL_MAX; v++)" in js and "v <= 7" not in js)
+for _v, _want in ((0, False), (1, True), (2, True), (3, True), (4, True), (5, True),
+                  (6, False), (7, False)):
+    _ok = (isinstance(_v, int) and 1 <= _v <= 5)
+    chk(f"S03 overall {_v} {'accepted' if _want else 'rejected'}", _ok == _want)
+chk("S04 validOverall guards writes and imports",
+    "validOverall(v) ? v : null" in js and "validOverall(_ov) ? _ov : null" in js)
+chk("S05 export field renamed to 1_to_5",
+    "human_overall_alignment_1_to_5" in js and "1_to_7" not in js)
+chk("S06 no active 1-7 wording remains",
+    "1–7" not in html and "1-7" not in html and "7 fully aligned" not in html)
+chk("S07 part scale still 0-4 plus cannot judge",
+    "for (let v = 0; v <= 4; v++)" in js and "'cannot_judge'" in js)
+chk("S08 content version marks the 1-5 change",
+    "flow-v4-overall1to5" in js)
+# ---- improved guide (spec section 21) ----
+for _sec in ("A · What you are doing", "B · Scoring an atomic statement",
+             "C · Overall alignment (1–5)",
+             "D · Cannot judge vs Skip for now vs Technical issue",
+             "E · Navigating and saving"):
+    chk(f"G01 guide section {_sec[:1]}", _sec in html)
+chk("G02 guide has worked examples", "red shirt" in html and "three dogs" in html)
+chk("G03 guide states not to average", "Do not mechanically average" in html)
+chk("G04 compact scale reference on the sample screen", 'class="scalebar"' in html)
+chk("G05 full definitions collapsible on the sample screen",
+    'scaleguide' in html and '<details>' in html)
 
 print(f"\n{P}/{P+F} passed")
 sys.exit(0 if F == 0 else 1)

@@ -9,10 +9,10 @@
  */
 'use strict';
 
-const APP_VERSION = '3.0.0';
+const APP_VERSION = '4.0.0';
 // Bundled parts changed (phrase-level decomposition) AND the flow changed, so the cache
 // namespace must move with them: stale part-level state can never resurface.
-const CONTENT_VERSION = 'decomp-phrase-v2+flow-v3';
+const CONTENT_VERSION = 'decomp-phrase-v2+flow-v4-overall1to5';
 
 const TECH_REASONS = [
   ['image_failed', 'Image failed to load'],
@@ -21,6 +21,13 @@ const TECH_REASONS = [
   ['malformed_text', 'Malformed text'],
   ['app_problem', 'App problem'],
 ];
+const OVERALL_MIN = 1, OVERALL_MAX = 5;
+const OVERALL_LABEL = {
+  1: 'Not aligned', 2: 'Weakly aligned', 3: 'Partially aligned',
+  4: 'Well aligned', 5: 'Fully aligned',
+};
+const validOverall = (v) =>
+  Number.isInteger(v) && v >= OVERALL_MIN && v <= OVERALL_MAX;
 const $ = (id) => document.getElementById(id);
 let S = null;              // {bundle, ann, idx, db, filter, editing}
 
@@ -256,11 +263,17 @@ function renderOverall() {
   $('overall').classList.toggle('locked', !ready);
   $('ovLock').classList.toggle('hidden', ready);
   $('ovBody').classList.toggle('hidden', !ready);
+  const lab = $('ovChosen');
+  lab.textContent = validOverall(r.overall_alignment)
+    ? `${r.overall_alignment} — ${OVERALL_LABEL[r.overall_alignment]}` : '';
   if (!ready) return;
   const sc = $('ovScale'); sc.textContent = '';
-  for (let v = 1; v <= 7; v++) {
+  // FINAL overall scale is 1-5. Anything outside that is not offered and is rejected on
+  // the way in, so a stale 1-7 value can never enter a record.
+  for (let v = OVERALL_MIN; v <= OVERALL_MAX; v++) {
     sc.append(optButton(String(v), r.overall_alignment === v, () => {
-      r.overall_alignment = v; persist(cur().sample_id); renderOverall();
+      r.overall_alignment = validOverall(v) ? v : null;
+      persist(cur().sample_id); renderOverall();
     }, 'num'));
   }
 }
@@ -339,7 +352,8 @@ function buildExport() {
               : (r.part_support[p.part_id] ?? null),
           atomic_cannot_judge: r.part_support[p.part_id] === 'cannot_judge',
         })),
-        human_overall_alignment_1_to_7: r.overall_alignment,
+        human_overall_alignment_1_to_5:
+          validOverall(r.overall_alignment) ? r.overall_alignment : null,
         technical_issue: r.technical_issue, technical_note: r.technical_note || '',
         skipped_for_now: !!r.skipped_for_now,
         first_started_at: r.first_started_at, first_completed_at: r.first_completed_at,
@@ -521,7 +535,8 @@ async function importBackup(e) {
 }
 function fromExport(a, it) {
   const r = blank(it);
-  r.overall_alignment = a.human_overall_alignment_1_to_7 ?? null;
+  const _ov = a.human_overall_alignment_1_to_5 ?? a.overall_alignment ?? null;
+  r.overall_alignment = validOverall(_ov) ? _ov : null;
   r.technical_issue = a.technical_issue ?? null;
   r.technical_note = a.technical_note || '';
   r.skipped_for_now = !!a.skipped_for_now;

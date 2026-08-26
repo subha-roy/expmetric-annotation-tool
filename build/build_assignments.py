@@ -30,12 +30,16 @@ NAMES = {"damir": "Damir", "brisca": "Brisca", "omar": "Omar", "sayeeda": "Sayee
 COMMON_PER_CELL = 5
 
 # exact per-cell unique allocation, as specified
+# EXACT per-cell unique allocation (final specification). Rows are direction x
+# difficulty; columns are Damir / Brisca / Omar / Sayeeda. This yields unique totals
+# 143/143/142/142, difficulty 48/47/48, 48/47/48, 47/48/47, 47/48/47, and direction
+# 72/71, 71/72, 71/71, 71/71 -- all deliberately balanced, not a random split.
 ALLOC = {
-    ("i2t", "easy"):   {"damir": 23, "brisca": 24, "omar": 24, "sayeeda": 24},
-    ("i2t", "medium"): {"damir": 24, "brisca": 24, "omar": 23, "sayeeda": 24},
-    ("i2t", "hard"):   {"damir": 24, "brisca": 24, "omar": 24, "sayeeda": 23},
-    ("t2i", "easy"):   {"damir": 24, "brisca": 23, "omar": 24, "sayeeda": 24},
-    ("t2i", "medium"): {"damir": 24, "brisca": 24, "omar": 23, "sayeeda": 24},
+    ("i2t", "easy"):   {"damir": 24, "brisca": 24, "omar": 24, "sayeeda": 23},
+    ("t2i", "easy"):   {"damir": 24, "brisca": 24, "omar": 23, "sayeeda": 24},
+    ("i2t", "medium"): {"damir": 24, "brisca": 23, "omar": 24, "sayeeda": 24},
+    ("t2i", "medium"): {"damir": 23, "brisca": 24, "omar": 24, "sayeeda": 24},
+    ("i2t", "hard"):   {"damir": 24, "brisca": 24, "omar": 23, "sayeeda": 24},
     ("t2i", "hard"):   {"damir": 24, "brisca": 24, "omar": 24, "sayeeda": 23},
 }
 
@@ -147,14 +151,29 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     ap.add_argument("--seed", type=int, default=SEED)
+    ap.add_argument("--resample-common", action="store_true",
+                    help="ONLY for a deliberate IAA-set change; off by default")
     a = ap.parse_args()
     rng = random.Random(a.seed)
 
     samples, parts = load_benchmark()
     assert len(samples) == 600, f"expected 600 benchmark samples, got {len(samples)}"
 
-    common = pick_common(samples, rng)
+    # The existing common set already satisfies the exact balance (10/10/10, and 5 per
+    # direction x difficulty), so it is REUSED rather than resampled -- the IAA set must
+    # not move. Only the unique partition is rebuilt.
+    prev = f"{a.out}/private/assignment_audit.json"
+    if os.path.exists(prev) and not a.resample_common:
+        common = sorted(json.load(open(prev))["common_sample_ids"])
+        print(f"reusing {len(common)} frozen common sample ids", flush=True)
+    else:
+        common = pick_common(samples, rng)
     assert len(common) == 30 and len(set(common)) == 30, len(common)
+    _c = collections.Counter(f'{samples[s_]["direction"]}/{samples[s_]["_difficulty"]}'
+                             for s_ in common)
+    for _d in ("i2t", "t2i"):
+        for _f in ("easy", "medium", "hard"):
+            assert _c[f"{_d}/{_f}"] == 5, f"common {_d}/{_f} = {_c[f'{_d}/{_f}']}, need 5"
     uniq = partition_unique(samples, set(common), rng)
 
     assign = {}
@@ -184,6 +203,19 @@ def main():
     for k, n in exp.items():
         if len(assign[k]["queue"]) != n:
             prob.append(f"{k} queue is {len(assign[k]['queue'])}, expected {n}")
+    EXP_DIFF = {"damir": {"easy": 48, "medium": 47, "hard": 48},
+                "brisca": {"easy": 48, "medium": 47, "hard": 48},
+                "omar": {"easy": 47, "medium": 48, "hard": 47},
+                "sayeeda": {"easy": 47, "medium": 48, "hard": 47}}
+    EXP_DIR = {"damir": {"i2t": 72, "t2i": 71}, "brisca": {"i2t": 71, "t2i": 72},
+               "omar": {"i2t": 71, "t2i": 71}, "sayeeda": {"i2t": 71, "t2i": 71}}
+    for h in HIWIS:
+        gd = collections.Counter(samples[x]["_difficulty"] for x in assign[h]["unique"])
+        gr = collections.Counter(samples[x]["direction"] for x in assign[h]["unique"])
+        if dict(gd) != EXP_DIFF[h]:
+            prob.append(f"{h} unique difficulty {dict(gd)} != {EXP_DIFF[h]}")
+        if dict(gr) != EXP_DIR[h]:
+            prob.append(f"{h} unique direction {dict(gr)} != {EXP_DIR[h]}")
     sessions = sum(len(assign[k]["queue"]) for k in assign)
     if sessions != 780:
         prob.append(f"total sessions {sessions} != 780")

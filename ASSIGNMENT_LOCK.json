@@ -3,16 +3,16 @@
   "app_version": "1.0.0",
   "benchmark_manifest_hash": "759b37c0cddad9bcd8a5ee2cb4dde3591fb28686f97fdeae809da99e57b8dc73",
   "assignment_seed": 20260826,
-  "generated_at": "2026-08-26T13:45:22",
+  "generated_at": "2026-08-26T16:42:21",
   "common_set_hash": "1a47a3a663981867a02a16ddfe0ab6618f57e6afe4ff68577017a6f8f8041074",
   "assignment_hashes": {
-    "damir": "254475cb2419d0db28c493e96a3fddc0a4f9d417676a2b40aac043e849a45b52",
-    "brisca": "1908199c9ad292113ed201526571d45127bb933f16c6d19adb5b836b6524d033",
-    "omar": "65996a4095f9fbb143743b0014fbae3d1ddee51e2330a1f542e5302175c69741",
-    "sayeeda": "ca432ac657bfe3dedd23f7603dbe9c7bc60b4e82263490c6f58ddb33fcce6105",
-    "christian": "4bf6fb5dffdd20d4b95127a544fba88f5467af5bbdc2b0def571de9d4722e1c8",
-    "chris": "fcee558c434ea774076a4f1e3ef57077dd84e0fff61e10d4d9cb33db3a73bf03",
-    "zhipin": "a33cb4f87ac3fc7122b3d86bf055e5d01422b4b8ff451520f4b9799d3724cb32"
+    "damir": "1517b423208132a9e8c0026f5d3e68c4ba8f9e95009161afba7fb0651b12e020",
+    "brisca": "8330791bf5a57fd37c2d38513d20a2600ceb52c1abe19c8e054fd613d1d04416",
+    "omar": "23f645912641990218d964a352014d215eb140f842b737edac72560acb7b0d3d",
+    "sayeeda": "b939ed4bde49f6d5e74afac93a2f7b17fc4f436dd3dcff0257d3b55c45b097f1",
+    "christian": "163a554e84d761b04cee1d80523cc8423a158bd7b3104aabe1d01627622916d7",
+    "chris": "425edeba3b4be09e368c2abceb981caee0554446327afae68c41eb44dd7efec1",
+    "zhipin": "440ec5f23c87ac6a2f03d12a881f30545a0a93c161afdd49ae03fb35231ce3c5"
   },
   "counts": {
     "damir": {
