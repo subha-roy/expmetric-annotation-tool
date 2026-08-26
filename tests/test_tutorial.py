@@ -22,12 +22,41 @@ def load():
 
 
 EXPECTED_CAPTIONS = {
-    "ex_1": "A man works on a red bicycle at a workbench in a workshop with tools "
-            "hanging on a green pegboard.",
-    "ex_2": "A brown dog lies on a patterned sofa beside several pillows, with a "
+    "ex_1": "A man works on a red bicycle in a workshop with tools hanging on a "
+            "green pegboard.",
+    "ex_2": "A black dog lies on a patterned sofa beside several pillows, with a "
             "red ball near its front paws.",
     "ex_3": "A Shiba Inu wearing a red beret and a blue turtleneck sits in front "
-            "of a gray brick wall.",
+            "of a green wooden wall.",
+}
+EXPECTED_OVERALL = {"ex_1": 5, "ex_2": 3, "ex_3": 2}
+EXPECTED_LABEL = {"ex_1": "High alignment", "ex_2": "Partial alignment",
+                  "ex_3": "Weak alignment"}
+# the frozen reference answers, transcribed independently of the builder
+EXPECTED_PARTS = {
+    "ex_1": [("object", "man", 4), ("object", "bicycle", 4),
+             ("attribute", "red bicycle", 4), ("object", "workshop", 4),
+             ("object", "tools", 4), ("object", "pegboard", 4),
+             ("attribute", "green pegboard", 4),
+             ("action", "man works on a red bicycle", 4),
+             ("spatial", "man in a workshop", 4),
+             ("relation", "tools hanging on a green pegboard", 4)],
+    "ex_2": [("object", "dog", 4), ("attribute", "black dog", 0),
+             ("object", "sofa", 4), ("attribute", "patterned sofa", 4),
+             ("object", "pillows", 4), ("count", "several pillows", 4),
+             ("object", "ball", 0), ("attribute", "red ball", 0),
+             ("object", "front paws", "Cannot judge"),
+             ("action", "dog lies on a patterned sofa", 4),
+             ("spatial", "dog beside several pillows", 4),
+             ("spatial", "red ball near the dog's front paws", 0)],
+    "ex_3": [("object", "Shiba Inu", 4), ("object", "beret", 4),
+             ("attribute", "red beret", 0), ("object", "turtleneck", 4),
+             ("attribute", "blue turtleneck", 0), ("object", "wall", 4),
+             ("attribute", "green wall", 0), ("attribute", "wooden wall", 0),
+             ("relation", "Shiba Inu wearing a red beret", 2),
+             ("relation", "Shiba Inu wearing a blue turtleneck", 2),
+             ("action", "Shiba Inu sits", "Cannot judge"),
+             ("spatial", "Shiba Inu in front of a wall", 4)],
 }
 EXPECTED_ORIGIN = {"ex_1": "real", "ex_2": "real", "ex_3": "synthetic"}
 # a phrase-level unit is not a proposition
@@ -85,30 +114,16 @@ class TestExamples(unittest.TestCase):
                                       f"{e['example_id']}/{p['part_id']} is "
                                       f"proposition-style: {p['text']!r}")
 
-    def test_decomposition_covers_the_caption_vocabulary(self):
-        """Every content word of the caption should surface in some atomic part."""
-        stop = {"a", "an", "the", "of", "on", "in", "at", "with", "and", "its", "front",
-                "near", "beside", "several", "to", "from", "that"}
+    def test_every_example_has_an_overall_rationale(self):
         for e in self.ex:
-            words = {w.strip(".,").lower() for w in e["text"].split()} - stop
-            covered = " ".join(p["text"].lower() for p in e["parts"])
-            missing = [w for w in words if w and w not in covered]
-            self.assertEqual(missing, [],
-                             f"{e['example_id']}: caption words absent from the "
-                             f"decomposition: {missing}")
-
-    def test_every_judgement_carries_a_reason(self):
-        for e in self.ex:
-            for p in e["parts"]:
-                self.assertTrue(p["support_note"].strip(),
-                                f"{e['example_id']}/{p['part_id']} support_note empty")
             self.assertTrue(e["overall_note"].strip())
 
-    def test_judgement_separation_is_recorded(self):
+    def test_provenance_is_honest_about_who_annotated(self):
+        """These are curated reference answers, not a live model's output. The app must
+        not tell annotators a model produced them."""
         for e in self.ex:
-            self.assertFalse(e["decomp_quality_call_saw_image"],
-                             "decomposition quality must be judged without the image")
-            self.assertTrue(e["image_support_call_saw_image"])
+            self.assertEqual(e["annotated_by"], "VisExMEM research team")
+            self.assertIn("GPT-5.6-Sol", e["annotation_provenance"])
 
     def test_images_exist_and_match_their_hash(self):
         for e in self.ex:
@@ -124,10 +139,41 @@ class TestExamples(unittest.TestCase):
             with Image.open(os.path.join(APP, e["image"])) as im:
                 im.verify()
 
-    def test_model_identifier_is_the_project_one(self):
+    def test_overall_scores_are_exactly_the_frozen_values(self):
         for e in self.ex:
-            self.assertEqual(e["annotated_by"], "GPT-5.6-Sol")
-            self.assertEqual(e["annotation_model"], "openai/gpt-5.6-sol")
+            self.assertEqual(e["overall_alignment"], EXPECTED_OVERALL[e["example_id"]],
+                             f"{e['example_id']} overall changed")
+
+    def test_alignment_labels_are_the_frozen_ones(self):
+        for e in self.ex:
+            self.assertEqual(e["alignment_label"], EXPECTED_LABEL[e["example_id"]])
+
+    def test_parts_are_exactly_the_frozen_reference_answers(self):
+        for e in self.ex:
+            got = [(p["type"], p["text"], p["support_score"]) for p in e["parts"]]
+            self.assertEqual(got, EXPECTED_PARTS[e["example_id"]],
+                             f"{e['example_id']} parts drifted from the frozen answers")
+
+    def test_every_decomposition_label_is_reasonable(self):
+        for e in self.ex:
+            for p in e["parts"]:
+                self.assertEqual(p["decomp_quality"], "Reasonable",
+                                 f"{e['example_id']}/{p['part_id']} label changed")
+
+    def test_cannot_judge_parts_carry_their_explanation(self):
+        cj = [(e["example_id"], p) for e in self.ex for p in e["parts"]
+              if p["support_score"] == "Cannot judge"]
+        self.assertEqual(len(cj), 2, "expected exactly two Cannot judge parts")
+        for eid, p in cj:
+            self.assertTrue(p["support_note"].strip(),
+                            f"{eid}/{p['part_id']} needs its reason")
+
+    def test_examples_are_marked_read_only(self):
+        for e in self.ex:
+            self.assertTrue(e["read_only"])
+
+    def test_guideline_version_recorded(self):
+        for e in self.ex:
             self.assertEqual(e["annotation_guideline_version"],
                              "visexmem-human-guideline-1.0")
 
@@ -244,6 +290,76 @@ class TestAppIsolation(unittest.TestCase):
             r"Extra objects or details that the text does not mention should not "
             r"automatically reduce the score",
             "the guide must say extra unmentioned content does not lower the score")
+
+
+class TestWorkedExamplesUI(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        with open(os.path.join(APP, "app.js")) as f:
+            cls.js = f.read()
+        with open(os.path.join(APP, "index.html")) as f:
+            cls.html = f.read()
+        with open(os.path.join(APP, "styles.css")) as f:
+            cls.css = f.read()
+
+    def test_dashboard_has_a_worked_examples_section(self):
+        self.assertIn('id="workedHome"', self.html)
+        self.assertIn("Worked examples", self.html)
+        self.assertIn("Review these examples before starting the annotation task",
+                      self.html)
+
+    def test_three_cards_are_built_from_the_manifest(self):
+        self.assertIn("function renderWorkedCards()", self.js)
+        self.assertIn('id="whCards"', self.html)
+        # cards must come from the data, never be hard-coded in markup
+        self.assertNotIn("Example 1 —", self.html)
+        self.assertIn("alignment_label", self.js)
+
+    def test_cards_are_rendered_on_every_dashboard_paint(self):
+        i = self.js.index("function renderDash()")
+        self.assertIn("renderWorkedCards()", self.js[i:i + 400])
+
+    def test_navigation_controls_exist(self):
+        for el, label in (("tutPrev", "Previous example"),
+                          ("tutNext", "Next example"),
+                          ("tutExit", "Back to dashboard")):
+            self.assertIn(f'id="{el}"', self.html)
+            self.assertIn(label, self.html)
+            self.assertIn(f"$('{el}')", self.js)
+
+    def test_examples_are_presented_as_read_only(self):
+        self.assertIn("cannot be changed", self.html)
+        self.assertIn("reference answers", self.html.lower())
+        # the fixed chips must be inert
+        self.assertIn(".opt.tutfixed", self.css)
+        self.assertIn("pointer-events:none", self.css)
+
+    def test_tutorial_chips_are_never_clickable(self):
+        i = self.js.index("function tutChip(")
+        j = self.js.index("function renderTutorial(", i)
+        self.assertNotIn("addEventListener", self.js[i:j],
+                         "reference answers must not be interactive")
+
+    def test_guide_links_to_the_worked_examples(self):
+        self.assertIn("View worked examples", self.html)
+        self.assertIn('id="guideTutLink"', self.html)
+
+    def test_guide_keeps_the_two_required_clarifications(self):
+        flat = " ".join(self.html.split())
+        self.assertIn("Score the complete atomic statement, including attributes, "
+                      "counts, bindings, roles, and relations.", flat)
+        self.assertIn("A clearly missing or incorrect major object, count, action, "
+                      "participant, or relation is a meaningful mismatch", flat)
+
+    def test_guide_scales_are_unchanged(self):
+        flat = " ".join(self.html.split())
+        for lab in ("Reasonable", "Needs split", "Needs merge", "Redundant",
+                    "Not entailed"):
+            self.assertIn(lab, flat)
+        for lab in ("Not aligned", "Weakly aligned", "Partially aligned",
+                    "Well aligned", "Fully aligned"):
+            self.assertIn(lab, flat)
+        self.assertIn("Cannot judge", flat)
 
 
 class TestProgressAndAssignmentsUntouched(unittest.TestCase):

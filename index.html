@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>VisExMEM Human Annotation</title>
-<link rel="stylesheet" href="styles.css?v=8">
+<link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body>
 
@@ -101,6 +101,15 @@
         <span><i class="dot pending"></i> Not started</span>
       </div>
 
+      <section class="worked-home" id="workedHome">
+        <div class="wh-head">
+          <h2>Worked examples</h2>
+          <p>Review these examples before starting the annotation task. Each one is a
+          complete image–text pair with the reference answers already filled in.</p>
+        </div>
+        <div class="wh-cards" id="whCards"></div>
+      </section>
+
       <details class="guide" id="guide">
         <summary>Annotation guide</summary>
         <div class="guide-body">
@@ -111,7 +120,7 @@
             GPT-5.6-Sol: every atomic statement carries both judgements and a short
             reason, and each pair ends with an overall score. They are the fastest way to
             calibrate before you start.</p>
-            <p><button class="btn primary" id="guideTutLink">View examples</button></p>
+            <p><button class="btn primary" id="guideTutLink">View worked examples</button></p>
             <p class="ghint">Practice only — they are not benchmark samples, never count
             towards your progress, and never appear in your export.</p>
           </section>
@@ -184,6 +193,10 @@
               <tr><td class="gk">4</td><td><b>Fully supported.</b> Clearly and completely supported.</td></tr>
               <tr><td class="gk">?</td><td><b>Cannot judge.</b> The image genuinely does not give enough evidence — severe occlusion, the content is outside the frame, or the view is simply insufficient.</td></tr>
             </table>
+            <p class="gcallout"><b>Score the complete atomic statement, including
+            attributes, counts, bindings, roles, and relations.</b> A statement is only
+            fully supported when every element of it holds — the right object, the right
+            attribute bound to it, the right number, and the right direction.</p>
             <p class="gcallout">Give the image-support score <b>even when</b> you marked the
             statement Needs split, Needs merge, Redundant or Not entailed. The two
             judgements are separate, and statements are never rewritten.</p>
@@ -227,6 +240,9 @@
             important content, wrong attributes, counts, relations or directions — not for
             additional things that simply happen to be in the picture. Extra content matters
             only when it actively conflicts with the text.</p>
+            <p class="gcallout"><b>A clearly missing or incorrect major object, count,
+            action, participant, or relation is a meaningful mismatch</b> and should not
+            normally be treated as a minor omission when choosing an overall score of 4.</p>
             <p class="ghint">Do not mechanically average the atomic scores. A single wrong
             binding in a short text can matter more than several minor omissions in a long
             one. This is your judgement of the complete pair after inspecting the details.</p>
@@ -275,19 +291,21 @@
     <!-- ---------- TUTORIAL (practice only, never exported) ---------- -->
     <section id="tutorial" class="hidden">
       <div class="samplebar">
-        <button class="btn sm" id="tutExit">← Dashboard</button>
+        <button class="btn sm" id="tutExit">← Back to dashboard</button>
         <div class="pos">Example <b id="tutNow">—</b> of <b id="tutAll">—</b></div>
         <div class="tutname" id="tutName">—</div>
         <div class="muted" id="tutBadge">—</div>
         <div class="spacer"></div>
-        <button class="btn sm" id="tutPrev">Previous</button>
-        <button class="btn sm" id="tutNext">Next</button>
+        <button class="btn sm" id="tutPrev">Previous example</button>
+        <button class="btn sm" id="tutNext">Next example</button>
       </div>
 
       <div class="tutnote">
-        <b>Worked example — practice only.</b> These three pairs were annotated with the
-        same rubric you will use. Nothing here is saved, counted or exported. Read the
-        image, then the statements, then the reasoning underneath each judgement.
+        <span class="tutbadge">Worked example · reference answers</span>
+        <b>These answers are already filled in and cannot be changed.</b> This is not a
+        sample you have to complete. Nothing here is saved, counted towards your progress,
+        or included in your export. Read the image, then the statements, then the overall
+        judgement and its reason.
       </div>
 
       <div class="sample-grid">
@@ -409,6 +427,6 @@
   </main>
 </div>
 
-<script src="app.js?v=8"></script>
+<script src="app.js?v=9"></script>
 </body>
 </html>

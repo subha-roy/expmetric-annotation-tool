@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const APP_VERSION = '5.1.0';
+const APP_VERSION = '5.2.0';
 // Bundled parts changed (phrase-level decomposition) AND the flow changed, so the cache
 // namespace must move with them: stale part-level state can never resurface.
 const CONTENT_VERSION = 'decomp-phrase-v2+flow-v5-dualjudgment';
@@ -146,6 +146,7 @@ const MARK = { done: '✓', prog: '◐', skip: '↺', tech: '⚑', pending: '' }
 
 function renderDash() {
   $('tutorial').classList.add('hidden');
+  renderWorkedCards();
   const c = counts(), n = items().length;
   $('dashName').textContent = S.bundle.annotator_name;
   $('dashSub').textContent = `${c.done} of ${n} samples completed`;
@@ -357,12 +358,13 @@ function renderTutorial() {
   const ex = TUT.list[TUT.i];
   $('tutNow').textContent = String(TUT.i + 1);
   $('tutAll').textContent = String(TUT.list.length);
-  $('tutBadge').textContent = 'practice only — not counted';
-  $('tutName').textContent = ex.display_name || `Example ${TUT.i + 1}`;
+  $('tutBadge').textContent = 'reference answers — not counted';
+  $('tutName').textContent = (ex.display_name || `Example ${TUT.i + 1}`)
+    + (ex.alignment_label ? ` · ${ex.alignment_label}` : '');
   $('tutText').textContent = ex.text;
   $('tutSrc').textContent =
     `${ex.image_origin === 'synthetic' ? 'Synthetic image' : 'Photograph'}`
-    + ' · reference annotation by GPT-5.6-Sol';
+    + ' · reference answers, filled in for you';
   const img = $('tutImg'); img.src = ex.image;
 
   const host = $('tutParts'); host.textContent = '';
@@ -420,6 +422,36 @@ function renderTutorial() {
   $('tutDone').textContent = TUT.i === TUT.list.length - 1
     ? 'Start annotating' : 'Skip the examples';
   window.scrollTo({ top: 0 });
+}
+
+const WH_TONE = { 5: 'high', 4: 'high', 3: 'part', 2: 'weak', 1: 'weak' };
+
+/* Worked-example cards on the dashboard. Read-only entry points: they open the
+   tutorial view and touch nothing in the annotation state. */
+function renderWorkedCards() {
+  const host = $('whCards'), sec = $('workedHome');
+  if (!host || !sec) return;
+  if (!TUT.list || !TUT.list.length) { sec.classList.add('hidden'); return; }
+  sec.classList.remove('hidden');
+  host.textContent = '';
+  TUT.list.forEach((ex, i) => {
+    const b = document.createElement('button');
+    b.className = 'whcard';
+    b.type = 'button';
+    const n = document.createElement('span');
+    n.className = 'whn';
+    n.textContent = ex.display_name || `Example ${i + 1}`;
+    const l = document.createElement('span');
+    l.className = 'whlab ' + (WH_TONE[ex.overall_alignment] || 'part');
+    l.textContent = ex.alignment_label || '';
+    const m = document.createElement('span');
+    m.className = 'whmeta';
+    m.textContent = `${ex.parts.length} atomic parts · overall `
+      + `${ex.overall_alignment} — ${OVERALL_LABEL[ex.overall_alignment]}`;
+    b.append(n, l, m);
+    b.addEventListener('click', () => openTutorial(i));
+    host.append(b);
+  });
 }
 
 async function openTutorial(i) {
@@ -600,6 +632,7 @@ async function start(bundle) {
   $('login').classList.add('hidden'); $('app').classList.remove('hidden');
   $('whoName').textContent = bundle.annotator_name;
   chip('ok', 'Saved');
+  try { await loadTutorial(); } catch {}   // never block sign-in on the examples
   renderDash();                       // always land on the dashboard, never a sample
   // First visit only: show the worked examples before any real sample.
   let seen = true;
