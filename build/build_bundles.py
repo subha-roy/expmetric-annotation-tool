@@ -97,6 +97,12 @@ def main():
         for n, u, p, k, r in creds:
             f.write(f"| {n} | `{u}` | `{p}` | {k} | {r} |\n")
     os.chmod(f"{a.app}/private/credentials.md", 0o600)
+    print("\n" + "=" * 72)
+    print("PASSCODES WERE REGENERATED. Every run of this script issues new codes, so any")
+    print("codes distributed earlier are now dead. The authoritative list is:")
+    print(f"  {a.app}/private/credentials.md")
+    print("Read that file -- do not reuse a previously quoted table.")
+    print("=" * 72 + "\n")
     print(json.dumps({"bundles": len(index),
                       "sizes": {k: v["assignment_size"] for k, v in index.items()},
                       "credentials": f"{a.app}/private/credentials.md (chmod 600)",
