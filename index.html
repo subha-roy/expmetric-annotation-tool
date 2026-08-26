@@ -64,26 +64,24 @@
     <details class="guide" id="guide">
       <summary>Annotation guide</summary>
       <div class="card-b">
-        <p style="margin-top:0">Each sample has three steps. Please do them in order — the
-        order is part of the study design.</p>
+        <p style="margin-top:0">Each sample has three steps. Please complete them in
+        order; the order is part of the study design.</p>
         <ul>
-          <li><b>Step 1 — Decomposition (text only).</b> You see a text and a list of
-          atomic statements taken from it. Judge each statement <em>against the text
-          alone</em>. The image is deliberately hidden here.</li>
-          <li><b>Step 2 — Overall alignment.</b> The image is revealed. Give one overall
-          1–7 judgement of how well the image and text match, <em>before</em> looking at
-          the statements again.</li>
-          <li><b>Step 3 — Statement support.</b> For each statement, rate how well the
-          image supports it (0–4), or choose <em>Cannot judge</em>.</li>
+          <li><b>Step 1 — Decomposition (text only).</b> You see the text and atomic
+          statements extracted from it. Judge whether each statement is a reasonable
+          decomposition of the text. The image is deliberately hidden.</li>
+          <li><b>Step 2 — Statement support.</b> The image is revealed. For each atomic
+          statement, rate how strongly the image supports it from 0 to 4, or choose
+          <em>Cannot judge</em>.</li>
+          <li><b>Step 3 — Overall alignment.</b> After rating all statements, give one
+          overall 1–7 judgement of how well the complete image and text match.</li>
         </ul>
-        <p><b>Cannot judge</b> means the image genuinely does not let you decide.
-        It is not a way to skip a hard item. If something is technically broken
-        (image will not load, text is garbled), use <b>Report a technical issue</b>
-        instead — that is different.</p>
-        <p style="margin-bottom:0">Your work saves automatically. You can close the tab
-        and come back.</p>
-      </div>
-    </details>
+        <p><em>Cannot judge</em> means the image genuinely does not provide enough
+        evidence to decide. It is not a way to skip a difficult item.</p>
+        <p>If something is technically broken, use <b>Report a technical issue</b> instead.</p>
+        <p style="margin-bottom:0">Your work saves automatically. You can close the tab and
+        return using the same browser and device.</p>
+      </details>
 
     <!-- ---------- PHASE A ---------- -->
     <section id="phaseA" class="card">
@@ -110,43 +108,55 @@
       </div>
     </section>
 
-    <!-- ---------- PHASE B ---------- -->
+    <!-- ---------- STEP 2: part support (two-pane) + STEP 3 at the bottom ---------- -->
     <section id="phaseB" class="card hidden">
-      <div class="card-h"><span class="step" id="stepB">2</span><h2>Overall image–text alignment</h2></div>
-      <div class="card-b">
-        <div class="imgwrap" id="imgWrapB"><img id="imgB" alt="benchmark image"></div>
-        <div class="textbox" style="margin-top:14px" id="bText">—</div>
-        <label class="q">Overall, how well does the image match the text?</label>
-        <div class="scale-ends"><span>1 · strongly mismatched</span><span>4 · partially aligned</span><span>7 · fully aligned</span></div>
-        <div class="opts scale" id="holScale"></div>
-        <div class="actions">
-          <button class="btn sm ghost" id="backB">Back to step 1</button>
-          <button class="btn sm ghost" id="techBtnB">Report a technical issue</button>
-          <div class="spacer"></div>
-          <button class="btn primary" id="confirmB">Confirm and continue</button>
+      <div class="card-h"><span class="step" id="stepB">2</span><h2>Statement support in the image</h2></div>
+      <div class="twopane">
+        <div class="pane-img">
+          <div class="imgwrap" id="imgWrapB"><img id="imgB" alt="benchmark image"></div>
         </div>
-        <div id="errB" class="err-inline hidden"></div>
-      </div>
-    </section>
+        <div class="pane-parts" id="paneParts">
+          <div class="textbox" id="bText">—</div>
+          <div class="legend">
+            <b>0</b> not supported / contradicted &nbsp;·&nbsp; <b>1</b> weakly &nbsp;·&nbsp;
+            <b>2</b> partially &nbsp;·&nbsp; <b>3</b> strongly &nbsp;·&nbsp; <b>4</b> fully
+            &nbsp;·&nbsp; <b>Cannot judge</b> not enough visual evidence
+            <details class="scaleguide"><summary>What each score means</summary>
+              <ul>
+                <li><b>0 — Not supported / contradicted.</b> The image clearly does not support the statement, or clearly shows the opposite.</li>
+                <li><b>1 — Weakly supported.</b> Very little supporting visual evidence; the image is mostly inconsistent with the statement.</li>
+                <li><b>2 — Partially supported.</b> Some of the statement is supported, but important visual information is missing, unclear or inconsistent.</li>
+                <li><b>3 — Strongly supported.</b> Mostly supported, with only minor uncertainty or incompleteness.</li>
+                <li><b>4 — Fully supported.</b> Clearly and completely supported by the image.</li>
+                <li><b>Cannot judge.</b> The image genuinely does not provide enough evidence — severe occlusion, the entity is outside the frame, or the view is insufficient. Not a way to skip a difficult item.</li>
+              </ul>
+            </details>
+          </div>
+          <div id="cParts"></div>
 
-    <!-- ---------- PHASE C ---------- -->
-    <section id="phaseC" class="card hidden">
-      <div class="card-h"><span class="step" id="stepC">3</span><h2>Statement support in the image</h2></div>
-      <div class="card-b">
-        <div class="imgwrap" id="imgWrapC"><img id="imgC" alt="benchmark image"></div>
-        <div class="textbox" style="margin-top:14px" id="cText">—</div>
-        <p class="hint" style="margin-top:16px">
-          0 = not supported / contradicted · 1 = weak · 2 = partial or ambiguous ·
-          3 = mostly supported · 4 = fully supported
-        </p>
-        <div id="cParts"></div>
-        <div class="actions">
-          <button class="btn sm ghost" id="techBtnC">Report a technical issue</button>
-          <div class="spacer"></div>
-          <button class="btn" id="prevBtn">Previous</button>
-          <button class="btn primary" id="saveNext">Save and next</button>
+          <div id="step3" class="step3 locked">
+            <div class="step3-h"><span class="step" id="stepC">3</span>
+              <h3>Overall image–text alignment</h3></div>
+            <p id="step3Lock" class="hint">Rate every statement above to unlock this final question.</p>
+            <div id="step3Body" class="hidden">
+              <p class="hint">Considering the image and text as a whole, how well do they
+              match? Give your own overall judgement — do not simply average the statement
+              scores.</p>
+              <div class="opts scale" id="holScale"></div>
+              <div class="anchors">
+                <span>1 completely mismatched</span><span>4 partially aligned</span><span>7 fully aligned</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn sm ghost" id="techBtnB">Report a technical issue</button>
+            <div class="spacer"></div>
+            <button class="btn" id="prevBtn">Previous</button>
+            <button class="btn primary" id="saveNext">Save and next</button>
+          </div>
+          <div id="errB" class="err-inline hidden"></div>
         </div>
-        <div id="errC" class="err-inline hidden"></div>
       </div>
     </section>
 

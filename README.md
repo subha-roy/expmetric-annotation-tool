@@ -8,11 +8,13 @@ bundle in the browser.
 
 1. Open the URL you were sent and sign in with **your own** username and access code.
 2. Work through your samples. Each sample has three steps, in order:
-   - **Step 1 — Decomposition (text only).** Judge each statement against the text. The
-     image is hidden on purpose.
-   - **Step 2 — Overall alignment.** The image appears. Give one overall 1–7 judgement.
-   - **Step 3 — Statement support.** Rate how well the image supports each statement
-     (0–4), or *Cannot judge*.
+   - **Step 1 — Decomposition (text only).** Judge whether each statement is a
+     reasonable decomposition of the text. The image is deliberately hidden.
+   - **Step 2 — Statement support.** The image appears on the left and stays in place
+     while you scroll the statements on the right. Rate how strongly the image supports
+     each statement (0–4), or *Cannot judge*.
+   - **Step 3 — Overall alignment.** After every statement is rated, one overall 1–7
+     judgement of how well the complete image and text match appears at the bottom.
 3. Your answers **save automatically in your browser**. You can close the tab and come
    back to the same place.
 4. Please use the **same browser and the same device** throughout, and do not clear site

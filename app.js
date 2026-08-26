@@ -9,7 +9,11 @@
  */
 'use strict';
 
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '2.0.0';
+// Decomposition was regenerated in the phrase-level style, so part ids and text
+// changed. CONTENT_VERSION is part of the IndexedDB namespace: stale part-level
+// state from the old decomposition can never be silently reused.
+const CONTENT_VERSION = 'decomp-phrase-v2';
 const DEC_LABELS = [
   ['reasonable', 'Reasonable'],
   ['needs_split', 'Needs split'],
@@ -48,7 +52,10 @@ async function sha256Hex(str) {
 }
 
 /* ---------------- storage (IndexedDB, localStorage fallback) ---------------- */
-function dbName(b) { return `visexmem_${b.annotator_id}_${b.assignment_hash.slice(0, 12)}_${b.schema_version}`; }
+function dbName(b) {
+  return `visexmem_${b.annotator_id}_${b.assignment_hash.slice(0, 12)}_` +
+         `${b.schema_version}_${CONTENT_VERSION}`;
+}
 
 function openDB(name) {
   return new Promise((res, rej) => {
@@ -110,7 +117,7 @@ const rec = () => (S.ann[cur().sample_id] ||= blank(cur()));
 function isComplete(r, item) {
   if (!r) return false;
   if (r.technical_issue) return true;
-  if (!r.phaseA_completed_at || !r.phaseB_completed_at || !r.phaseC_completed_at) return false;
+  if (!r.phaseA_completed_at || !r.phaseB_completed_at) return false;
   if (item.parts.some((p) => !r.decomposition[p.part_id])) return false;
   if (r.missing_information == null) return false;
   if (r.holistic_alignment_1_to_7 == null) return false;
@@ -136,7 +143,7 @@ function optButton(label, pressed, onClick, extraClass) {
 }
 
 function show(phase) {
-  ['phaseA', 'phaseB', 'phaseC', 'techPanel', 'donePanel'].forEach((p) =>
+  ['phaseA', 'phaseB', 'techPanel', 'donePanel'].forEach((p) =>
     $(p).classList.toggle('hidden', p !== phase));
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
@@ -180,24 +187,19 @@ function loadImage(imgEl, wrapEl, src) {
   imgEl.src = src;
 }
 
+function allPartsScored(it, r) {
+  return !it.parts.some((p) => r.part_support[p.part_id] === undefined);
+}
+
+/* Step 2 (part support) and the gated Step 3 (overall) share one scrolling pane.
+ * Every ORIGINAL part is rated here regardless of its Step-1 judgement: "was this a good
+ * decomposition unit" and "does the image support this unit" are separate questions, and
+ * the decomposition is never rewritten from the annotator's Step-1 answers. */
 function renderB() {
   const it = cur(), r = rec();
   $('bText').textContent = it.text;
   loadImage($('imgB'), $('imgWrapB'), it.image);
-  const sc = $('holScale'); sc.textContent = '';
-  for (let v = 1; v <= 7; v++) {
-    sc.append(optButton(String(v), r.holistic_alignment_1_to_7 === v, () => {
-      r.holistic_alignment_1_to_7 = v; persist(it.sample_id); renderB();
-    }, 'num'));
-  }
-  $('errB').classList.add('hidden');
-  show('phaseB');
-}
 
-function renderC() {
-  const it = cur(), r = rec();
-  $('cText').textContent = it.text;
-  loadImage($('imgC'), $('imgWrapC'), it.image);
   const host = $('cParts'); host.textContent = '';
   it.parts.forEach((p) => {
     const d = document.createElement('div'); d.className = 'part';
@@ -208,17 +210,50 @@ function renderC() {
     const opts = document.createElement('div'); opts.className = 'opts';
     for (let v = 0; v <= 4; v++) {
       opts.append(optButton(String(v), r.part_support[p.part_id] === v, () => {
-        r.part_support[p.part_id] = v; persist(it.sample_id); renderC();
+        r.part_support[p.part_id] = v; persist(it.sample_id); paintStep3(); renderScores();
       }, 'num'));
     }
     opts.append(optButton('Cannot judge', r.part_support[p.part_id] === 'cannot_judge', () => {
-      r.part_support[p.part_id] = 'cannot_judge'; persist(it.sample_id); renderC();
+      r.part_support[p.part_id] = 'cannot_judge'; persist(it.sample_id); paintStep3(); renderScores();
     }, 'cj'));
     d.append(opts); host.append(d);
   });
+
+  paintStep3();
   $('prevBtn').disabled = S.idx === 0;
-  $('errC').classList.add('hidden');
-  show('phaseC');
+  $('errB').classList.add('hidden');
+  show('phaseB');
+}
+
+/* repaint only the pressed states, so scoring never scrolls the pane */
+function renderScores() {
+  const it = cur(), r = rec();
+  const cards = $('cParts').children;
+  it.parts.forEach((p, i) => {
+    const btns = cards[i].querySelectorAll('.opt');
+    btns.forEach((b, k) => {
+      const val = k <= 4 ? k : 'cannot_judge';
+      b.setAttribute('aria-pressed', String(r.part_support[p.part_id] === val));
+    });
+  });
+}
+
+/* Step 3 is unavailable until every part is scored, so the overall judgement can never
+ * be given before statement-level inspection. */
+function paintStep3() {
+  const it = cur(), r = rec();
+  const ready = allPartsScored(it, r);
+  $('step3').classList.toggle('locked', !ready);
+  $('step3Lock').classList.toggle('hidden', ready);
+  $('step3Body').classList.toggle('hidden', !ready);
+  $('stepC').className = 'step' + (ready ? '' : ' idle');
+  if (!ready) return;
+  const sc = $('holScale'); sc.textContent = '';
+  for (let v = 1; v <= 7; v++) {
+    sc.append(optButton(String(v), r.holistic_alignment_1_to_7 === v, () => {
+      r.holistic_alignment_1_to_7 = v; persist(it.sample_id); paintStep3();
+    }, 'num'));
+  }
 }
 
 function renderTech() {
@@ -236,8 +271,7 @@ function goto(i) {
   localStorage.setItem(dbName(S.bundle) + ':idx', String(S.idx));
   const r = rec();
   refreshProgress();
-  if (r.phaseB_completed_at) renderC();
-  else if (r.phaseA_completed_at) renderB();
+  if (r.phaseA_completed_at) renderB();
   else renderA();
 }
 
@@ -274,21 +308,31 @@ function buildExport() {
       const r = S.ann[it.sample_id] || blank(it);
       return {
         sample_id: it.sample_id, order: it.order,
-        decomposition: it.parts.map((p) => ({
-          part_id: p.part_id, part_index: p.part_index,
-          decomposition_label: r.decomposition[p.part_id] ?? null,
+        // 1. decomposition validation (text only)
+        decomposition: {
+          parts: it.parts.map((p) => ({
+            part_id: p.part_id, part_index: p.part_index, part_type: p.part_type,
+            atomic_claim: p.atomic_claim,
+            decomposition_label: r.decomposition[p.part_id] ?? null,
+          })),
+          missing_visual_information: r.missing_information,
+          missing_information_note: r.decomposition_note || '',
+        },
+        // 2. part-level image support -- EVERY original part, whatever step 1 said
+        part_support: it.parts.map((p) => ({
+          part_id: p.part_id, part_index: p.part_index, part_type: p.part_type,
+          atomic_claim: p.atomic_claim,
           human_atomic_support_0_to_4:
             r.part_support[p.part_id] === 'cannot_judge' ? null
               : (r.part_support[p.part_id] ?? null),
           atomic_cannot_judge: r.part_support[p.part_id] === 'cannot_judge',
         })),
-        missing_visual_information: r.missing_information,
-        decomposition_note: r.decomposition_note || '',
-        human_overall_alignment_1_to_7: r.holistic_alignment_1_to_7,
+        // 3. overall alignment, collected last
+        overall_alignment: { human_overall_alignment_1_to_7: r.holistic_alignment_1_to_7 },
         technical_issue: r.technical_issue, technical_note: r.technical_note || '',
-        phaseA_completed_at: r.phaseA_completed_at,
-        phaseB_completed_at: r.phaseB_completed_at,
-        phaseC_completed_at: r.phaseC_completed_at,
+        step1_completed_at: r.phaseA_completed_at,
+        step2_completed_at: r.phaseB_completed_at,
+        step3_completed_at: r.phaseC_completed_at,
       };
     }),
   };
@@ -393,34 +437,27 @@ function wire() {
     persist(it.sample_id); renderB();
   });
 
-  // Phase B -> C
-  $('backB').addEventListener('click', () => renderA());
-  $('confirmB').addEventListener('click', () => {
-    const r = rec();
-    if (r.holistic_alignment_1_to_7 == null) {
-      $('errB').textContent = 'Please give an overall 1–7 judgement.';
-      $('errB').classList.remove('hidden'); return;
-    }
-    if (!r.phaseB_completed_at) r.phaseB_completed_at = new Date().toISOString();
-    persist(cur().sample_id); renderC();
-  });
-
-  // Phase C -> save
+  // Step 2 (+ gated Step 3) -> save
   $('prevBtn').addEventListener('click', () => goto(S.idx - 1));
   $('saveNext').addEventListener('click', () => {
     const it = cur(), r = rec();
     const miss = it.parts.filter((p) => r.part_support[p.part_id] === undefined).length;
     if (miss) {
-      $('errC').textContent = `Please rate all statements — ${miss} still unanswered.`;
-      $('errC').classList.remove('hidden'); return;
+      $('errB').textContent = `Please rate all statements — ${miss} still unrated.`;
+      $('errB').classList.remove('hidden'); return;
     }
+    if (r.holistic_alignment_1_to_7 == null) {
+      $('errB').textContent = 'Please give the overall 1–7 judgement at the bottom.';
+      $('errB').classList.remove('hidden');
+      $('step3').scrollIntoView({ behavior: 'smooth', block: 'center' }); return;
+    }
+    if (!r.phaseB_completed_at) r.phaseB_completed_at = new Date().toISOString();
     r.phaseC_completed_at = new Date().toISOString();
     persist(it.sample_id); refreshProgress(); nextSample();
   });
 
   // technical issue
-  [['techBtnA'], ['techBtnB'], ['techBtnC']].forEach(([id]) =>
-    $(id).addEventListener('click', renderTech));
+  ['techBtnA', 'techBtnB'].forEach((id) => $(id).addEventListener('click', renderTech));
   $('techCancel').addEventListener('click', () => goto(S.idx));
   $('techNote').addEventListener('input', (e) => { rec().technical_note = e.target.value; });
   $('techSave').addEventListener('click', () => {
@@ -475,16 +512,19 @@ function wire() {
 
 function fromExport(a, it) {
   const r = blank(it);
-  r.missing_information = a.missing_visual_information ?? null;
-  r.decomposition_note = a.decomposition_note || '';
-  r.holistic_alignment_1_to_7 = a.human_overall_alignment_1_to_7 ?? null;
+  const dec = a.decomposition || {};
+  r.missing_information = dec.missing_visual_information ?? null;
+  r.decomposition_note = dec.missing_information_note || '';
+  r.holistic_alignment_1_to_7 = (a.overall_alignment || {}).human_overall_alignment_1_to_7 ?? null;
   r.technical_issue = a.technical_issue ?? null;
   r.technical_note = a.technical_note || '';
-  r.phaseA_completed_at = a.phaseA_completed_at ?? null;
-  r.phaseB_completed_at = a.phaseB_completed_at ?? null;
-  r.phaseC_completed_at = a.phaseC_completed_at ?? null;
-  (a.decomposition || []).forEach((p) => {
+  r.phaseA_completed_at = a.step1_completed_at ?? null;
+  r.phaseB_completed_at = a.step2_completed_at ?? null;
+  r.phaseC_completed_at = a.step3_completed_at ?? null;
+  (dec.parts || []).forEach((p) => {
     if (p.decomposition_label) r.decomposition[p.part_id] = p.decomposition_label;
+  });
+  (a.part_support || []).forEach((p) => {
     if (p.atomic_cannot_judge) r.part_support[p.part_id] = 'cannot_judge';
     else if (p.human_atomic_support_0_to_4 != null)
       r.part_support[p.part_id] = p.human_atomic_support_0_to_4;

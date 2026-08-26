@@ -135,6 +135,7 @@ chk("A25c the correct code does open it", _opens(_bd, codes["damir"]))
 # ---- app static checks
 html = open(f"{APP}/index.html").read()
 js = open(f"{APP}/app.js").read()
+css = open(f"{APP}/styles.css").read()
 ids_html = set(re.findall(r'id="([A-Za-z0-9_]+)"', html))
 ids_js = set(re.findall(r"\$\('([A-Za-z0-9_]+)'\)", js))
 chk("A26 every element id used by app.js exists in index.html",
@@ -153,5 +154,46 @@ _hits = [w for w in _PRIVATE_FIELDS if re.search(r"\b" + w + r"\b", js)]
 chk("A30 app never references private construction fields", not _hits, str(_hits))
 chk("A31 app never labels a sample as common/unique",
     not re.search(r"\b(is_common|common_sample|iaa)\b", js, re.I))
+
+# ---- FINAL study order: decomposition -> part support -> overall (spec section 27)
+chk("B01 step 1 is decomposition, text only",
+    'id="phaseA"' in html and 'Decomposition — text only' in html)
+chk("B02 no <img> src anywhere in the markup", not re.search(r'<img[^>]+src=', html))
+chk("B03 step 2 is a two-pane layout", 'class="twopane"' in html
+    and 'pane-img' in html and 'pane-parts' in html)
+chk("B04 left image pane is sticky", re.search(r'\.pane-img\{[^}]*position:sticky', css))
+chk("B05 image is contained, never cropped",
+    'object-fit:contain' in css.replace(' ', ''))
+chk("B06 right pane scrolls independently of the sticky image",
+    '.pane-parts{' in css.replace(' ', '') and '.pane-img{position:sticky' in css.replace(' ', ''))
+chk("B07 step 3 lives at the bottom of the right pane",
+    html.index('id="cParts"') < html.index('id="step3"') < html.index('id="saveNext"'))
+chk("B08 step 3 starts locked", 'class="step3 locked"' in html)
+chk("B09 step 3 unlocks only when every part is scored",
+    'allPartsScored' in js and 'paintStep3' in js)
+chk("B10 overall scale is 1-7", "for (let v = 1; v <= 7; v++)" in js)
+chk("B11 part scale is 0-4 plus Cannot judge",
+    "for (let v = 0; v <= 4; v++)" in js and "'cannot_judge'" in js)
+chk("B12 sample cannot finish without the overall score",
+    "holistic_alignment_1_to_7 == null" in js and "Please give the overall" in js)
+chk("B13 all original parts are rated regardless of step-1 label",
+    "regardless of its Step-1 judgement" in js or "whatever step 1 said" in js)
+chk("B14 decomposition is never rewritten from step-1 answers",
+    "never rewritten" in js)
+chk("B15 cannot-judge is separate from technical issue",
+    'id="techPanel"' in html and 'technical_issue' in js)
+chk("B16 content version bumped so stale part state cannot be reused",
+    "CONTENT_VERSION" in js and "decomp-phrase-v2" in js)
+chk("B17 db namespace includes the content version",
+    "CONTENT_VERSION}" in js.replace(' ', '').replace('\n', ''))
+chk("B18 export orders decomposition -> part_support -> overall",
+    js.index('decomposition: {') < js.index('part_support:') < js.index('overall_alignment:'))
+chk("B19 export keeps part ids for later merging",
+    "part_id: p.part_id" in js)
+chk("B20 guide states the final order",
+    'Step 2 — Statement support' in html and 'Step 3 — Overall alignment' in html)
+chk("B21 obsolete phase C markup fully removed",
+    'id="phaseC"' not in html and 'renderC(' not in js)
+
 print(f"\n{P}/{P+F} passed")
 sys.exit(0 if F == 0 else 1)
