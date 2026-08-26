@@ -1,40 +1,182 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Explainable Metric Human Annotation</title>
-    <link rel="stylesheet" href="styles.css?v=20260612-app-clean">
-  </head>
-  <body>
-    <header class="topbar">
-      <div class="title-block">
-        <h1>Explainable Metric Human Annotation</h1>
-        <div id="progressText" class="progress-text">Loading dataset...</div>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>VisExMEM Human Annotation</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<section id="login" class="login">
+  <h1>VisExMEM Human Annotation</h1>
+  <p class="sub">Sign in with the username and access code you were sent.</p>
+  <div class="card"><div class="card-b">
+    <div class="field">
+      <label for="user">Username</label>
+      <input id="user" type="text" autocomplete="username" spellcheck="false" autocapitalize="none">
+    </div>
+    <div class="field">
+      <label for="pass">Access code</label>
+      <input id="pass" type="password" autocomplete="current-password" spellcheck="false">
+    </div>
+    <button id="loginBtn" class="btn primary" style="width:100%">Open my assignment</button>
+    <div id="loginErr" class="err-inline hidden"></div>
+    <p class="hint" style="margin:16px 0 0">
+      Your answers are saved automatically in this browser. Use the same browser and
+      device each time, and do not clear site data until you have exported your final file.
+    </p>
+  </div></div>
+</section>
+
+<!-- ============ APP ============ -->
+<div id="app" class="hidden">
+  <header class="topbar"><div class="topbar-in">
+    <div class="brand">VisExMEM <span>· Human Annotation</span></div>
+    <div class="top-right">
+      <div class="who">Signed in as <b id="whoName">—</b></div>
+      <div class="progress-wrap">
+        <span class="progress-txt" id="progTxt">0 / 0</span>
+        <span class="bar"><i id="progBar"></i></span>
       </div>
+      <span class="save-chip" id="saveChip">Saved</span>
+      <button class="btn sm ghost" id="menuBtn">Menu</button>
+    </div>
+  </div></header>
 
-      <div class="topbar-actions">
-        <label class="annotator-field">
-          <span>Annotator ID</span>
-          <input id="annotatorId" type="text" autocomplete="off" placeholder="required">
-        </label>
-        <button id="exportBtn" class="button primary" type="button">Export JSON</button>
-        <button id="resetCurrentBtn" class="button" type="button">Reset Current Sample</button>
-        <button id="resetAllBtn" class="button danger" type="button">Reset All Progress</button>
+  <main class="wrap">
+    <!-- menu -->
+    <div id="menu" class="card hidden"><div class="card-b">
+      <div class="actions" style="margin:0;flex-wrap:wrap">
+        <button class="btn sm" id="backupBtn">Download backup</button>
+        <button class="btn sm" id="importBtn">Import backup</button>
+        <input id="importFile" type="file" accept="application/json" class="hidden">
+        <button class="btn sm" id="jumpFirstIncomplete">Go to first unfinished</button>
+        <div class="spacer"></div>
+        <button class="btn sm primary" id="finalBtn">Export final annotations</button>
+        <button class="btn sm ghost" id="logoutBtn">Sign out</button>
       </div>
-    </header>
+      <div id="menuMsg" class="hint" style="margin:12px 0 0"></div>
+    </div></div>
 
-    <main class="page">
-      <div id="statusPanel" class="status-panel" aria-live="polite"></div>
-      <section id="samplePanel" class="sample-panel"></section>
-    </main>
+    <details class="guide" id="guide">
+      <summary>Annotation guide</summary>
+      <div class="card-b">
+        <p style="margin-top:0">Each sample has three steps. Please do them in order — the
+        order is part of the study design.</p>
+        <ul>
+          <li><b>Step 1 — Decomposition (text only).</b> You see a text and a list of
+          atomic statements taken from it. Judge each statement <em>against the text
+          alone</em>. The image is deliberately hidden here.</li>
+          <li><b>Step 2 — Overall alignment.</b> The image is revealed. Give one overall
+          1–7 judgement of how well the image and text match, <em>before</em> looking at
+          the statements again.</li>
+          <li><b>Step 3 — Statement support.</b> For each statement, rate how well the
+          image supports it (0–4), or choose <em>Cannot judge</em>.</li>
+        </ul>
+        <p><b>Cannot judge</b> means the image genuinely does not let you decide.
+        It is not a way to skip a hard item. If something is technically broken
+        (image will not load, text is garbled), use <b>Report a technical issue</b>
+        instead — that is different.</p>
+        <p style="margin-bottom:0">Your work saves automatically. You can close the tab
+        and come back.</p>
+      </div>
+    </details>
 
-    <footer class="bottom-nav">
-      <button id="prevBtn" class="button" type="button">Save &amp; Previous</button>
-      <button id="saveBtn" class="button primary" type="button">Save</button>
-      <button id="nextBtn" class="button primary" type="button">Save &amp; Next</button>
-    </footer>
+    <!-- ---------- PHASE A ---------- -->
+    <section id="phaseA" class="card">
+      <div class="card-h"><span class="step" id="stepA">1</span><h2>Decomposition — text only</h2></div>
+      <div class="card-b">
+        <p class="hint">Judge each statement against the text below. The image is hidden on purpose.</p>
+        <div class="textbox" id="aText">—</div>
+        <div id="aParts" style="margin-top:18px"></div>
+        <label class="q" id="missQ">Is any important, visually checkable information from the text missing from the statements above?</label>
+        <div class="opts" id="missOpts">
+          <button class="opt" data-miss="no" aria-pressed="false">No</button>
+          <button class="opt" data-miss="yes" aria-pressed="false">Yes</button>
+        </div>
+        <div id="missNoteWrap" class="hidden">
+          <label class="q" for="missNote">What is missing? (optional)</label>
+          <textarea id="missNote" rows="2" placeholder="Short note…"></textarea>
+        </div>
+        <div class="actions">
+          <button class="btn sm ghost" id="techBtnA">Report a technical issue</button>
+          <div class="spacer"></div>
+          <button class="btn primary" id="confirmA">Confirm and show image</button>
+        </div>
+        <div id="errA" class="err-inline hidden"></div>
+      </div>
+    </section>
 
-    <script src="app.js?v=20260612-app-clean"></script>
-  </body>
+    <!-- ---------- PHASE B ---------- -->
+    <section id="phaseB" class="card hidden">
+      <div class="card-h"><span class="step" id="stepB">2</span><h2>Overall image–text alignment</h2></div>
+      <div class="card-b">
+        <div class="imgwrap" id="imgWrapB"><img id="imgB" alt="benchmark image"></div>
+        <div class="textbox" style="margin-top:14px" id="bText">—</div>
+        <label class="q">Overall, how well does the image match the text?</label>
+        <div class="scale-ends"><span>1 · strongly mismatched</span><span>4 · partially aligned</span><span>7 · fully aligned</span></div>
+        <div class="opts scale" id="holScale"></div>
+        <div class="actions">
+          <button class="btn sm ghost" id="backB">Back to step 1</button>
+          <button class="btn sm ghost" id="techBtnB">Report a technical issue</button>
+          <div class="spacer"></div>
+          <button class="btn primary" id="confirmB">Confirm and continue</button>
+        </div>
+        <div id="errB" class="err-inline hidden"></div>
+      </div>
+    </section>
+
+    <!-- ---------- PHASE C ---------- -->
+    <section id="phaseC" class="card hidden">
+      <div class="card-h"><span class="step" id="stepC">3</span><h2>Statement support in the image</h2></div>
+      <div class="card-b">
+        <div class="imgwrap" id="imgWrapC"><img id="imgC" alt="benchmark image"></div>
+        <div class="textbox" style="margin-top:14px" id="cText">—</div>
+        <p class="hint" style="margin-top:16px">
+          0 = not supported / contradicted · 1 = weak · 2 = partial or ambiguous ·
+          3 = mostly supported · 4 = fully supported
+        </p>
+        <div id="cParts"></div>
+        <div class="actions">
+          <button class="btn sm ghost" id="techBtnC">Report a technical issue</button>
+          <div class="spacer"></div>
+          <button class="btn" id="prevBtn">Previous</button>
+          <button class="btn primary" id="saveNext">Save and next</button>
+        </div>
+        <div id="errC" class="err-inline hidden"></div>
+      </div>
+    </section>
+
+    <!-- ---------- technical issue ---------- -->
+    <section id="techPanel" class="card hidden">
+      <div class="card-h"><span class="step idle">!</span><h2>Technical issue</h2></div>
+      <div class="card-b">
+        <p class="hint">Only for genuine technical problems — a broken image, garbled text,
+        a duplicate, or an app fault. Not for semantically difficult samples.</p>
+        <div class="opts" id="techOpts"></div>
+        <label class="q" for="techNote">Note (optional)</label>
+        <textarea id="techNote" rows="2"></textarea>
+        <div class="actions">
+          <button class="btn sm ghost" id="techCancel">Cancel</button>
+          <div class="spacer"></div>
+          <button class="btn primary" id="techSave">Flag and go to next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- completion ---------- -->
+    <section id="donePanel" class="card hidden"><div class="card-b done-wrap">
+      <h2>All samples completed</h2>
+      <p class="hint" id="doneCount">—</p>
+      <button class="btn primary" id="doneExport">Export final annotations</button>
+      <p class="mono" id="doneHash" style="margin-top:18px"></p>
+    </div></section>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
 </html>

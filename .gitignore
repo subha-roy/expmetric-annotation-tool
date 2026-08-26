@@ -1,0 +1,20 @@
+# ---- private, never publish ----
+private/
+ASSIGNMENT_LOCK.json.bak
+*.local.json
+
+# ---- benchmark images: redistribution status differs per source ----
+# ADE20K / HICO-DET / MJHQ-30K redistribution is NOT established, so the staged image
+# directory is excluded by default. See private/image_manifest.json for per-file status.
+images_bench/
+
+# ---- returned annotations / test artefacts ----
+returned/
+*.annotations.json
+visexmem_annotations_*.json
+visexmem_backup_*.json
+
+# ---- junk ----
+.DS_Store
+__pycache__/
+*.pyc

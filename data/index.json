@@ -1,0 +1,49 @@
+{
+  "schema_version": "visexmem-annotation-1.0.0",
+  "app_version": "1.0.0",
+  "benchmark_manifest_hash": "759b37c0cddad9bcd8a5ee2cb4dde3591fb28686f97fdeae809da99e57b8dc73",
+  "annotators": {
+    "damir": {
+      "name": "Damir",
+      "bundle": "data/bundle_damir.json",
+      "assignment_hash": "254475cb2419d0db28c493e96a3fddc0a4f9d417676a2b40aac043e849a45b52",
+      "assignment_size": 173
+    },
+    "brisca": {
+      "name": "Brisca",
+      "bundle": "data/bundle_brisca.json",
+      "assignment_hash": "1908199c9ad292113ed201526571d45127bb933f16c6d19adb5b836b6524d033",
+      "assignment_size": 173
+    },
+    "omar": {
+      "name": "Omar",
+      "bundle": "data/bundle_omar.json",
+      "assignment_hash": "65996a4095f9fbb143743b0014fbae3d1ddee51e2330a1f542e5302175c69741",
+      "assignment_size": 172
+    },
+    "sayeeda": {
+      "name": "Sayeeda",
+      "bundle": "data/bundle_sayeeda.json",
+      "assignment_hash": "ca432ac657bfe3dedd23f7603dbe9c7bc60b4e82263490c6f58ddb33fcce6105",
+      "assignment_size": 172
+    },
+    "christian": {
+      "name": "Christian",
+      "bundle": "data/bundle_christian.json",
+      "assignment_hash": "4bf6fb5dffdd20d4b95127a544fba88f5467af5bbdc2b0def571de9d4722e1c8",
+      "assignment_size": 30
+    },
+    "chris": {
+      "name": "Chris",
+      "bundle": "data/bundle_chris.json",
+      "assignment_hash": "fcee558c434ea774076a4f1e3ef57077dd84e0fff61e10d4d9cb33db3a73bf03",
+      "assignment_size": 30
+    },
+    "zhipin": {
+      "name": "Zhipin",
+      "bundle": "data/bundle_zhipin.json",
+      "assignment_hash": "a33cb4f87ac3fc7122b3d86bf055e5d01422b4b8ff451520f4b9799d3724cb32",
+      "assignment_size": 30
+    }
+  }
+}
