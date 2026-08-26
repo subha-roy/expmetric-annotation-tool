@@ -11,7 +11,7 @@ the access code, and that each annotator can only open their own assignment.
 Plaintext access codes go ONLY to private/credentials.md, which is gitignored.
 """
 from __future__ import annotations
-import argparse, base64, hashlib, json, os, secrets, string, time
+import argparse, base64, hashlib, json, os, secrets, string, sys, time
 
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
@@ -45,8 +45,10 @@ def main():
     audit = json.load(open(f"{a.app}/private/assignment_audit.json"))
     join = json.load(open(f"{a.app}/private/benchmark_join.json"))
     samples, parts = join["samples"], join["parts"]
-    names = {"damir": "Damir", "brisca": "Brisca", "omar": "Omar", "sayeeda": "Sayeeda",
-             "christian": "Christian", "chris": "Chris", "zhipin": "Zhipin"}
+    # single source of truth -- duplicating this map is how adding an annotator to
+    # build_assignments.py silently broke bundle generation with a KeyError
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from build_assignments import NAMES as names
 
     os.makedirs(f"{a.app}/data", exist_ok=True)
     creds, index = [], {}

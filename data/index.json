@@ -6,43 +6,49 @@
     "damir": {
       "name": "Damir",
       "bundle": "data/bundle_damir.json",
-      "assignment_hash": "1517b423208132a9e8c0026f5d3e68c4ba8f9e95009161afba7fb0651b12e020",
+      "assignment_hash": "99a1880240d065f313bca3ba5a23ec51c9c7f0bb17b69a0adf04d74565b4b17d",
       "assignment_size": 173
     },
     "brisca": {
       "name": "Brisca",
       "bundle": "data/bundle_brisca.json",
-      "assignment_hash": "8330791bf5a57fd37c2d38513d20a2600ceb52c1abe19c8e054fd613d1d04416",
+      "assignment_hash": "57d0eb9331eea5fbafcc543bbf3d4bd563266808ab66a4cb4dc4f2dc846a891c",
       "assignment_size": 173
     },
     "omar": {
       "name": "Omar",
       "bundle": "data/bundle_omar.json",
-      "assignment_hash": "23f645912641990218d964a352014d215eb140f842b737edac72560acb7b0d3d",
+      "assignment_hash": "dcaaa1f21200b6d26e9d370e8a41a4993d8155f9f2b65acb242f0472511ebb24",
       "assignment_size": 172
     },
     "sayeeda": {
       "name": "Sayeeda",
       "bundle": "data/bundle_sayeeda.json",
-      "assignment_hash": "b939ed4bde49f6d5e74afac93a2f7b17fc4f436dd3dcff0257d3b55c45b097f1",
+      "assignment_hash": "bd6a4363256bac8bb1d1ccd78a43e4be12009212f1d947c36f25b46d9ab10b6d",
       "assignment_size": 172
     },
     "christian": {
       "name": "Christian",
       "bundle": "data/bundle_christian.json",
-      "assignment_hash": "163a554e84d761b04cee1d80523cc8423a158bd7b3104aabe1d01627622916d7",
+      "assignment_hash": "8ac5e903913b811feb74d3178aabd0d39e5f1be1ebb39a4ce6905f97089ceabe",
       "assignment_size": 30
     },
     "chris": {
       "name": "Chris",
       "bundle": "data/bundle_chris.json",
-      "assignment_hash": "425edeba3b4be09e368c2abceb981caee0554446327afae68c41eb44dd7efec1",
+      "assignment_hash": "9db7baa38e7954d31f12e861cd8681b74a6bc68a081b1574d4696e53bf8309cf",
       "assignment_size": 30
     },
     "zhipin": {
       "name": "Zhipin",
       "bundle": "data/bundle_zhipin.json",
-      "assignment_hash": "440ec5f23c87ac6a2f03d12a881f30545a0a93c161afdd49ae03fb35231ce3c5",
+      "assignment_hash": "8ac94737c09681f375f514771809531a10cfa08c6658350ec165eab424a4a546",
+      "assignment_size": 30
+    },
+    "joy": {
+      "name": "Joy",
+      "bundle": "data/bundle_joy.json",
+      "assignment_hash": "49565854dc2a69ab9786362b6fc53736f5851cd77d6481d6893752468903b521",
       "assignment_size": 30
     }
   }

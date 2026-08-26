@@ -22,7 +22,7 @@ samples, parts = join["samples"], join["parts"]
 per = audit["per_annotator"]
 common = set(audit["common_sample_ids"])
 HIWIS = ["damir", "brisca", "omar", "sayeeda"]
-COLL = ["christian", "chris", "zhipin"]
+COLL = ["christian", "chris", "zhipin", "joy"]
 
 # ---- benchmark + common set
 chk("A01 benchmark size = 600", len(samples) == 600, len(samples))
@@ -35,7 +35,7 @@ for cell in ("i2t/easy", "i2t/medium", "i2t/hard", "t2i/easy", "t2i/medium", "t2
 # ---- exact totals
 EXP_U = {"damir": 143, "brisca": 143, "omar": 142, "sayeeda": 142}
 EXP_T = {"damir": 173, "brisca": 173, "omar": 172, "sayeeda": 172,
-         "christian": 30, "chris": 30, "zhipin": 30}
+         "christian": 30, "chris": 30, "zhipin": 30, "joy": 30}
 for k, v in EXP_U.items():
     chk(f"A04 {k} unique = {v}", len(per[k]["unique_ids"]) == v, len(per[k]["unique_ids"]))
 for k, v in EXP_T.items():
@@ -57,7 +57,10 @@ allu = [i for k in HIWIS for i in per[k]["unique_ids"]]
 chk("A09 unique union = 570 distinct", len(allu) == 570 and len(set(allu)) == 570, len(allu))
 chk("A10 unique + common = 600", set(allu) | common == set(samples))
 chk("A11 no unique id is also common", not (set(allu) & common))
-chk("A12 total sessions = 780", sum(len(per[k]["queue"]) for k in per) == 780)
+_EXP_SESSIONS = 570 + 30 * (len(HIWIS) + len(COLL))
+chk(f"A12 total sessions = {_EXP_SESSIONS}",
+    sum(len(per[k]["queue"]) for k in per) == _EXP_SESSIONS,
+    sum(len(per[k]["queue"]) for k in per))
 
 # ---- per-assignment sanity
 for k in per:
@@ -111,7 +114,7 @@ for k, pw in codes.items():
         if set(it) - {"sample_id", "order", "text", "image", "parts"}:
             leaks.append((k, set(it)))
             break
-chk("A23 all bundles decrypt with their own code", len(codes) == 7, len(codes))
+chk("A23 all bundles decrypt with their own code", len(codes) == 8, len(codes))
 chk("A24 decrypted items expose ONLY annotator-visible fields", not leaks, str(leaks[:2]))
 def _opens(bundle, password):
     """True if `password` decrypts the bundle."""

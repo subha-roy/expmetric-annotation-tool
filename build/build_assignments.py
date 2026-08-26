@@ -24,9 +24,13 @@ SEED = 20260826
 SCHEMA_VERSION = "visexmem-annotation-1.0.0"
 
 HIWIS = ["damir", "brisca", "omar", "sayeeda"]
-COLLEAGUES = ["christian", "chris", "zhipin"]
+# Colleagues annotate ONLY the common IAA set, so adding one costs nothing
+# scientifically: the 570-unique partition and all four HiWi workloads are untouched,
+# and the new person receives the same frozen 30 sample ids as everyone else.
+COLLEAGUES = ["christian", "chris", "zhipin", "joy"]
 NAMES = {"damir": "Damir", "brisca": "Brisca", "omar": "Omar", "sayeeda": "Sayeeda",
-         "christian": "Christian", "chris": "Chris", "zhipin": "Zhipin"}
+         "christian": "Christian", "chris": "Chris", "zhipin": "Zhipin",
+         "joy": "Joy"}
 COMMON_PER_CELL = 5
 
 # exact per-cell unique allocation, as specified
@@ -199,7 +203,7 @@ def main():
     if any(assign[k]["common"] != common for k in assign):
         prob.append("annotators do not share an identical common set")
     exp = {"damir": 173, "brisca": 173, "omar": 172, "sayeeda": 172,
-           "christian": 30, "chris": 30, "zhipin": 30}
+           "christian": 30, "chris": 30, "zhipin": 30, "joy": 30}
     for k, n in exp.items():
         if len(assign[k]["queue"]) != n:
             prob.append(f"{k} queue is {len(assign[k]['queue'])}, expected {n}")
@@ -217,8 +221,9 @@ def main():
         if dict(gr) != EXP_DIR[h]:
             prob.append(f"{h} unique direction {dict(gr)} != {EXP_DIR[h]}")
     sessions = sum(len(assign[k]["queue"]) for k in assign)
-    if sessions != 780:
-        prob.append(f"total sessions {sessions} != 780")
+    expected_sessions = 570 + 30 * (len(HIWIS) + len(COLLEAGUES))
+    if sessions != expected_sessions:
+        prob.append(f"total sessions {sessions} != {expected_sessions}")
     for k in assign:
         for sid in assign[k]["queue"]:
             if not parts.get(sid):
