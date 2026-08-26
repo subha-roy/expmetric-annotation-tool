@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>VisExMEM Human Annotation</title>
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
 
@@ -108,14 +108,31 @@
             <p>For every sample you see an <b>image</b>, the <b>original text</b>, and the
             <b>atomic statements</b> extracted from that text. Your task is to:</p>
             <ol class="gsteps">
-              <li>rate how strongly the image supports <em>each</em> atomic statement;</li>
-              <li>then, once every statement is rated, give <em>one</em> overall
-              text–image alignment score.</li>
+              <li>for <em>each</em> atomic statement give <b>two</b> judgements — whether
+              it is a good decomposition of the text, and how strongly the image supports
+              it;</li>
+              <li>then, once every statement has both, give <em>one</em> overall text–image
+              alignment score.</li>
             </ol>
           </section>
 
           <section class="gsec">
-            <h4>B · Scoring an atomic statement</h4>
+            <h4>B · Decomposition quality — judged against the text</h4>
+            <p>First, is this statement a good atomic unit of the <b>original text</b>?
+            This has nothing to do with the image.</p>
+            <table class="gtable">
+              <tr><td class="gk2">Reasonable</td><td>A good atomic visual unit.</td></tr>
+              <tr><td class="gk2">Needs split</td><td>Contains multiple claims that should be separated.</td></tr>
+              <tr><td class="gk2">Needs merge</td><td>Should be combined with another part to make a meaningful unit.</td></tr>
+              <tr><td class="gk2">Redundant</td><td>Duplicates information already represented by another part.</td></tr>
+              <tr><td class="gk2">Not entailed</td><td>Introduces information the text does not actually state.</td></tr>
+            </table>
+          </section>
+
+          <section class="gsec">
+            <h4>C · Image support — judged against the image</h4>
+            <p>Second, and <b>independently</b>: how strongly does the image support that
+            same statement?</p>
             <table class="gtable">
               <tr><td class="gk">0</td><td>Unsupported / contradicted</td></tr>
               <tr><td class="gk">1</td><td>Weak support</td></tr>
@@ -124,6 +141,9 @@
               <tr><td class="gk">4</td><td>Full support</td></tr>
               <tr><td class="gk">?</td><td>Cannot judge</td></tr>
             </table>
+            <p class="gcallout">Give the image-support score <b>even when</b> you marked the
+            statement Needs split, Needs merge, Redundant or Not entailed. The two
+            judgements are separate, and the statements are never rewritten.</p>
             <details class="gsub"><summary>Full definitions</summary>
               <ul>
                 <li><b>0 — Not supported / contradicted.</b> The image clearly does not
@@ -157,7 +177,7 @@
           </section>
 
           <section class="gsec">
-            <h4>C · Overall alignment (1–5)</h4>
+            <h4>D · Overall alignment (1–5)</h4>
             <table class="gtable">
               <tr><td class="gk">1</td><td><b>Not aligned.</b> The image substantially contradicts the text or fails to represent its important content.</td></tr>
               <tr><td class="gk">2</td><td><b>Weakly aligned.</b> Some relevant content is present, but major parts of the text are incorrect, missing or inconsistent.</td></tr>
@@ -170,7 +190,7 @@
           </section>
 
           <section class="gsec">
-            <h4>D · Cannot judge vs Skip for now vs Technical issue</h4>
+            <h4>E · Cannot judge vs Skip for now vs Technical issue</h4>
             <div class="gcards">
               <div class="gcard"><b>Cannot judge</b><span>I can see the sample normally, but
               the image genuinely does not give enough evidence for <em>this one
@@ -187,7 +207,7 @@
           </section>
 
           <section class="gsec">
-            <h4>E · Navigating and saving</h4>
+            <h4>F · Navigating and saving</h4>
             <ul>
               <li>Your work <b>saves automatically</b> — you can close the tab and return.</li>
               <li>Return to the dashboard at any time; green = completed, amber = in
@@ -234,6 +254,7 @@
           </div>
 
           <div class="scalebar">
+            <span class="sb-k">Each statement gets <b>two</b> judgements ·</span>
             <span><b>0</b> unsupported</span><span><b>1</b> weak</span><span><b>2</b> partial</span>
             <span><b>3</b> strong</span><span><b>4</b> full</span><span><b>?</b> cannot judge</span>
             <details><summary>Details</summary>
@@ -301,6 +322,6 @@
   </main>
 </div>
 
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

@@ -193,9 +193,8 @@ chk("B01 login is the first screen", 'id="login"' in html and 'id="dash"' in htm
 chk("B02 login lands on the dashboard, never a sample",
     "renderDash();                       // always land on the dashboard" in js
     or ("renderDash()" in js and "never a sample" in js))
-chk("B03 decomposition-quality stage is GONE",
-    not any(w in html for w in ("Needs split", "Needs merge", "Not entailed by the text",
-                                "DECOMPOSITION — TEXT ONLY"))
+chk("B03 no separate text-only decomposition PAGE",
+    "DECOMPOSITION — TEXT ONLY" not in html and 'id="phaseA"' not in html
     and "decomposition_label" not in js)
 chk("B04 image is present on the sample screen from the start",
     'id="imgFrame"' in html and 'loadImage(it.image)' in js)
@@ -239,18 +238,18 @@ chk("B23 dashboard filters exist", 'id="filters"' in html and 'data-f="skip"' in
 chk("B24 final export blocks while work is outstanding",
     "outstanding > 0" in js and "still require review" in js)
 chk("B25 export carries index, status, scores, technical state and revisions",
-    all(k in js for k in ("assignment_index", "status:", "part_support:",
+    all(k in js for k in ("assignment_index", "status:", "parts:",
                           "human_overall_alignment_1_to_5", "technical_issue",
                           "revision_count")))
 chk("B26 content version bumped so stale cache cannot resurface",
-    "CONTENT_VERSION" in js and "flow-v4-overall1to5" in js)
+    "CONTENT_VERSION" in js and "flow-v5-dualjudgment" in js)
 chk("B27 cache namespace includes annotator, assignment hash and version",
     "annotator_id}_${b.assignment_hash" in js and "CONTENT_VERSION}" in js)
 chk("B28 no private benchmark metadata in the app",
     not any(re.search(r"\b" + w + r"\b", js) for w in
             ("difficulty", "primary_challenge", "source_dataset", "generator", "qc_json")))
-chk("B29 keyboard scoring only affects a focused part",
-    "closest?.('.part')" in js and "activeElement" in js)
+chk("B29 keyboard scoring only affects the focused part's SUPPORT row",
+    "closest?.('.part')" in js and "jrow')[1]" in js)
 chk("B30 rating does not auto-scroll the panel",
     "repaint()" in js and "renderParts();" in js)
 chk("B31 backup import validates annotator, assignment and schema",
@@ -275,19 +274,58 @@ chk("S06 no active 1-7 wording remains",
     "1–7" not in html and "1-7" not in html and "7 fully aligned" not in html)
 chk("S07 part scale still 0-4 plus cannot judge",
     "for (let v = 0; v <= 4; v++)" in js and "'cannot_judge'" in js)
-chk("S08 content version marks the 1-5 change",
-    "flow-v4-overall1to5" in js)
+chk("S08 content version is the final dual-judgment version",
+    "flow-v5-dualjudgment" in js)
 # ---- improved guide (spec section 21) ----
-for _sec in ("A · What you are doing", "B · Scoring an atomic statement",
-             "C · Overall alignment (1–5)",
-             "D · Cannot judge vs Skip for now vs Technical issue",
-             "E · Navigating and saving"):
+for _sec in ("A · What you are doing",
+             "B · Decomposition quality — judged against the text",
+             "C · Image support — judged against the image",
+             "D · Overall alignment (1–5)",
+             "E · Cannot judge vs Skip for now vs Technical issue",
+             "F · Navigating and saving"):
     chk(f"G01 guide section {_sec[:1]}", _sec in html)
 chk("G02 guide has worked examples", "red shirt" in html and "three dogs" in html)
 chk("G03 guide states not to average", "Do not mechanically average" in html)
 chk("G04 compact scale reference on the sample screen", 'class="scalebar"' in html)
 chk("G05 full definitions collapsible on the sample screen",
     'scaleguide' in html and '<details>' in html)
+
+
+# ---- TWO judgments per atomic part (final workflow) ----
+chk("J01 decomposition vocabulary is the five agreed labels",
+    all(v in js for v in ("'reasonable'", "'needs_split'", "'needs_merge'",
+                          "'redundant'", "'not_entailed'")))
+chk("J02 both judgments are stored per part",
+    "decomp_quality: {}, part_support: {}" in js)
+chk("J03 a part is done only with BOTH judgments",
+    "validDecomp(r.decomp_quality[p.part_id]) &&" in js
+    and "r.part_support[p.part_id] !== undefined" in js)
+chk("J04 overall unlocks only when every part has both",
+    "it.parts.every((p) => partDone(r, p))" in js)
+chk("J05 completion names which judgment is missing",
+    "without a decomposition judgement" in js and "without an image-support score" in js)
+chk("J06 card renders two labelled rows",
+    "'Decomposition'" in js and "'Image support'" in js and "jrow" in js)
+chk("J07 export carries part_id, text, type, decomp_quality, support_score",
+    all(k in js for k in ("part_id: p.part_id", "text: p.atomic_claim",
+                          "type: p.part_type", "decomp_quality:", "support_score:")))
+chk("J08 invalid decomposition label is not exported",
+    "validDecomp(r.decomp_quality[p.part_id])" in js and ": null," in js)
+chk("J09 import restores both judgments and tolerates the older shape",
+    "a.parts || a.part_support" in js and "validDecomp(p.decomp_quality)" in js)
+chk("J10 support scale unchanged at 0-4 + cannot judge",
+    "for (let v = 0; v <= 4; v++)" in js and "'cannot_judge'" in js)
+chk("J11 overall scale unchanged at 1-5", "OVERALL_MIN = 1, OVERALL_MAX = 5" in js)
+chk("J12 guide explains decomposition quality against the TEXT",
+    "Decomposition quality — judged against the text" in html
+    and all(w in html for w in ("Needs split", "Needs merge", "Redundant", "Not entailed")))
+chk("J13 guide explains image support against the IMAGE",
+    "Image support — judged against the image" in html)
+chk("J14 guide states the two judgments are independent",
+    "Give the image-support score <b>even when</b>" in html)
+chk("J15 part card layout keeps cards compact",
+    ".jrow{display:flex;align-items:center" in css.replace(' ', '')
+    or ".jrow{display:flex" in css.replace(' ', ''))
 
 print(f"\n{P}/{P+F} passed")
 sys.exit(0 if F == 0 else 1)

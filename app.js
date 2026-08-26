@@ -9,10 +9,10 @@
  */
 'use strict';
 
-const APP_VERSION = '4.0.0';
+const APP_VERSION = '5.0.0';
 // Bundled parts changed (phrase-level decomposition) AND the flow changed, so the cache
 // namespace must move with them: stale part-level state can never resurface.
-const CONTENT_VERSION = 'decomp-phrase-v2+flow-v4-overall1to5';
+const CONTENT_VERSION = 'decomp-phrase-v2+flow-v5-dualjudgment';
 
 const TECH_REASONS = [
   ['image_failed', 'Image failed to load'],
@@ -21,6 +21,19 @@ const TECH_REASONS = [
   ['malformed_text', 'Malformed text'],
   ['app_problem', 'App problem'],
 ];
+// Two independent judgments per atomic part: quality of the DECOMPOSITION (judged
+// against the original text) and SUPPORT from the image. A part keeps its support score
+// even when its decomposition is judged poor -- the two questions are not conditional on
+// each other, and parts are never rewritten or removed during annotation.
+const DECOMP_LABELS = [
+  ['reasonable', 'Reasonable'],
+  ['needs_split', 'Needs split'],
+  ['needs_merge', 'Needs merge'],
+  ['redundant', 'Redundant'],
+  ['not_entailed', 'Not entailed'],
+];
+const DECOMP_VALUES = DECOMP_LABELS.map((x) => x[0]);
+const validDecomp = (v) => DECOMP_VALUES.includes(v);
 const OVERALL_MIN = 1, OVERALL_MAX = 5;
 const OVERALL_LABEL = {
   1: 'Not aligned', 2: 'Weakly aligned', 3: 'Partially aligned',
@@ -85,7 +98,7 @@ async function persist(sid) {
 function blank(item) {
   return {
     sample_id: item.sample_id, order: item.order,
-    part_support: {}, overall_alignment: null,
+    decomp_quality: {}, part_support: {}, overall_alignment: null,
     technical_issue: null, technical_note: '',
     skipped_for_now: false, status: 'pending',
     first_started_at: null, first_completed_at: null, last_modified_at: null,
@@ -96,9 +109,18 @@ const items = () => S.bundle.items;
 const cur = () => items()[S.idx];
 const rec = () => (S.ann[cur().sample_id] ||= blank(cur()));
 
+function partDone(r, p) {
+  return validDecomp(r.decomp_quality[p.part_id]) &&
+         r.part_support[p.part_id] !== undefined;
+}
 function allRated(it, r) {
-  return it.parts.length > 0 &&
-    !it.parts.some((p) => r.part_support[p.part_id] === undefined);
+  return it.parts.length > 0 && it.parts.every((p) => partDone(r, p));
+}
+function missingCounts(it, r) {
+  return {
+    decomp: it.parts.filter((p) => !validDecomp(r.decomp_quality[p.part_id])).length,
+    support: it.parts.filter((p) => r.part_support[p.part_id] === undefined).length,
+  };
 }
 function statusOf(it) {
   const r = S.ann[it.sample_id];
@@ -106,7 +128,9 @@ function statusOf(it) {
   if (r.technical_issue) return 'tech';
   if (r.status === 'completed') return 'done';
   if (r.skipped_for_now) return 'skip';
-  const any = Object.keys(r.part_support).length > 0 || r.overall_alignment != null;
+  const any = Object.keys(r.part_support).length > 0 ||
+              Object.keys(r.decomp_quality || {}).length > 0 ||
+              r.overall_alignment != null;
   return any ? 'prog' : 'pending';
 }
 function counts() {
@@ -231,33 +255,58 @@ function renderParts() {
   const host = $('parts'); host.textContent = '';
   it.parts.forEach((p) => {
     const d = document.createElement('div');
-    d.className = 'part' + (r.part_support[p.part_id] !== undefined ? ' answered' : '');
+    d.className = 'part' + (partDone(r, p) ? ' answered' : '');
     const top = document.createElement('div'); top.className = 'part-top';
     const tg = document.createElement('span'); tg.className = 'tag'; tg.textContent = p.part_type;
     const cl = document.createElement('div'); cl.className = 'claim'; cl.textContent = p.atomic_claim;
     top.append(tg, cl); d.append(top);
-    const opts = document.createElement('div'); opts.className = 'opts';
+
+    // row 1 -- decomposition quality, judged against the ORIGINAL TEXT
+    const r1 = document.createElement('div'); r1.className = 'jrow';
+    const l1 = document.createElement('span'); l1.className = 'jlab'; l1.textContent = 'Decomposition';
+    l1.title = 'Is this a good atomic unit of the original text?';
+    const o1 = document.createElement('div'); o1.className = 'opts';
+    DECOMP_LABELS.forEach(([v, lab]) => {
+      o1.append(optButton(lab, r.decomp_quality[p.part_id] === v, () => {
+        r.decomp_quality[p.part_id] = v; persist(it.sample_id); repaint();
+      }, 'dq'));
+    });
+    r1.append(l1, o1); d.append(r1);
+
+    // row 2 -- image support, judged against the IMAGE
+    const r2 = document.createElement('div'); r2.className = 'jrow';
+    const l2 = document.createElement('span'); l2.className = 'jlab'; l2.textContent = 'Image support';
+    l2.title = 'How strongly does the image support this statement?';
+    const o2 = document.createElement('div'); o2.className = 'opts';
     const set = (v) => { r.part_support[p.part_id] = v; persist(it.sample_id); repaint(); };
     for (let v = 0; v <= 4; v++) {
-      opts.append(optButton(String(v), r.part_support[p.part_id] === v, () => set(v), 'num'));
+      o2.append(optButton(String(v), r.part_support[p.part_id] === v, () => set(v), 'num'));
     }
-    opts.append(optButton('Cannot judge', r.part_support[p.part_id] === 'cannot_judge',
+    o2.append(optButton('Cannot judge', r.part_support[p.part_id] === 'cannot_judge',
       () => set('cannot_judge'), 'cj'));
-    d.append(opts); host.append(d);
+    r2.append(l2, o2); d.append(r2);
+
+    host.append(d);
   });
 }
+
 function repaint() {
   const it = cur(), r = rec();
   [...$('parts').children].forEach((card, i) => {
     const p = it.parts[i];
-    card.classList.toggle('answered', r.part_support[p.part_id] !== undefined);
-    card.querySelectorAll('.opt').forEach((b, k) => {
+    card.classList.toggle('answered', partDone(r, p));
+    const rows = card.querySelectorAll('.jrow');
+    rows[0].querySelectorAll('.opt').forEach((b, k) => {
+      b.setAttribute('aria-pressed', String(r.decomp_quality[p.part_id] === DECOMP_VALUES[k]));
+    });
+    rows[1].querySelectorAll('.opt').forEach((b, k) => {
       const v = k <= 4 ? k : 'cannot_judge';
       b.setAttribute('aria-pressed', String(r.part_support[p.part_id] === v));
     });
   });
   renderOverall();
 }
+
 function renderOverall() {
   const it = cur(), r = rec(), ready = allRated(it, r);
   $('overall').classList.toggle('locked', !ready);
@@ -281,10 +330,16 @@ function renderOverall() {
 /* ---------------- actions ---------------- */
 function completeSample() {
   const it = cur(), r = rec();
-  const miss = it.parts.filter((p) => r.part_support[p.part_id] === undefined).length;
-  if (miss) {
-    $('errS').textContent = `Please rate all statements — ${miss} still unrated.`;
-    $('errS').classList.remove('hidden'); return;
+  const m = missingCounts(it, r);
+  if (m.decomp || m.support) {
+    const bits = [];
+    if (m.decomp) bits.push(`${m.decomp} without a decomposition judgement`);
+    if (m.support) bits.push(`${m.support} without an image-support score`);
+    $('errS').textContent = `Every statement needs both judgements — ${bits.join(' and ')}.`;
+    $('errS').classList.remove('hidden');
+    const bad = it.parts.findIndex((p) => !partDone(r, p));
+    if (bad >= 0) $('parts').children[bad].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
   }
   if (r.overall_alignment == null) {
     $('errS').textContent = 'Please give the overall 1–7 judgement at the bottom.';
@@ -344,13 +399,14 @@ function buildExport() {
       const r = S.ann[it.sample_id] || blank(it);
       return {
         sample_id: it.sample_id, assignment_index: i + 1, status: statusOf(it),
-        part_support: it.parts.map((p) => ({
-          part_id: p.part_id, part_index: p.part_index, part_type: p.part_type,
-          atomic_claim: p.atomic_claim,
-          human_atomic_support_0_to_4:
-            r.part_support[p.part_id] === 'cannot_judge' ? null
-              : (r.part_support[p.part_id] ?? null),
-          atomic_cannot_judge: r.part_support[p.part_id] === 'cannot_judge',
+        parts: it.parts.map((p) => ({
+          part_id: p.part_id, part_index: p.part_index,
+          text: p.atomic_claim, type: p.part_type,
+          decomp_quality: validDecomp(r.decomp_quality[p.part_id])
+            ? r.decomp_quality[p.part_id] : null,
+          support_score: r.part_support[p.part_id] === 'cannot_judge' ? null
+            : (r.part_support[p.part_id] ?? null),
+          support_cannot_judge: r.part_support[p.part_id] === 'cannot_judge',
         })),
         human_overall_alignment_1_to_5:
           validOverall(r.overall_alignment) ? r.overall_alignment : null,
@@ -493,8 +549,8 @@ function wire() {
     const idx = '01234'.indexOf(k);
     if (idx >= 0 || k === 'c') {
       e.preventDefault();
-      const btns = card.querySelectorAll('.opt');
-      (idx >= 0 ? btns[idx] : btns[5]).click();
+      const support = card.querySelectorAll('.jrow')[1].querySelectorAll('.opt');
+      (idx >= 0 ? support[idx] : support[5]).click();
     }
   });
 }
@@ -546,10 +602,13 @@ function fromExport(a, it) {
   r.first_completed_at = a.first_completed_at ?? null;
   r.last_modified_at = a.last_modified_at ?? null;
   r.revision_count = a.revision_count || 0;
-  (a.part_support || []).forEach((p) => {
-    if (p.atomic_cannot_judge) r.part_support[p.part_id] = 'cannot_judge';
-    else if (p.human_atomic_support_0_to_4 != null)
-      r.part_support[p.part_id] = p.human_atomic_support_0_to_4;
+  // accepts the v5 `parts` shape and the earlier `part_support` shape
+  (a.parts || a.part_support || []).forEach((p) => {
+    if (validDecomp(p.decomp_quality)) r.decomp_quality[p.part_id] = p.decomp_quality;
+    const cj = p.support_cannot_judge ?? p.atomic_cannot_judge;
+    const sc = p.support_score ?? p.human_atomic_support_0_to_4;
+    if (cj) r.part_support[p.part_id] = 'cannot_judge';
+    else if (sc != null) r.part_support[p.part_id] = sc;
   });
   return r;
 }

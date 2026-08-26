@@ -12,8 +12,9 @@ bundle in the browser.
    grey = not started. Press **Continue annotation** to pick up where you left off, or
    click any number to jump straight to it.
 3. In a sample: the **image is on the left and stays put** while you scroll the
-   statements on the right. Rate every statement 0–4 for how strongly the image supports
-   it, or choose *Cannot judge*. The overall **1–5** alignment question appears at the bottom once
+   statements on the right. For every statement give **two** judgements: whether it is a good
+   decomposition of the text, and how strongly the image supports it (0–4 or
+   *Cannot judge*). The overall **1–5** alignment question appears at the bottom once
    every statement is rated. Then press **Save & complete**.
 4. **Skip for now** postpones a sample — it stays in your assignment and turns red on the
    dashboard until you finish it.
