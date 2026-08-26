@@ -5,55 +5,49 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>VisExMEM Human Annotation</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
 
-<!-- ============ LOGIN ============ -->
+<!-- ===================== LOGIN ===================== -->
 <section id="login" class="login">
   <h1>VisExMEM Human Annotation</h1>
-  <p class="sub">Sign in with the username and access code you were sent.</p>
+  <p class="sub">Sign in with the username and passcode you were sent.</p>
   <div class="card"><div class="card-b">
     <div class="field">
       <label for="user">Username</label>
       <input id="user" type="text" autocomplete="username" spellcheck="false" autocapitalize="none">
     </div>
     <div class="field">
-      <label for="pass">Access code</label>
+      <label for="pass">Passcode</label>
       <input id="pass" type="password" autocomplete="current-password" spellcheck="false">
     </div>
-    <button id="loginBtn" class="btn primary" style="width:100%">Open my assignment</button>
+    <button id="loginBtn" class="btn primary lg" style="width:100%">Open my assignment</button>
     <div id="loginErr" class="err-inline hidden"></div>
-    <p class="hint" style="margin:16px 0 0">
-      Your answers are saved automatically in this browser. Use the same browser and
-      device each time, and do not clear site data until you have exported your final file.
+    <p class="hint" style="margin:18px 0 0">
+      Your work saves automatically in this browser. Please use the same browser and
+      device each time, and do not clear site data before exporting your final file.
     </p>
   </div></div>
 </section>
 
-<!-- ============ APP ============ -->
+<!-- ===================== APP SHELL ===================== -->
 <div id="app" class="hidden">
   <header class="topbar"><div class="topbar-in">
-    <div class="brand">VisExMEM <span>· Human Annotation</span></div>
+    <div class="brand"><em>VisExMEM</em> <span>· Human Annotation</span></div>
     <div class="top-right">
       <div class="who">Signed in as <b id="whoName">—</b></div>
-      <div class="progress-wrap">
-        <span class="progress-txt" id="progTxt">0 / 0</span>
-        <span class="bar"><i id="progBar"></i></span>
-      </div>
       <span class="save-chip" id="saveChip">Saved</span>
       <button class="btn sm ghost" id="menuBtn">Menu</button>
     </div>
   </div></header>
 
   <main class="wrap">
-    <!-- menu -->
-    <div id="menu" class="card hidden"><div class="card-b">
-      <div class="actions" style="margin:0;flex-wrap:wrap">
+    <div id="menu" class="card hidden" style="margin-bottom:18px"><div class="card-b">
+      <div class="actions">
         <button class="btn sm" id="backupBtn">Download backup</button>
         <button class="btn sm" id="importBtn">Import backup</button>
         <input id="importFile" type="file" accept="application/json" class="hidden">
-        <button class="btn sm" id="jumpFirstIncomplete">Go to first unfinished</button>
         <div class="spacer"></div>
         <button class="btn sm primary" id="finalBtn">Export final annotations</button>
         <button class="btn sm ghost" id="logoutBtn">Sign out</button>
@@ -61,132 +55,169 @@
       <div id="menuMsg" class="hint" style="margin:12px 0 0"></div>
     </div></div>
 
-    <details class="guide" id="guide">
-      <summary>Annotation guide</summary>
-      <div class="card-b">
-        <p style="margin-top:0">Each sample has three steps. Please complete them in
-        order; the order is part of the study design.</p>
-        <ul>
-          <li><b>Step 1 — Decomposition (text only).</b> You see the text and atomic
-          statements extracted from it. Judge whether each statement is a reasonable
-          decomposition of the text. The image is deliberately hidden.</li>
-          <li><b>Step 2 — Statement support.</b> The image is revealed. For each atomic
-          statement, rate how strongly the image supports it from 0 to 4, or choose
-          <em>Cannot judge</em>.</li>
-          <li><b>Step 3 — Overall alignment.</b> After rating all statements, give one
-          overall 1–7 judgement of how well the complete image and text match.</li>
-        </ul>
-        <p><em>Cannot judge</em> means the image genuinely does not provide enough
-        evidence to decide. It is not a way to skip a difficult item.</p>
-        <p>If something is technically broken, use <b>Report a technical issue</b> instead.</p>
-        <p style="margin-bottom:0">Your work saves automatically. You can close the tab and
-        return using the same browser and device.</p>
+    <!-- ---------- DASHBOARD ---------- -->
+    <section id="dash">
+      <div class="dash-head">
+        <div>
+          <h1 id="dashName">—</h1>
+          <p class="sub" id="dashSub">—</p>
+        </div>
+        <div class="stat-row">
+          <div class="stat ok"><div class="n" id="sDone">0</div><div class="k">Completed</div></div>
+          <div class="stat warn"><div class="n" id="sProg">0</div><div class="k">In progress</div></div>
+          <div class="stat stop"><div class="n" id="sSkip">0</div><div class="k">Skipped</div></div>
+          <div class="stat tech"><div class="n" id="sTech">0</div><div class="k">Technical</div></div>
+          <div class="stat"><div class="n" id="sLeft">0</div><div class="k">Remaining</div></div>
+        </div>
+      </div>
+      <div class="bigbar" id="bigbar"></div>
+
+      <div class="toolbar">
+        <button class="btn primary" id="continueBtn">Continue annotation</button>
+        <button class="btn hidden" id="reviewSkipBtn">Review skipped samples</button>
+        <div class="spacer"></div>
+        <div class="jump">
+          <label for="jumpNo">Go to sample</label>
+          <input id="jumpNo" type="number" min="1" inputmode="numeric">
+          <button class="btn sm" id="jumpBtn">Open</button>
+        </div>
+      </div>
+
+      <div class="filters" id="filters" style="margin-bottom:16px">
+        <button data-f="all" aria-pressed="true">All</button>
+        <button data-f="pending" aria-pressed="false">Not started</button>
+        <button data-f="prog" aria-pressed="false">In progress</button>
+        <button data-f="skip" aria-pressed="false">Skipped</button>
+        <button data-f="done" aria-pressed="false">Completed</button>
+      </div>
+
+      <div class="legend">
+        <span><i class="dot done"></i> Completed</span>
+        <span><i class="dot prog"></i> In progress</span>
+        <span><i class="dot skip"></i> Skipped — needs revisit</span>
+        <span><i class="dot tech"></i> Technical issue</span>
+        <span><i class="dot pending"></i> Not started</span>
+      </div>
+
+      <details class="guide">
+        <summary>Annotation guide</summary>
+        <div class="card-b">
+          <p style="margin-top:0">For each sample you see the image, the original text, and
+          the atomic statements taken from that text.</p>
+          <ul>
+            <li><b>Rate every statement</b> from 0 to 4 for how strongly the image supports
+            it, or choose <em>Cannot judge</em>.</li>
+            <li><b>Then give one overall 1–7 judgement</b> of how well the complete image
+            and text match. It appears once every statement is rated.</li>
+          </ul>
+          <p><em>Cannot judge</em> means the image genuinely does not give you enough
+          evidence — severe occlusion, something outside the frame. It is not a way to skip
+          a hard item.</p>
+          <p><em>Skip for now</em> postpones a sample so you can return to it later. It stays
+          in your assignment.</p>
+          <p style="margin-bottom:0">If something is broken — the image will not load, the
+          text is garbled — use <b>Report a technical issue</b>. That is different from both
+          of the above.</p>
+        </div>
       </details>
 
-    <!-- ---------- PHASE A ---------- -->
-    <section id="phaseA" class="card">
-      <div class="card-h"><span class="step" id="stepA">1</span><h2>Decomposition — text only</h2></div>
-      <div class="card-b">
-        <p class="hint">Judge each statement against the text below. The image is hidden on purpose.</p>
-        <div class="textbox" id="aText">—</div>
-        <div id="aParts" style="margin-top:18px"></div>
-        <label class="q" id="missQ">Is any important, visually checkable information from the text missing from the statements above?</label>
-        <div class="opts" id="missOpts">
-          <button class="opt" data-miss="no" aria-pressed="false">No</button>
-          <button class="opt" data-miss="yes" aria-pressed="false">Yes</button>
-        </div>
-        <div id="missNoteWrap" class="hidden">
-          <label class="q" for="missNote">What is missing? (optional)</label>
-          <textarea id="missNote" rows="2" placeholder="Short note…"></textarea>
-        </div>
-        <div class="actions">
-          <button class="btn sm ghost" id="techBtnA">Report a technical issue</button>
-          <div class="spacer"></div>
-          <button class="btn primary" id="confirmA">Confirm and show image</button>
-        </div>
-        <div id="errA" class="err-inline hidden"></div>
-      </div>
+      <div id="grids"></div>
     </section>
 
-    <!-- ---------- STEP 2: part support (two-pane) + STEP 3 at the bottom ---------- -->
-    <section id="phaseB" class="card hidden">
-      <div class="card-h"><span class="step" id="stepB">2</span><h2>Statement support in the image</h2></div>
-      <div class="twopane">
-        <div class="pane-img">
-          <div class="imgwrap" id="imgWrapB"><img id="imgB" alt="benchmark image"></div>
+    <!-- ---------- SAMPLE ---------- -->
+    <section id="sample" class="hidden">
+      <div class="samplebar">
+        <button class="btn sm" id="toDash">← Dashboard</button>
+        <div class="pos">Sample <b id="posNow">—</b> of <b id="posAll">—</b></div>
+        <div class="muted" id="posDone">—</div>
+        <div class="spacer"></div>
+        <button class="btn sm" id="prevBtn">Previous</button>
+        <button class="btn sm" id="nextBtn">Next</button>
+      </div>
+
+      <div id="reviewBar" class="reviewbar hidden">
+        <span>This sample is already completed.</span>
+        <div class="spacer"></div>
+        <button class="btn sm" id="editBtn">Edit / redo annotation</button>
+      </div>
+
+      <div class="sample-grid">
+        <div class="media-col">
+          <div class="image-frame" id="imgFrame"><img id="img" alt="benchmark image"></div>
         </div>
-        <div class="pane-parts" id="paneParts">
-          <div class="textbox" id="bText">—</div>
-          <div class="legend">
-            <b>0</b> not supported / contradicted &nbsp;·&nbsp; <b>1</b> weakly &nbsp;·&nbsp;
-            <b>2</b> partially &nbsp;·&nbsp; <b>3</b> strongly &nbsp;·&nbsp; <b>4</b> fully
-            &nbsp;·&nbsp; <b>Cannot judge</b> not enough visual evidence
-            <details class="scaleguide"><summary>What each score means</summary>
-              <ul>
-                <li><b>0 — Not supported / contradicted.</b> The image clearly does not support the statement, or clearly shows the opposite.</li>
-                <li><b>1 — Weakly supported.</b> Very little supporting visual evidence; the image is mostly inconsistent with the statement.</li>
-                <li><b>2 — Partially supported.</b> Some of the statement is supported, but important visual information is missing, unclear or inconsistent.</li>
+        <div class="anno-col">
+          <div class="caption-box">
+            <p class="caption-label">Original text</p>
+            <p class="caption-text" id="capText">—</p>
+          </div>
+
+          <div class="scalebar">
+            <span><b>0</b> unsupported</span><span><b>1</b> weak</span><span><b>2</b> partial</span>
+            <span><b>3</b> strong</span><span><b>4</b> full</span><span><b>?</b> cannot judge</span>
+            <details><summary>Details</summary>
+              <ul class="scaleguide">
+                <li><b>0 — Not supported / contradicted.</b> The image clearly does not support the statement, or shows something incompatible with it.</li>
+                <li><b>1 — Weakly supported.</b> Little supporting evidence; the image is mostly inconsistent with the statement.</li>
+                <li><b>2 — Partially supported.</b> Some aspects are supported, but an important part is missing, unclear or inconsistent.</li>
                 <li><b>3 — Strongly supported.</b> Mostly supported, with only minor uncertainty or incompleteness.</li>
                 <li><b>4 — Fully supported.</b> Clearly and completely supported by the image.</li>
-                <li><b>Cannot judge.</b> The image genuinely does not provide enough evidence — severe occlusion, the entity is outside the frame, or the view is insufficient. Not a way to skip a difficult item.</li>
+                <li><b>Cannot judge.</b> The image genuinely does not provide enough evidence to decide.</li>
               </ul>
             </details>
           </div>
-          <div id="cParts"></div>
 
-          <div id="step3" class="step3 locked">
-            <div class="step3-h"><span class="step" id="stepC">3</span>
-              <h3>Overall image–text alignment</h3></div>
-            <p id="step3Lock" class="hint">Rate every statement above to unlock this final question.</p>
-            <div id="step3Body" class="hidden">
-              <p class="hint">Considering the image and text as a whole, how well do they
-              match? Give your own overall judgement — do not simply average the statement
-              scores.</p>
-              <div class="opts scale" id="holScale"></div>
+          <div id="parts"></div>
+
+          <div id="overall" class="overall locked">
+            <h3>Overall image–text alignment</h3>
+            <p class="q">Considering the complete image and text, how well do they match overall?</p>
+            <p class="hint" id="ovLock" style="margin:0">Rate every statement above to unlock this.</p>
+            <div id="ovBody" class="hidden">
+              <p class="hint" style="margin:0">Give your overall judgement of the complete
+              image–text pair. Do not simply average the statement scores.</p>
+              <div class="scale7" id="ovScale"></div>
               <div class="anchors">
                 <span>1 completely mismatched</span><span>4 partially aligned</span><span>7 fully aligned</span>
               </div>
             </div>
           </div>
 
-          <div class="actions">
-            <button class="btn sm ghost" id="techBtnB">Report a technical issue</button>
-            <div class="spacer"></div>
-            <button class="btn" id="prevBtn">Previous</button>
-            <button class="btn primary" id="saveNext">Save and next</button>
-          </div>
-          <div id="errB" class="err-inline hidden"></div>
+          <div id="techBox" class="card hidden" style="margin-top:16px"><div class="card-b">
+            <h3 style="margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">Technical issue</h3>
+            <p class="hint">Only for a genuine technical fault — a broken image, garbled text,
+            a duplicate, or an app error. Not for difficult judgements.</p>
+            <div class="opts" id="techOpts"></div>
+            <label class="field" style="margin-top:12px"><span style="font-size:12.5px;color:var(--muted)">Note (optional)</span>
+              <textarea id="techNote" rows="2"></textarea></label>
+            <div class="actions" style="margin-top:10px">
+              <button class="btn sm ghost" id="techCancel">Cancel</button>
+              <div class="spacer"></div>
+              <button class="btn sm primary" id="techSave">Flag and return to dashboard</button>
+            </div>
+          </div></div>
+
+          <div id="errS" class="err-inline hidden"></div>
         </div>
+      </div>
+
+      <div class="footbar">
+        <button class="btn sm ghost" id="techBtn">Report a technical issue</button>
+        <button class="btn sm ghost" id="skipBtn" title="Postpone this sample and return to it later">Skip for now</button>
+        <div class="spacer"></div>
+        <button class="btn primary" id="completeBtn">Save &amp; complete</button>
       </div>
     </section>
 
-    <!-- ---------- technical issue ---------- -->
-    <section id="techPanel" class="card hidden">
-      <div class="card-h"><span class="step idle">!</span><h2>Technical issue</h2></div>
-      <div class="card-b">
-        <p class="hint">Only for genuine technical problems — a broken image, garbled text,
-        a duplicate, or an app fault. Not for semantically difficult samples.</p>
-        <div class="opts" id="techOpts"></div>
-        <label class="q" for="techNote">Note (optional)</label>
-        <textarea id="techNote" rows="2"></textarea>
-        <div class="actions">
-          <button class="btn sm ghost" id="techCancel">Cancel</button>
-          <div class="spacer"></div>
-          <button class="btn primary" id="techSave">Flag and go to next</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ---------- completion ---------- -->
-    <section id="donePanel" class="card hidden"><div class="card-b done-wrap">
-      <h2>All samples completed</h2>
+    <!-- ---------- DONE ---------- -->
+    <section id="donePanel" class="card hidden"><div class="card-b" style="text-align:center;padding:40px 20px">
+      <h2 style="font-family:'Source Serif 4',Georgia,serif;font-size:22px;margin:0 0 8px">Assignment complete</h2>
       <p class="hint" id="doneCount">—</p>
-      <button class="btn primary" id="doneExport">Export final annotations</button>
+      <button class="btn primary lg" id="doneExport">Export final annotations</button>
       <p class="mono" id="doneHash" style="margin-top:18px"></p>
     </div></section>
   </main>
 </div>
 
-<script src="app.js"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>

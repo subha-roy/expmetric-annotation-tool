@@ -6,26 +6,25 @@ bundle in the browser.
 
 ## For annotators
 
-1. Open the URL you were sent and sign in with **your own** username and access code.
-2. Work through your samples. Each sample has three steps, in order:
-   - **Step 1 — Decomposition (text only).** Judge whether each statement is a
-     reasonable decomposition of the text. The image is deliberately hidden.
-   - **Step 2 — Statement support.** The image appears on the left and stays in place
-     while you scroll the statements on the right. Rate how strongly the image supports
-     each statement (0–4), or *Cannot judge*.
-   - **Step 3 — Overall alignment.** After every statement is rated, one overall 1–7
-     judgement of how well the complete image and text match appears at the bottom.
-3. Your answers **save automatically in your browser**. You can close the tab and come
-   back to the same place.
-4. Please use the **same browser and the same device** throughout, and do not clear site
-   data for this site until you have exported your final file.
-5. You can press **Download backup** at any time for a safety copy.
-6. When everything is finished, press **Export final annotations** and email the JSON
-   file back.
+1. Open the URL and sign in with **your own** username and passcode.
+2. You land on your **dashboard**: every sample in your assignment as a numbered tile.
+   Green = completed, amber = in progress, red = skipped, purple = technical issue,
+   grey = not started. Press **Continue annotation** to pick up where you left off, or
+   click any number to jump straight to it.
+3. In a sample: the **image is on the left and stays put** while you scroll the
+   statements on the right. Rate every statement 0–4 for how strongly the image supports
+   it, or choose *Cannot judge*. The overall **1–7** question appears at the bottom once
+   every statement is rated. Then press **Save & complete**.
+4. **Skip for now** postpones a sample — it stays in your assignment and turns red on the
+   dashboard until you finish it.
+5. A completed sample can be reopened and revised; press **Edit / redo annotation**.
+6. Your work **saves automatically in your browser**. Use the same browser and device,
+   and do not clear site data before exporting.
+7. Press **Download backup** any time for a safety copy. When everything is finished,
+   press **Export final annotations** and email the JSON back.
 
-*Cannot judge* means the image genuinely does not let you decide — it is not a way to
-skip a hard item. If something is technically broken (image will not load, text is
-garbled, duplicate), use **Report a technical issue** instead.
+*Cannot judge* = the image genuinely does not let you decide. *Skip for now* = postpone.
+*Report a technical issue* = something is broken. Three different things.
 
 ## For the researcher
 

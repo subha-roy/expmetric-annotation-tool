@@ -155,45 +155,74 @@ chk("A30 app never references private construction fields", not _hits, str(_hits
 chk("A31 app never labels a sample as common/unique",
     not re.search(r"\b(is_common|common_sample|iaa)\b", js, re.I))
 
-# ---- FINAL study order: decomposition -> part support -> overall (spec section 27)
-chk("B01 step 1 is decomposition, text only",
-    'id="phaseA"' in html and 'Decomposition — text only' in html)
-chk("B02 no <img> src anywhere in the markup", not re.search(r'<img[^>]+src=', html))
-chk("B03 step 2 is a two-pane layout", 'class="twopane"' in html
-    and 'pane-img' in html and 'pane-parts' in html)
-chk("B04 left image pane is sticky", re.search(r'\.pane-img\{[^}]*position:sticky', css))
-chk("B05 image is contained, never cropped",
-    'object-fit:contain' in css.replace(' ', ''))
-chk("B06 right pane scrolls independently of the sticky image",
-    '.pane-parts{' in css.replace(' ', '') and '.pane-img{position:sticky' in css.replace(' ', ''))
-chk("B07 step 3 lives at the bottom of the right pane",
-    html.index('id="cParts"') < html.index('id="step3"') < html.index('id="saveNext"'))
-chk("B08 step 3 starts locked", 'class="step3 locked"' in html)
-chk("B09 step 3 unlocks only when every part is scored",
-    'allPartsScored' in js and 'paintStep3' in js)
-chk("B10 overall scale is 1-7", "for (let v = 1; v <= 7; v++)" in js)
-chk("B11 part scale is 0-4 plus Cannot judge",
+# ---- FINAL flow: login -> dashboard -> sample (image + text + parts) ----
+chk("B01 login is the first screen", 'id="login"' in html and 'id="dash"' in html)
+chk("B02 login lands on the dashboard, never a sample",
+    "renderDash();                       // always land on the dashboard" in js
+    or ("renderDash()" in js and "never a sample" in js))
+chk("B03 decomposition-quality stage is GONE",
+    not any(w in html for w in ("Needs split", "Needs merge", "Not entailed by the text",
+                                "DECOMPOSITION — TEXT ONLY"))
+    and "decomposition_label" not in js)
+chk("B04 image is present on the sample screen from the start",
+    'id="imgFrame"' in html and 'loadImage(it.image)' in js)
+chk("B05 two-pane: media column left, annotation column right",
+    '.sample-grid{' in css.replace(' ', '') and 'media-col' in html and 'anno-col' in html)
+chk("B06 media column is sticky on desktop",
+    re.search(r'\.media-col\{[^}]*position:sticky', css.replace(' ', '')))
+chk("B07 image is contained, never cropped", 'object-fit:contain' in css.replace(' ', ''))
+chk("B08 original text shown prominently", 'caption-box' in html and 'Original text' in html)
+chk("B09 part scale is 0-4 plus Cannot judge",
     "for (let v = 0; v <= 4; v++)" in js and "'cannot_judge'" in js)
-chk("B12 sample cannot finish without the overall score",
-    "holistic_alignment_1_to_7 == null" in js and "Please give the overall" in js)
-chk("B13 all original parts are rated regardless of step-1 label",
-    "regardless of its Step-1 judgement" in js or "whatever step 1 said" in js)
-chk("B14 decomposition is never rewritten from step-1 answers",
-    "never rewritten" in js)
-chk("B15 cannot-judge is separate from technical issue",
-    'id="techPanel"' in html and 'technical_issue' in js)
-chk("B16 content version bumped so stale part state cannot be reused",
-    "CONTENT_VERSION" in js and "decomp-phrase-v2" in js)
-chk("B17 db namespace includes the content version",
-    "CONTENT_VERSION}" in js.replace(' ', '').replace('\n', ''))
-chk("B18 export orders decomposition -> part_support -> overall",
-    js.index('decomposition: {') < js.index('part_support:') < js.index('overall_alignment:'))
-chk("B19 export keeps part ids for later merging",
-    "part_id: p.part_id" in js)
-chk("B20 guide states the final order",
-    'Step 2 — Statement support' in html and 'Step 3 — Overall alignment' in html)
-chk("B21 obsolete phase C markup fully removed",
-    'id="phaseC"' not in html and 'renderC(' not in js)
+chk("B10 overall scale is 1-7", "for (let v = 1; v <= 7; v++)" in js)
+chk("B11 overall is locked until every part is rated",
+    "allRated" in js and 'id="ovLock"' in html)
+chk("B12 sample cannot complete without the overall score",
+    "overall_alignment == null" in js)
+chk("B13 dashboard has a numbered grid", 'numgrid' in css and 'numcell' in css)
+chk("B14 five distinct statuses exist",
+    all(f'.numcell.{k}' in css.replace(' ', '') for k in ('done', 'prog', 'skip', 'tech')))
+chk("B15 status is not colour-only (mark + aria-label + title)",
+    "aria-label" in js and "b.title =" in js and "MARK" in js)
+chk("B16 legend present", 'class="legend"' in html and 'Skipped — needs revisit' in html)
+chk("B17 skip is worded 'Skip for now'", "Skip for now" in html)
+# statusOf() returns exactly one bucket per sample, so a skipped sample can never land
+# in the completed count; completion also clears the skip flag.
+chk("B18 skipped is NOT counted as completed",
+    "if (r.status === 'completed') return 'done';" in js
+    and "if (r.skipped_for_now) return 'skip';" in js
+    and "r.status = 'completed'; r.skipped_for_now = false;" in js)
+chk("B19 completed samples reopen in review mode with an edit control",
+    'id="reviewBar"' in html and 'id="editBtn"' in html and "already completed" in html)
+chk("B20 revision metadata is tracked",
+    all(k in js for k in ("first_started_at", "first_completed_at",
+                          "last_modified_at", "revision_count")))
+chk("B21 continue-annotation prefers in-progress then pending",
+    "continueAnnotation" in js and "'prog'" in js and "'pending'" in js)
+chk("B22 quick jump is bounds-checked against the assignment",
+    "v > items().length" in js)
+chk("B23 dashboard filters exist", 'id="filters"' in html and 'data-f="skip"' in html)
+chk("B24 final export blocks while work is outstanding",
+    "outstanding > 0" in js and "still require review" in js)
+chk("B25 export carries index, status, scores, technical state and revisions",
+    all(k in js for k in ("assignment_index", "status:", "part_support:",
+                          "human_overall_alignment_1_to_7", "technical_issue",
+                          "revision_count")))
+chk("B26 content version bumped so stale cache cannot resurface",
+    "CONTENT_VERSION" in js and "flow-v3" in js)
+chk("B27 cache namespace includes annotator, assignment hash and version",
+    "annotator_id}_${b.assignment_hash" in js and "CONTENT_VERSION}" in js)
+chk("B28 no private benchmark metadata in the app",
+    not any(re.search(r"\b" + w + r"\b", js) for w in
+            ("difficulty", "primary_challenge", "source_dataset", "generator", "qc_json")))
+chk("B29 keyboard scoring only affects a focused part",
+    "closest?.('.part')" in js and "activeElement" in js)
+chk("B30 rating does not auto-scroll the panel",
+    "repaint()" in js and "renderParts();" in js)
+chk("B31 backup import validates annotator, assignment and schema",
+    "different annotator" in js and "different assignment" in js and "different schema" in js)
+chk("B32 technical issue is separate from cannot-judge and skip",
+    'id="techBox"' in html and "technical_issue" in js and "skipped_for_now" in js)
 
 print(f"\n{P}/{P+F} passed")
 sys.exit(0 if F == 0 else 1)
