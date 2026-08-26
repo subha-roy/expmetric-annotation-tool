@@ -3,10 +3,10 @@ private/
 ASSIGNMENT_LOCK.json.bak
 *.local.json
 
-# ---- benchmark images: redistribution status differs per source ----
-# ADE20K / HICO-DET / MJHQ-30K redistribution is NOT established, so the staged image
-# directory is excluded by default. See private/image_manifest.json for per-file status.
-images_bench/
+# ---- benchmark images ----
+# The 600 benchmark images ARE published here, on the repository owner's explicit
+# decision. Per-source provenance and licence text are recorded in the frozen manifests
+# and in private/image_manifest.json.
 
 # ---- returned annotations / test artefacts ----
 returned/
