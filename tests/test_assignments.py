@@ -296,7 +296,10 @@ for _sec in ("A · What you are doing",
              "G · Navigating, saving and exporting"):
     chk(f"G01 guide section {_sec[:1]}", _sec in html)
 # ---- UX: sticky original text, bottom navigation, guide prominence ----
-_sticky = html[html.index('class="anno-sticky"'):html.index("<!-- /.anno-sticky -->")]
+# two screens now carry a sticky text block; scope each check to its own section
+_sample_html = html[html.index("<!-- ---------- SAMPLE ---------- -->"):]
+_sticky = _sample_html[_sample_html.index('class="anno-sticky"'):
+                       _sample_html.index("<!-- /.anno-sticky -->")]
 chk("U01 original text is inside the sticky block",
     'class="caption-box"' in _sticky and 'id="capText"' in _sticky)
 chk("U02 sticky block does not swallow the part cards",
@@ -322,6 +325,10 @@ chk("U09 bottom nav disabled state mirrors the top",
                           "setAll(['nextBtn', 'nextBtnB'], 'disabled'",
                           "setAll(['tutPrev', 'tutPrevB'], 'disabled'",
                           "setAll(['tutNext', 'tutNextB'], 'disabled'")))
+chk("U16 worked examples pin the original text like real samples do",
+    html.count('class="anno-sticky"') == 2
+    and 'id="tutText"' in html[html.index('<section id="tutorial"'):
+                               html.index("<!-- ---------- SAMPLE ---------- -->")])
 chk("U15 nav helpers are actually defined",
     "const onAll =" in js and "const setAll =" in js and "const textAll =" in js)
 chk("U10 bottom nav carries no submit action",

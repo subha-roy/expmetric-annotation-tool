@@ -376,6 +376,27 @@ class TestWorkedExamplesUI(unittest.TestCase):
             self.assertIn(label, self.html)
             self.assertIn(f"'{el}'", self.js, f"#{el} is not wired up")
 
+    def test_original_text_is_sticky_like_the_annotation_screen(self):
+        """The worked examples must pin the text the same way real samples do."""
+        i = self.html.index('<section id="tutorial"')
+        j = self.html.index("<!-- ---------- SAMPLE ---------- -->")
+        tut = self.html[i:j]
+        self.assertIn('class="anno-sticky"', tut, "examples have no sticky text block")
+        a = tut.index('class="anno-sticky"')
+        b = tut.index("<!-- /.anno-sticky -->")
+        seg = tut[a:b]
+        self.assertIn('id="tutText"', seg, "the original text is not inside the block")
+        for other in ('id="tutParts"', 'id="tutOverall"'):
+            self.assertNotIn(other, seg, f"{other} must scroll, not stick")
+        self.assertIn('class="media-col"', tut, "the image column must stay sticky too")
+
+    def test_sticky_text_is_height_capped_on_both_screens(self):
+        with open(os.path.join(APP, "styles.css")) as f:
+            css = f.read()
+        self.assertIn(".anno-sticky .captext", css,
+                      "the examples' caption needs the same height cap")
+        self.assertIn("max-height:6.6em", css)
+
     def test_navigation_is_duplicated_at_the_bottom(self):
         """A long example must not force a scroll back to the top."""
         for el in ("tutPrevB", "tutNextB", "tutExitB", "tutNowB", "tutAllB"):

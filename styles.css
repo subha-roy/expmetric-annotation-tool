@@ -342,8 +342,11 @@ details.guide ul{margin:8px 0 0;padding-left:20px} details.guide li{margin-botto
     padding-bottom:12px;
     /* fades the part cards out from under the block instead of a hard edge */
     box-shadow:0 10px 10px -10px rgba(22,32,44,.16)}
-  /* readable, but never more than a few lines of the viewport */
-  .anno-sticky .caption-text{max-height:6.6em;overflow-y:auto;
+  /* readable, but never more than a few lines of the viewport.
+     .caption-text is the annotation screen, .captext the worked examples -- both stick
+     the same way so the two screens behave identically. */
+  .anno-sticky .caption-text,
+  .anno-sticky .captext{max-height:6.6em;overflow-y:auto;
     scrollbar-width:thin;padding-right:4px}
 }
 
