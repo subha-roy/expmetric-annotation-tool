@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const APP_VERSION = '5.4.0';
+const APP_VERSION = '5.5.0';
 // Bundled parts changed (phrase-level decomposition) AND the flow changed, so the cache
 // namespace must move with them: stale part-level state can never resurface.
 const CONTENT_VERSION = 'decomp-phrase-v2+flow-v5-dualjudgment';
@@ -42,6 +42,12 @@ const OVERALL_LABEL = {
 const validOverall = (v) =>
   Number.isInteger(v) && v >= OVERALL_MIN && v <= OVERALL_MAX;
 const $ = (id) => document.getElementById(id);
+/* Bind one handler to several ids. The bottom navigation is an alias of the top, not a
+   second code path, so the two can never drift apart or double-fire. */
+const onAll = (ids, ev, fn) =>
+  ids.forEach((i) => { const e = $(i); if (e) e.addEventListener(ev, fn); });
+const setAll = (ids, prop, v) => ids.forEach((i) => { const e = $(i); if (e) e[prop] = v; });
+const textAll = (ids, v) => ids.forEach((i) => { const e = $(i); if (e) e.textContent = v; });
 let S = null;              // {bundle, ann, idx, db, filter, editing}
 
 /* ---------------- crypto ---------------- */
@@ -236,13 +242,13 @@ function openSample(i) {
 
 function renderSample() {
   const it = cur(), r = rec(), c = counts();
-  $('posNow').textContent = String(S.idx + 1);
-  $('posAll').textContent = String(items().length);
+  textAll(['posNow', 'posNowB'], String(S.idx + 1));
+  textAll(['posAll', 'posAllB'], String(items().length));
   $('posDone').textContent = `${c.done} completed`;
   $('capText').textContent = it.text;
   loadImage(it.image);
-  $('prevBtn').disabled = S.idx === 0;
-  $('nextBtn').disabled = S.idx === items().length - 1;
+  setAll(['prevBtn', 'prevBtnB'], 'disabled', S.idx === 0);
+  setAll(['nextBtn', 'nextBtnB'], 'disabled', S.idx === items().length - 1);
   const done = r.status === 'completed';
   $('reviewBar').classList.toggle('hidden', !done || S.editing);
   $('completeBtn').textContent = done && S.editing ? 'Save revision' : 'Save & complete';
@@ -354,8 +360,8 @@ function tutChip(text, cls) {
 
 function renderTutorial() {
   const ex = TUT.list[TUT.i];
-  $('tutNow').textContent = String(TUT.i + 1);
-  $('tutAll').textContent = String(TUT.list.length);
+  textAll(['tutNow', 'tutNowB'], String(TUT.i + 1));
+  textAll(['tutAll', 'tutAllB'], String(TUT.list.length));
   $('tutBadge').textContent = 'reference answers — not counted';
   $('tutName').textContent = (ex.display_name || `Example ${TUT.i + 1}`)
     + (ex.alignment_label ? ` · ${ex.alignment_label}` : '');
@@ -418,8 +424,8 @@ function renderTutorial() {
   tp.textContent = ex.teaching_point || '';
   tp.classList.toggle('hidden', !ex.teaching_point);
 
-  $('tutPrev').disabled = TUT.i === 0;
-  $('tutNext').disabled = TUT.i === TUT.list.length - 1;
+  setAll(['tutPrev', 'tutPrevB'], 'disabled', TUT.i === 0);
+  setAll(['tutNext', 'tutNextB'], 'disabled', TUT.i === TUT.list.length - 1);
   $('tutDone').textContent = TUT.i === TUT.list.length - 1
     ? 'Start annotating' : 'Skip the examples';
   window.scrollTo({ top: 0 });
@@ -644,17 +650,17 @@ function wire() {
   $('menuBtn').addEventListener('click', () => $('menu').classList.toggle('hidden'));
   $('logoutBtn').addEventListener('click', () => location.reload());
 
-  $('toDash').addEventListener('click', renderDash);
+  onAll(['toDash', 'toDashB'], 'click', renderDash);
   $('tutAgain').addEventListener('click', () => openTutorial(0));
   $('menuTut').addEventListener('click', () => openTutorial(0));
-  $('tutPrev').addEventListener('click', () => { TUT.i--; renderTutorial(); });
-  $('tutNext').addEventListener('click', () => { TUT.i++; renderTutorial(); });
-  $('tutExit').addEventListener('click', exitTutorial);
+  onAll(['tutPrev', 'tutPrevB'], 'click', () => { TUT.i--; renderTutorial(); });
+  onAll(['tutNext', 'tutNextB'], 'click', () => { TUT.i++; renderTutorial(); });
+  onAll(['tutExit', 'tutExitB'], 'click', exitTutorial);
   $('tutDone').addEventListener('click', exitTutorial);
   const gl = $('guideTutLink');
   if (gl) gl.addEventListener('click', (e) => { e.preventDefault(); openTutorial(0); });
-  $('prevBtn').addEventListener('click', () => openSample(S.idx - 1));
-  $('nextBtn').addEventListener('click', () => openSample(S.idx + 1));
+  onAll(['prevBtn', 'prevBtnB'], 'click', () => openSample(S.idx - 1));
+  onAll(['nextBtn', 'nextBtnB'], 'click', () => openSample(S.idx + 1));
   $('completeBtn').addEventListener('click', completeSample);
   $('skipBtn').addEventListener('click', skipForNow);
   $('editBtn').addEventListener('click', () => { S.editing = true; renderSample(); });

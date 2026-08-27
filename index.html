@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>VisExMEM Human Annotation</title>
-<link rel="stylesheet" href="styles.css?v=13">
+<link rel="stylesheet" href="styles.css?v=14">
 </head>
 <body>
 
@@ -111,7 +111,8 @@
       </section>
 
       <details class="guide" id="guide">
-        <summary>Annotation guide</summary>
+        <summary><span class="gsum-badge">Guide</span>Annotation Guide — please review
+          before starting</summary>
         <div class="guide-body">
 
           <section class="gsec worked">
@@ -337,7 +338,15 @@
             <div id="tutOverall"></div>
             <p class="tutteach hidden" id="tutTeach"></p>
           </div></div>
-          <div class="actions" style="margin-top:16px">
+          <div class="samplebar botnav" style="margin-top:18px">
+            <button class="btn sm" id="tutExitB">← Back to dashboard</button>
+            <div class="pos">Example <b id="tutNowB">—</b> of <b id="tutAllB">—</b></div>
+            <div class="spacer"></div>
+            <button class="btn sm" id="tutPrevB">Previous example</button>
+            <button class="btn sm" id="tutNextB">Next example</button>
+          </div>
+
+          <div class="actions" style="margin-top:12px">
             <div class="spacer"></div>
             <button class="btn primary" id="tutDone">Start annotating</button>
           </div>
@@ -367,6 +376,7 @@
           <div class="image-frame" id="imgFrame"><img id="img" alt="benchmark image"></div>
         </div>
         <div class="anno-col">
+          <div class="anno-sticky">
           <div class="caption-box">
             <p class="caption-label">Original text</p>
             <p class="caption-text" id="capText">—</p>
@@ -387,6 +397,7 @@
               </ul>
             </details>
           </div>
+          </div><!-- /.anno-sticky -->
 
           <div id="parts"></div>
 
@@ -423,6 +434,14 @@
         </div>
       </div>
 
+      <div class="samplebar botnav">
+        <button class="btn sm" id="toDashB">← Dashboard</button>
+        <div class="pos">Sample <b id="posNowB">—</b> of <b id="posAllB">—</b></div>
+        <div class="spacer"></div>
+        <button class="btn sm" id="prevBtnB">Previous</button>
+        <button class="btn sm" id="nextBtnB">Next</button>
+      </div>
+
       <div class="footbar">
         <button class="btn sm ghost" id="techBtn">Report a technical issue</button>
         <button class="btn sm ghost" id="skipBtn" title="Postpone this sample and return to it later">Skip for now</button>
@@ -441,6 +460,6 @@
   </main>
 </div>
 
-<script src="app.js?v=13"></script>
+<script src="app.js?v=14"></script>
 </body>
 </html>

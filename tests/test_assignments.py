@@ -295,6 +295,48 @@ for _sec in ("A · What you are doing",
              "F · Cannot judge vs Skip for now vs Technical issue",
              "G · Navigating, saving and exporting"):
     chk(f"G01 guide section {_sec[:1]}", _sec in html)
+# ---- UX: sticky original text, bottom navigation, guide prominence ----
+_sticky = html[html.index('class="anno-sticky"'):html.index("<!-- /.anno-sticky -->")]
+chk("U01 original text is inside the sticky block",
+    'class="caption-box"' in _sticky and 'id="capText"' in _sticky)
+chk("U02 sticky block does not swallow the part cards",
+    'id="parts"' not in _sticky and 'id="overall"' not in _sticky)
+chk("U03 sticky block sticks below the topbar, under it in z-order",
+    ".anno-sticky{position:sticky;top:78px;z-index:6" in " ".join(css.split())
+    or "position:sticky;top:78px;z-index:6" in css.replace("\n", "").replace("  ", ""))
+chk("U04 sticky caption is height-capped so parts stay visible",
+    "max-height:6.6em" in css and "overflow-y:auto" in css)
+chk("U05 only one sticky owner in the annotation column",
+    ".scalebar{position:static" in css)
+chk("U06 bottom nav exists for real samples",
+    all(f'id="{i}"' in html for i in ("toDashB", "prevBtnB", "nextBtnB",
+                                      "posNowB", "posAllB")))
+chk("U07 bottom nav exists for worked examples",
+    all(f'id="{i}"' in html for i in ("tutExitB", "tutPrevB", "tutNextB",
+                                      "tutNowB", "tutAllB")))
+chk("U08 top and bottom nav share one handler, not two code paths",
+    "onAll(['prevBtn', 'prevBtnB']" in js and "onAll(['nextBtn', 'nextBtnB']" in js
+    and "onAll(['tutPrev', 'tutPrevB']" in js and "onAll(['tutNext', 'tutNextB']" in js)
+chk("U09 bottom nav disabled state mirrors the top",
+    all(x in js for x in ("setAll(['prevBtn', 'prevBtnB'], 'disabled'",
+                          "setAll(['nextBtn', 'nextBtnB'], 'disabled'",
+                          "setAll(['tutPrev', 'tutPrevB'], 'disabled'",
+                          "setAll(['tutNext', 'tutNextB'], 'disabled'")))
+chk("U15 nav helpers are actually defined",
+    "const onAll =" in js and "const setAll =" in js and "const textAll =" in js)
+chk("U10 bottom nav carries no submit action",
+    "completeBtn" not in html[html.index('class="samplebar botnav"'):
+                              html.index('class="footbar"')])
+chk("U11 bottom nav is separated from the sticky submit bar",
+    ".samplebar.botnav{" in css and "border-top:1px solid var(--line)" in css)
+chk("U12 guide summary is prominent and self-explanatory",
+    "Annotation Guide — please review" in " ".join(html.split())
+    and 'class="gsum-badge"' in html)
+chk("U13 guide uses the accent treatment",
+    "details.guide{border-color:var(--accent-solid)" in css)
+chk("U14 guide content itself is unchanged",
+    all(x in html for x in ("A · What you are doing", "G · Navigating",
+                            "View worked examples")))
 chk("G02 guide has worked examples", "red shirt" in html and "three dogs" in html)
 chk("G06 guide says extra unmentioned objects do not lower the score",
     "should not\n            automatically reduce the score" in html

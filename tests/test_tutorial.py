@@ -374,7 +374,22 @@ class TestWorkedExamplesUI(unittest.TestCase):
                           ("tutExit", "Back to dashboard")):
             self.assertIn(f'id="{el}"', self.html)
             self.assertIn(label, self.html)
-            self.assertIn(f"$('{el}')", self.js)
+            self.assertIn(f"'{el}'", self.js, f"#{el} is not wired up")
+
+    def test_navigation_is_duplicated_at_the_bottom(self):
+        """A long example must not force a scroll back to the top."""
+        for el in ("tutPrevB", "tutNextB", "tutExitB", "tutNowB", "tutAllB"):
+            self.assertIn(f'id="{el}"', self.html, f"missing bottom control #{el}")
+        for pair in ("['tutPrev', 'tutPrevB']", "['tutNext', 'tutNextB']",
+                     "['tutExit', 'tutExitB']"):
+            self.assertIn(pair, self.js,
+                          f"{pair} must share one handler, not two code paths")
+
+    def test_bottom_nav_has_no_submit_action(self):
+        i = self.html.index('id="tutExitB"')
+        j = self.html.index('id="tutDone"')
+        self.assertNotIn("tutDone", self.html[i:j],
+                         "navigation must not sit inside the submit control")
 
     def test_examples_are_presented_as_read_only(self):
         self.assertIn("cannot be changed", self.html)
