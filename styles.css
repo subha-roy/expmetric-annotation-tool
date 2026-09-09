@@ -383,10 +383,20 @@ details.guide>summary::before{color:var(--accent-solid);font-size:13px}
     margin-left:50%;
     transform:translateX(-50%);
   }
-  #guide .guide-body{padding:6px 16px 16px}
+  #guide .guide-body{padding:10px 28px 20px}
   #guide .gsec{padding:12px 0}
+  /* !important here matches this stylesheet's own established pattern (.ghint,
+     .gex-h, .gcallout all do the same) for guaranteeing an override actually wins --
+     used because the plain override was reported to not visibly take effect.
+     width:100%+box-sizing:border-box makes each element explicitly fill the
+     available space (inside guide-body's own padding above) rather than relying
+     only on the removed max-width's absence. */
   #guide .gsec p,
   #guide .gsec ul,
   #guide .gsec ol,
-  #guide .gtable{max-width:none}
+  #guide .gtable{
+    max-width:none !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+  }
 }
