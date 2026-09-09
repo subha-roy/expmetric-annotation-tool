@@ -45,9 +45,9 @@
       "assignment_hash": "8ac94737c09681f375f514771809531a10cfa08c6658350ec165eab424a4a546",
       "assignment_size": 30
     },
-    "joy": {
-      "name": "Joy",
-      "bundle": "data/bundle_joy.json",
+    "annotator": {
+      "name": "Annotator",
+      "bundle": "data/bundle_annotator.json",
       "assignment_hash": "49565854dc2a69ab9786362b6fc53736f5851cd77d6481d6893752468903b521",
       "assignment_size": 30
     }

@@ -13,7 +13,7 @@
     "christian": "8ac5e903913b811feb74d3178aabd0d39e5f1be1ebb39a4ce6905f97089ceabe",
     "chris": "9db7baa38e7954d31f12e861cd8681b74a6bc68a081b1574d4696e53bf8309cf",
     "zhipin": "8ac94737c09681f375f514771809531a10cfa08c6658350ec165eab424a4a546",
-    "joy": "49565854dc2a69ab9786362b6fc53736f5851cd77d6481d6893752468903b521"
+    "annotator": "49565854dc2a69ab9786362b6fc53736f5851cd77d6481d6893752468903b521"
   },
   "counts": {
     "damir": {
@@ -51,7 +51,7 @@
       "common": 30,
       "total": 30
     },
-    "joy": {
+    "annotator": {
       "unique": 0,
       "common": 30,
       "total": 30
