@@ -366,3 +366,27 @@ details.guide>summary::before{color:var(--accent-solid);font-size:13px}
 .gsum-badge{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
   background:var(--accent-solid);color:#fff;padding:3px 9px;border-radius:99px;
   flex:none}
+
+/* ---------------- annotation guide: wide-desktop screenshot layout ---------------- */
+/* Scoped to >=1200px only, so tablet/mobile guide layout is byte-identical to before.
+   Breaks #guide out of .wrap's 1440px cap without touching .wrap itself (every other
+   screen -- dashboard, sample -- is unaffected). margin-left:50% + translateX(-50%)
+   centers on the viewport rather than on .wrap's content box because .wrap is itself
+   centered via margin:0 auto with symmetric padding, so the two centers coincide;
+   #guide's own ancestors (#dash, main.wrap) add no asymmetric padding of their own.
+   No text, wording, ordering, class, or HTML structure is changed anywhere below --
+   layout/spacing only. */
+@media (min-width:1200px){
+  #guide{
+    width:94vw;
+    max-width:1700px;
+    margin-left:50%;
+    transform:translateX(-50%);
+  }
+  #guide .guide-body{padding:6px 16px 16px}
+  #guide .gsec{padding:12px 0}
+  #guide .gsec p,
+  #guide .gsec ul,
+  #guide .gsec ol,
+  #guide .gtable{max-width:none}
+}
