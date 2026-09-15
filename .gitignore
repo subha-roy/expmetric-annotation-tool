@@ -13,6 +13,8 @@ returned/
 *.annotations.json
 visexmem_annotations_*.json
 visexmem_backup_*.json
+visexmem_explanation_annotations_*.json
+visexmem_explanation_backup_*.json
 
 # ---- junk ----
 .DS_Store

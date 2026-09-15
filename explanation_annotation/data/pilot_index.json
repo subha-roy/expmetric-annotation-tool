@@ -1,0 +1,13 @@
+{
+  "schema_version": "explanation-annotation-pilot-1.0.0",
+  "app_version": "2.0.0",
+  "manifest_hash": "4f3ba7f689da2f97e8995dcac83d4fc7b583abce3fe1eaa6608626a2ae801616",
+  "annotators": {
+    "pilot": {
+      "name": "Pilot (timed workload test)",
+      "bundle": "data/bundle_pilot.json",
+      "assignment_hash": "5110764fcdbd17c24753e43d7653eda026a6f06472b8978f05e8df4ea07f077f",
+      "assignment_size": 10
+    }
+  }
+}

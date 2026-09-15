@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>VisExMEM Explanation Quality Annotation</title>
+<link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<section id="login" class="login">
+  <h1>VisExMEM Explanation Quality</h1>
+  <p class="sub">Sign in with the username and passcode you were sent.</p>
+  <div class="card"><div class="card-b">
+    <div class="field">
+      <label for="user">Username</label>
+      <input id="user" type="text" autocomplete="username" spellcheck="false" autocapitalize="none">
+    </div>
+    <div class="field">
+      <label for="pass">Passcode</label>
+      <input id="pass" type="password" autocomplete="current-password" spellcheck="false">
+    </div>
+    <button id="loginBtn" class="btn primary lg" style="width:100%">Open my assignment</button>
+    <div id="loginErr" class="err-inline hidden"></div>
+    <p class="hint" style="margin:18px 0 0">
+      Your work saves automatically in this browser. Please use the same browser and
+      device each time, and do not clear site data before exporting.
+    </p>
+  </div></div>
+</section>
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="app" class="hidden">
+  <header class="topbar"><div class="topbar-in">
+    <div class="brand"><em>VisExMEM</em> <span>· Explanation Quality</span></div>
+    <div class="top-right">
+      <div class="who">Signed in as <b id="whoName">—</b></div>
+      <span class="save-chip" id="saveChip">Saved</span>
+      <button class="btn sm ghost" id="menuBtn">Menu</button>
+    </div>
+  </div></header>
+
+  <main class="wrap">
+    <div id="menu" class="card hidden" style="margin-bottom:18px"><div class="card-b">
+      <div class="actions">
+        <button class="btn sm" id="menuTut">View practice examples</button>
+        <button class="btn sm" id="backupBtn">Download backup</button>
+        <button class="btn sm" id="importBtn">Import backup</button>
+        <input id="importFile" type="file" accept="application/json" class="hidden">
+        <div class="spacer"></div>
+        <button class="btn sm primary" id="finalBtn">Export final annotations</button>
+        <button class="btn sm ghost" id="logoutBtn">Sign out</button>
+      </div>
+      <div id="menuMsg" class="hint" style="margin:12px 0 0"></div>
+    </div></div>
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section id="dash">
+      <div class="dash-head">
+        <div>
+          <h1 id="dashName">—</h1>
+          <p class="sub" id="dashSub">—</p>
+        </div>
+        <div class="stat-row">
+          <div class="stat ok"><div class="n" id="sDone">0</div><div class="k">Completed</div></div>
+          <div class="stat warn"><div class="n" id="sProg">0</div><div class="k">In progress</div></div>
+          <div class="stat stop"><div class="n" id="sSkip">0</div><div class="k">Skipped</div></div>
+          <div class="stat tech"><div class="n" id="sTech">0</div><div class="k">Technical</div></div>
+          <div class="stat"><div class="n" id="sLeft">0</div><div class="k">Remaining</div></div>
+        </div>
+      </div>
+      <div class="bigbar" id="bigbar"></div>
+
+      <div class="toolbar">
+        <button class="btn primary" id="continueBtn">Continue annotation</button>
+        <button class="btn" id="tutAgain">View practice examples</button>
+        <button class="btn hidden" id="reviewSkipBtn">Review skipped samples</button>
+        <div class="spacer"></div>
+        <div class="jump">
+          <label for="jumpNo">Go to sample</label>
+          <input id="jumpNo" type="number" min="1" inputmode="numeric">
+          <button class="btn sm" id="jumpBtn">Open</button>
+        </div>
+      </div>
+
+      <div class="filters" id="filters" style="margin-bottom:16px">
+        <button data-f="all" aria-pressed="true">All</button>
+        <button data-f="pending" aria-pressed="false">Not started</button>
+        <button data-f="prog" aria-pressed="false">In progress</button>
+        <button data-f="skip" aria-pressed="false">Skipped</button>
+        <button data-f="done" aria-pressed="false">Completed</button>
+      </div>
+
+      <div class="legend">
+        <span><i class="dot done"></i> Completed</span>
+        <span><i class="dot prog"></i> In progress</span>
+        <span><i class="dot skip"></i> Skipped — needs revisit</span>
+        <span><i class="dot tech"></i> Technical issue</span>
+        <span><i class="dot pending"></i> Not started</span>
+      </div>
+
+      <section class="worked-home" id="workedHome">
+        <div class="wh-head">
+          <h2>Practice examples</h2>
+          <p>Review these before starting. Each is a complete image–explanation set with
+          a short walkthrough note. They never count toward your progress.</p>
+        </div>
+        <div class="wh-cards" id="whCards"></div>
+      </section>
+
+      <section class="quickref">
+        <h2>Quick reference</h2>
+        <div class="qr-grid">
+          <div class="qr-col">
+            <h3>Task A — one explanation</h3>
+            <ul>
+              <li><b>Correctness</b> → Is the explanation right?</li>
+              <li><b>Grounding</b> → Are its statements visibly supported?</li>
+              <li><b>Clarity</b> → Is it easy to understand?</li>
+              <li><b>Usefulness</b> → Does it explain WHY the pair aligns/fails?</li>
+              <li><b>Unsupported Content</b> → Did it assert something unsupported?</li>
+            </ul>
+          </div>
+          <div class="qr-col">
+            <h3>Task B — a highlighted region</h3>
+            <ul>
+              <li><b>Localization</b> → Are the highlighted regions correct?</li>
+              <li><b>Sufficiency</b> → Do they contain enough evidence to judge the claim?</li>
+            </ul>
+          </div>
+        </div>
+        <p class="qr-anchor-note">Every 1–5 question shows all five text labels, not just
+        the ends — <b>3 always means partial / mixed</b>, while 1 and 5 are the clear
+        extremes. Read the label you're clicking, not just the number.</p>
+        <p><button class="btn primary" id="guideTutLink">View practice examples</button>
+        <span class="ghint" style="margin-left:10px">5 short examples, don't count toward progress.</span></p>
+      </section>
+
+      <details class="guide" id="guide">
+        <summary><span class="gsum-badge">Guide</span>Full annotation guide (optional — everything above already covers the essentials)</summary>
+        <div class="guide-body">
+
+          <section class="gsec">
+            <h4>A · What you are doing</h4>
+            <p>For every sample you see an <b>image</b> and the <b>caption</b> being
+            evaluated. Four different automatic systems each wrote a short explanation of
+            whether the image supports the caption. The four explanations are shown to you
+            only as <b>Explanation A / B / C / D</b> — you are never told which real system
+            wrote which, and the order is different for every sample.</p>
+            <ol class="gsteps">
+              <li><b>Task A</b> — rate each of the 4 explanations, one at a time. No
+              highlighted regions are shown yet.</li>
+              <li><b>Task B</b> — once all 4 explanations are rated, a second panel opens
+              (only for the explanation(s) whose system actually produced a highlighted
+              image region for a claim — this may be none, one, or more than one
+              explanation depending on the sample) where you rate up to 3 highlighted
+              regions. <b>Once Task B is revealed, your Task A answers for that sample lock
+              and can no longer be changed</b> — this keeps the two judgements independent.</li>
+            </ol>
+            <p class="ghint">Not every explanation has a Task B — some systems here do not
+            produce image regions at all. That is expected and not something to flag.</p>
+          </section>
+
+          <section class="gsec">
+            <h4>B · Task A — rating one explanation (full wording)</h4>
+            <table class="gtable ganchors">
+              <tr><td class="gk2">Diagnostic Correctness</td><td>“How accurately does the explanation identify the relevant matches or mismatches between the image and caption?”<br>
+                1 Completely incorrect · 2 Mostly incorrect · 3 Partially correct · 4 Mostly correct · 5 Completely correct</td></tr>
+              <tr><td class="gk2">Visual Grounding</td><td>“How well are the statements in the explanation supported by what is visibly present in the image and stated in the caption?”<br>
+                1 Not supported · 2 Mostly unsupported · 3 Partially supported · 4 Mostly supported · 5 Fully supported</td></tr>
+              <tr><td class="gk2">Clarity</td><td>“How easy is the explanation to understand, without unnecessary or confusing information?”<br>
+                1 Very unclear · 2 Somewhat unclear · 3 Neither clear nor unclear · 4 Clear · 5 Very clear</td></tr>
+              <tr><td class="gk2">Diagnostic Usefulness</td><td><b>(primary question)</b> “How useful is the explanation for understanding why the image and caption align or fail to align?”<br>
+                1 Not useful · 2 Slightly useful · 3 Moderately useful · 4 Very useful · 5 Extremely useful</td></tr>
+              <tr><td class="gk2">Unsupported Content</td><td>“Does this explanation contain any specific factual statement that is contradicted by, or unsupported by, the image/caption?” — Yes / No / Unsure</td></tr>
+            </table>
+            <p class="ghint">Judge every explanation against the image yourself — do not
+            assume a confident-sounding explanation is a correct one.</p>
+          </section>
+
+          <section class="gsec">
+            <h4>C · Task B — rating a highlighted region (full wording)</h4>
+            <p>Up to 3 claims per qualifying explanation, each with its own highlighted box
+            on the image and its own short claim text.</p>
+            <table class="gtable ganchors">
+              <tr><td class="gk2">Evidence Localization Accuracy</td><td>“How accurately do the highlighted region(s) identify the visual evidence relevant to this claim?”<br>
+                1 Completely incorrect · 2 Mostly incorrect · 3 Partially correct · 4 Mostly correct · 5 Completely correct</td></tr>
+              <tr><td class="gk2">Evidence Sufficiency</td><td>“How sufficient are the highlighted region(s) for deciding whether this claim is supported by the image?”<br>
+                1 Completely insufficient · 2 Mostly insufficient · 3 Partially sufficient · 4 Mostly sufficient · 5 Fully sufficient</td></tr>
+            </table>
+          </section>
+
+          <section class="gsec">
+            <h4>D · Skip for now / Technical issue</h4>
+            <div class="gcards">
+              <div class="gcard"><b>Skip for now</b><span>Postpone the whole sample. It
+              stays in your assignment and turns red on the dashboard until you finish
+              it.</span></div>
+              <div class="gcard"><b>Technical issue</b><span>Something is actually broken —
+              image failed to load, garbled text, or the app misbehaving.</span></div>
+            </div>
+          </section>
+
+          <section class="gsec">
+            <h4>E · Navigating, saving and exporting</h4>
+            <ul>
+              <li>Your work <b>saves automatically</b> — you can close the tab and return.</li>
+              <li>Completed samples can be <b>reopened</b>, but once Task B has revealed for
+              a sample its Task A answers stay locked (Task B ratings can still be revised).</li>
+              <li>Use the <b>same browser and device</b> where practical, and do not clear
+              site data before exporting.</li>
+              <li><b>Download backup</b> from the menu at any time; when everything is
+              finished, use <b>Export final annotations</b> and send us that file.</li>
+            </ul>
+          </section>
+
+        </div>
+      </details>
+
+      <div id="grids"></div>
+    </section>
+
+    <!-- ---------- TUTORIAL (practice only, never exported) ---------- -->
+    <section id="tutorial" class="hidden">
+      <div class="samplebar">
+        <button class="btn sm" id="tutExit">← Back to dashboard</button>
+        <div class="pos">Example <b id="tutNow">—</b> of <b id="tutAll">—</b></div>
+        <div class="spacer"></div>
+        <button class="btn sm" id="tutPrev">Previous example</button>
+        <button class="btn sm" id="tutNext">Next example</button>
+      </div>
+
+      <div class="tutnote">
+        <span class="tutbadge">Practice example</span>
+        <b id="tutWalk">—</b>
+        Nothing here is saved or counted toward your progress.
+      </div>
+
+      <div class="sample-grid">
+        <div class="media-col">
+          <div class="image-frame" id="tutFrame"><img id="tutImg" alt="practice image"></div>
+        </div>
+        <div class="anno-col">
+          <div class="caption-box">
+            <p class="caption-label">Caption</p>
+            <p class="caption-text" id="tutText">—</p>
+          </div>
+          <div id="tutExplans"></div>
+          <div class="actions" style="margin-top:12px">
+            <div class="spacer"></div>
+            <button class="btn primary" id="tutDone">Start annotating</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- SAMPLE ---------- -->
+    <section id="sample" class="hidden">
+      <div class="samplebar">
+        <button class="btn sm" id="toDash">← Dashboard</button>
+        <div class="pos">Sample <b id="posNow">—</b> of <b id="posAll">—</b></div>
+        <div class="muted" id="posDone">—</div>
+        <div class="spacer"></div>
+        <button class="btn sm" id="prevBtn">Previous</button>
+        <button class="btn sm" id="nextBtn">Next</button>
+      </div>
+
+      <div id="reviewBar" class="reviewbar hidden">
+        <span>This sample is already completed.</span>
+        <div class="spacer"></div>
+        <button class="btn sm" id="editBtn">Edit / redo annotation</button>
+      </div>
+
+      <div class="sample-grid">
+        <div class="media-col">
+          <div class="image-frame" id="imgFrame"><img id="img" alt="benchmark image"></div>
+        </div>
+        <div class="anno-col">
+          <div class="anno-sticky">
+            <div class="caption-box">
+              <p class="caption-label">Caption being evaluated</p>
+              <p class="caption-text" id="capText">—</p>
+            </div>
+          </div>
+
+          <!-- ===== TASK A ===== -->
+          <div id="taskA">
+            <p class="anchor-reminder">On every 1–5 question: <b>3 = partial / mixed</b>,
+            1 and 5 are the clear extremes. Each option shows its own label — read it, not
+            just the number.</p>
+            <div class="tasktabs" id="tasktabs"></div>
+            <div id="explanCard"></div>
+          </div>
+
+          <!-- ===== TASK B ===== -->
+          <div id="taskB" style="margin-top:18px"></div>
+
+          <div id="errS" class="err-inline hidden"></div>
+
+          <div id="techBox" class="card hidden" style="margin-top:16px"><div class="card-b">
+            <h3 style="margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">Technical issue</h3>
+            <p class="hint">Only for a genuine technical fault — a broken image, garbled text,
+            or an app error. Not for difficult judgements.</p>
+            <div class="opts" id="techOpts"></div>
+            <label class="field" style="margin-top:12px"><span style="font-size:12.5px;color:var(--muted)">Note (optional)</span>
+              <textarea id="techNote" rows="2"></textarea></label>
+            <div class="actions" style="margin-top:10px">
+              <button class="btn sm ghost" id="techCancel">Cancel</button>
+              <div class="spacer"></div>
+              <button class="btn sm primary" id="techSave">Flag and return to dashboard</button>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="samplebar botnav">
+        <button class="btn sm" id="toDashB">← Dashboard</button>
+        <div class="pos">Sample <b id="posNowB">—</b> of <b id="posAllB">—</b></div>
+        <div class="spacer"></div>
+        <button class="btn sm" id="prevBtnB">Previous</button>
+        <button class="btn sm" id="nextBtnB">Next</button>
+      </div>
+
+      <div class="footbar">
+        <button class="btn sm ghost" id="techBtn">Report a technical issue</button>
+        <button class="btn sm ghost" id="skipBtn" title="Postpone this sample and return to it later">Skip for now</button>
+        <div class="spacer"></div>
+        <button class="btn primary" id="completeBtn">Save &amp; complete</button>
+      </div>
+    </section>
+
+    <!-- ---------- DONE ---------- -->
+    <section id="donePanel" class="card hidden"><div class="card-b" style="text-align:center;padding:40px 20px">
+      <h2 style="font-family:'Source Serif 4',Georgia,serif;font-size:22px;margin:0 0 8px">Assignment complete</h2>
+      <p class="hint" id="doneCount">—</p>
+      <button class="btn primary lg" id="doneExport">Export final annotations</button>
+      <p class="mono" id="doneHash" style="margin-top:18px"></p>
+    </div></section>
+  </main>
+</div>
+
+<script src="app.js?v=1"></script>
+</body>
+</html>
