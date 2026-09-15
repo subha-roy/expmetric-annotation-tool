@@ -1,6 +1,6 @@
 {
   "schema_version": "explanation-annotation-pilot-1.0.0",
-  "app_version": "2.0.0",
+  "app_version": "2.1.0",
   "manifest_hash": "4f3ba7f689da2f97e8995dcac83d4fc7b583abce3fe1eaa6608626a2ae801616",
   "annotators": {
     "pilot": {

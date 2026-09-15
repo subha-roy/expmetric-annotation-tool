@@ -23,15 +23,19 @@ def order_for(sample_id, account):
 
 
 def main():
-    assignment = json.loads((MANIFEST_DIR / "annotator_assignment.json").read_text())
-    mapping = {}  # account -> sample_id -> {label: system}
+    assignment = json.loads((MANIFEST_DIR / "annotator_assignment_170.json").read_text())
+    out_path = APP / "private" / "blinding_map.json"
+    previous = json.loads(out_path.read_text()) if out_path.exists() else {"mapping": {}}
+    real_accounts = set(assignment["per_account"])
+    # Preserve non-study test mappings verbatim; replace only the four real assignments.
+    mapping = {account: value for account, value in previous.get("mapping", {}).items()
+               if account not in real_accounts}
     for account, rec in assignment["per_account"].items():
         mapping[account] = {}
         for sid in rec["queue"]:
             order = order_for(sid, account)
             mapping[account][sid] = {LABELS[i]: order[i] for i in range(4)}
 
-    out_path = APP / "private" / "blinding_map.json"
     out_path.write_text(json.dumps({"seed": SEED, "labels": LABELS, "systems": SYSTEMS,
                                     "mapping": mapping}, indent=2))
     print(f"Wrote {out_path}")

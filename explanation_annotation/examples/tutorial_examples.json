@@ -56,36 +56,23 @@
         "C": {
           "blocks": [
             {
-              "claim": "A skateboarder",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "black clothing",
-              "text": "This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
               "claim": "red brick wall",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "A skateboarder",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
             },
             {
               "claim": "black skateboarder",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "red brick wall",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "skateboarder dressed in black",
-              "text": "This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "skateboarder performs an airborne jump over a red brick wall",
-              "text": "This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim)."
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
             }
           ],
-          "text": "A skateboarder This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). black clothing This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim). red brick wall This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). black skateboarder This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). red brick wall This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). skateboarder dressed in black This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim). skateboarder performs an airborne jump over a red brick wall This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim).",
-          "word_count": 164,
+          "text": "The caption is well supported overall. The strongest model-supported details are \u201cred brick wall\u201d and \u201cA skateboarder\u201d, while \u201cblack skateboarder\u201d receives weak support. red brick wall This description receives strong visual support. A skateboarder This description receives strong visual support. black skateboarder This description receives weak visual support. black clothing This description receives strong visual support. red brick wall This description receives strong visual support. skateboarder dressed in black This relationship receives strong visual support. skateboarder performs an airborne jump over a red brick wall This action receives strong visual support.",
+          "word_count": 91,
           "evidence": [
             {
               "part_id": "c0",
@@ -136,7 +123,30 @@
               ]
             }
           ],
-          "box_coord_system": "native_pixels_xyxy"
+          "box_coord_system": "native_pixels_xyxy",
+          "summary": "The caption is well supported overall. The strongest model-supported details are \u201cred brick wall\u201d and \u201cA skateboarder\u201d, while \u201cblack skateboarder\u201d receives weak support.",
+          "details_blocks": [
+            {
+              "claim": "black clothing",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "red brick wall",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "skateboarder dressed in black",
+              "text": "This relationship receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "skateboarder performs an airborne jump over a red brick wall",
+              "text": "This action receives strong visual support.",
+              "quote_claim": true
+            }
+          ]
         },
         "D": {
           "blocks": [
@@ -258,52 +268,33 @@
         "D": {
           "blocks": [
             {
-              "claim": "a goddess",
-              "text": "This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim)."
-            },
-            {
               "claim": "an alien bio-organic landscape",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "thick cables",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "synthesizer parts",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "sacred geometry",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
             },
             {
               "claim": "fat bio-mech tree roots",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "synthesizer parts",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "sacred geometry",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
             },
             {
               "claim": "a goddess entangled in an alien bio-organic landscape",
-              "text": "This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "an alien bio-organic landscape adorned with thick cables",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "an alien bio-organic landscape adorned with synthesizer parts",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "an alien bio-organic landscape surrounded by sacred geometry",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "an alien bio-organic landscape surrounded by fat bio-mech tree roots",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
+              "text": "This relationship receives partial visual support.",
+              "quote_claim": true
             }
           ],
-          "text": "a goddess This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim). an alien bio-organic landscape This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). thick cables This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). synthesizer parts This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). sacred geometry This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). fat bio-mech tree roots This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). a goddess entangled in an alien bio-organic landscape This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim). an alien bio-organic landscape adorned with thick cables This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). an alien bio-organic landscape adorned with synthesizer parts This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). an alien bio-organic landscape surrounded by sacred geometry This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). an alien bio-organic landscape surrounded by fat bio-mech tree roots This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim).",
-          "word_count": 275,
+          "text": "The caption is partially supported overall. The strongest model-supported details are \u201can alien bio-organic landscape\u201d and \u201cfat bio-mech tree roots\u201d, while \u201csynthesizer parts\u201d and \u201csacred geometry\u201d receive weak support. The relation \u201ca goddess entangled in an alien bio-organic landscape\u201d is only partially supported. an alien bio-organic landscape This description receives strong visual support. fat bio-mech tree roots This description receives strong visual support. synthesizer parts This description receives weak visual support. sacred geometry This description receives weak visual support. a goddess entangled in an alien bio-organic landscape This relationship receives partial visual support. a goddess This description receives partial visual support. thick cables This description receives strong visual support. an alien bio-organic landscape adorned with thick cables This relationship receives strong visual support. an alien bio-organic landscape adorned with synthesizer parts This relationship receives weak visual support. an alien bio-organic landscape surrounded by sacred geometry This relationship receives weak visual support. an alien bio-organic landscape surrounded by fat bio-mech tree roots This relationship receives strong visual support.",
+          "word_count": 167,
           "evidence": [
             {
               "part_id": "c0",
@@ -354,7 +345,40 @@
               ]
             }
           ],
-          "box_coord_system": "native_pixels_xyxy"
+          "box_coord_system": "native_pixels_xyxy",
+          "summary": "The caption is partially supported overall. The strongest model-supported details are \u201can alien bio-organic landscape\u201d and \u201cfat bio-mech tree roots\u201d, while \u201csynthesizer parts\u201d and \u201csacred geometry\u201d receive weak support. The relation \u201ca goddess entangled in an alien bio-organic landscape\u201d is only partially supported.",
+          "details_blocks": [
+            {
+              "claim": "a goddess",
+              "text": "This description receives partial visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "thick cables",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "an alien bio-organic landscape adorned with thick cables",
+              "text": "This relationship receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "an alien bio-organic landscape adorned with synthesizer parts",
+              "text": "This relationship receives weak visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "an alien bio-organic landscape surrounded by sacred geometry",
+              "text": "This relationship receives weak visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "an alien bio-organic landscape surrounded by fat bio-mech tree roots",
+              "text": "This relationship receives strong visual support.",
+              "quote_claim": true
+            }
+          ]
         }
       }
     },
@@ -368,64 +392,33 @@
         "A": {
           "blocks": [
             {
-              "claim": "A white freestanding bathtub",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
               "claim": "a dark towel",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "a four-panel black folding screen",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "three windows",
-              "text": "This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "a curved metallic faucet",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "leafy green plants",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "white freestanding bathtub",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
             },
             {
               "claim": "dark towel",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "four-panel black folding screen",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "curved metallic faucet",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "leafy green plants",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "dark towel draped over its near rim",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
             },
             {
               "claim": "folding screen that partially blocks three windows",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
+              "text": "This relationship receives weak visual support.",
+              "quote_claim": true
             },
             {
-              "claim": "faucet and leafy green plants occupy the left side",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
+              "claim": "four-panel black folding screen",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "three windows",
+              "text": "This description receives partial visual support.",
+              "quote_claim": true
             }
           ],
-          "text": "A white freestanding bathtub This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). a dark towel This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). a four-panel black folding screen This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). three windows This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim). a curved metallic faucet This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). leafy green plants This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). white freestanding bathtub This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). dark towel This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). four-panel black folding screen This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). curved metallic faucet This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). leafy green plants This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). dark towel draped over its near rim This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). folding screen that partially blocks three windows This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). faucet and leafy green plants occupy the left side This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim).",
-          "word_count": 331,
+          "text": "The caption is well supported overall. The strongest model-supported details are \u201ca dark towel\u201d and \u201cdark towel\u201d, while \u201cfolding screen that partially blocks three windows\u201d and \u201cfour-panel black folding screen\u201d receive weak support. The claim \u201cthree windows\u201d is only partially supported. a dark towel This description receives strong visual support. dark towel This description receives strong visual support. folding screen that partially blocks three windows This relationship receives weak visual support. four-panel black folding screen This description receives weak visual support. three windows This description receives partial visual support. A white freestanding bathtub This description receives strong visual support. a four-panel black folding screen This description receives weak visual support. a curved metallic faucet This description receives strong visual support. leafy green plants This description receives strong visual support. white freestanding bathtub This description receives strong visual support. curved metallic faucet This description receives strong visual support. leafy green plants This description receives strong visual support. dark towel draped over its near rim This relationship receives strong visual support. faucet and leafy green plants occupy the left side This relationship receives strong visual support.",
+          "word_count": 184,
           "evidence": [
             {
               "part_id": "c0",
@@ -470,7 +463,55 @@
               ]
             }
           ],
-          "box_coord_system": "native_pixels_xyxy"
+          "box_coord_system": "native_pixels_xyxy",
+          "summary": "The caption is well supported overall. The strongest model-supported details are \u201ca dark towel\u201d and \u201cdark towel\u201d, while \u201cfolding screen that partially blocks three windows\u201d and \u201cfour-panel black folding screen\u201d receive weak support. The claim \u201cthree windows\u201d is only partially supported.",
+          "details_blocks": [
+            {
+              "claim": "A white freestanding bathtub",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "a four-panel black folding screen",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "a curved metallic faucet",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "leafy green plants",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "white freestanding bathtub",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "curved metallic faucet",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "leafy green plants",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "dark towel draped over its near rim",
+              "text": "This relationship receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "faucet and leafy green plants occupy the left side",
+              "text": "This relationship receives strong visual support.",
+              "quote_claim": true
+            }
+          ]
         },
         "B": {
           "blocks": [
@@ -590,20 +631,18 @@
         "C": {
           "blocks": [
             {
-              "claim": "Dark storm clouds",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
+              "claim": "Dark storm clouds gathering over a desolate cityscape",
+              "text": "This relationship receives strong visual support.",
+              "quote_claim": true
             },
             {
               "claim": "desolate cityscape",
-              "text": "This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "Dark storm clouds gathering over a desolate cityscape",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
             }
           ],
-          "text": "Dark storm clouds This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). desolate cityscape This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim). Dark storm clouds gathering over a desolate cityscape This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim).",
-          "word_count": 71,
+          "text": "The caption is well supported overall. The strongest model-supported details are \u201cDark storm clouds gathering over a desolate cityscape\u201d and \u201cdesolate cityscape\u201d. Dark storm clouds gathering over a desolate cityscape This relationship receives strong visual support. desolate cityscape This description receives strong visual support. Dark storm clouds This description receives strong visual support.",
+          "word_count": 53,
           "evidence": [
             {
               "part_id": "c0",
@@ -654,7 +693,15 @@
               ]
             }
           ],
-          "box_coord_system": "native_pixels_xyxy"
+          "box_coord_system": "native_pixels_xyxy",
+          "summary": "The caption is well supported overall. The strongest model-supported details are \u201cDark storm clouds gathering over a desolate cityscape\u201d and \u201cdesolate cityscape\u201d.",
+          "details_blocks": [
+            {
+              "claim": "Dark storm clouds",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            }
+          ]
         },
         "D": {
           "blocks": [
@@ -690,92 +737,33 @@
         "A": {
           "blocks": [
             {
-              "claim": "crowded food-service counter",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "customer in a gray hoodie",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "light tan counter",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "brown-haired woman",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "dark blue jacket",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "purple-shirted person",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "pizza",
-              "text": "This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "transparent glass display",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "gray hoodie",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "light tan counter",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "brown-haired woman",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "dark blue jacket",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "purple-shirted person",
-              "text": "This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "pizza",
-              "text": "This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "transparent glass display",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
               "claim": "customer with their back to the camera",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
+              "text": "This relationship receives strong visual support.",
+              "quote_claim": true
             },
             {
               "claim": "customer faces the light tan counter",
-              "text": "This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim)."
+              "text": "This relationship receives strong visual support.",
+              "quote_claim": true
             },
             {
-              "claim": "brown-haired woman stands to the customer's right",
-              "text": "This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim)."
+              "claim": "dark blue jacket",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
             },
             {
-              "claim": "purple-shirted person is cropped at the left edge",
-              "text": "This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim)."
-            },
-            {
-              "claim": "pizza is inside the transparent glass display",
-              "text": "This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim)."
+              "claim": "customer in a gray hoodie",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
             },
             {
               "claim": "pizza is resting on the counter",
-              "text": "This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim)."
+              "text": "This relationship receives partial visual support.",
+              "quote_claim": true
             }
           ],
-          "text": "crowded food-service counter This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). customer in a gray hoodie This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). light tan counter This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). brown-haired woman This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). dark blue jacket This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). purple-shirted person This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). pizza This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim). transparent glass display This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). gray hoodie This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). light tan counter This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). brown-haired woman This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). dark blue jacket This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). purple-shirted person This is not clearly supported by the image, receiving weak visual support (a grounded image region was checked for this claim). pizza This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim). transparent glass display This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). customer with their back to the camera This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). customer faces the light tan counter This is supported by the image, receiving strong visual support (a grounded image region was checked for this claim). brown-haired woman stands to the customer's right This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim). purple-shirted person is cropped at the left edge This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim). pizza is inside the transparent glass display This is supported by the image, receiving weak-to-moderate visual support (a grounded image region was checked for this claim). pizza is resting on the counter This is supported by the image, receiving reasonably strong visual support (a grounded image region was checked for this claim).",
-          "word_count": 496,
+          "text": "The caption is partially supported overall. The strongest model-supported details are \u201ccustomer with their back to the camera\u201d and \u201ccustomer faces the light tan counter\u201d, while \u201cdark blue jacket\u201d and \u201ccustomer in a gray hoodie\u201d receive weak support. The relation \u201cpizza is resting on the counter\u201d is only partially supported. customer with their back to the camera This relationship receives strong visual support. customer faces the light tan counter This relationship receives strong visual support. dark blue jacket This description receives weak visual support. customer in a gray hoodie This description receives weak visual support. pizza is resting on the counter This relationship receives partial visual support. crowded food-service counter This description receives strong visual support. light tan counter This description receives strong visual support. brown-haired woman This description receives weak visual support. purple-shirted person This description receives weak visual support. pizza This description receives partial visual support. transparent glass display This description receives strong visual support. gray hoodie This description receives weak visual support. light tan counter This description receives strong visual support. brown-haired woman This description receives weak visual support. dark blue jacket This description receives weak visual support. purple-shirted person This description receives weak visual support. pizza This description receives partial visual support. transparent glass display This description receives strong visual support. brown-haired woman stands to the customer's right This relationship receives partial visual support. purple-shirted person is cropped at the left edge This relationship receives partial visual support. pizza is inside the transparent glass display This relationship receives partial visual support.",
+          "word_count": 255,
           "evidence": [
             {
               "part_id": "c0",
@@ -820,7 +808,90 @@
               ]
             }
           ],
-          "box_coord_system": "native_pixels_xyxy"
+          "box_coord_system": "native_pixels_xyxy",
+          "summary": "The caption is partially supported overall. The strongest model-supported details are \u201ccustomer with their back to the camera\u201d and \u201ccustomer faces the light tan counter\u201d, while \u201cdark blue jacket\u201d and \u201ccustomer in a gray hoodie\u201d receive weak support. The relation \u201cpizza is resting on the counter\u201d is only partially supported.",
+          "details_blocks": [
+            {
+              "claim": "crowded food-service counter",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "light tan counter",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "brown-haired woman",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "purple-shirted person",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "pizza",
+              "text": "This description receives partial visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "transparent glass display",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "gray hoodie",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "light tan counter",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "brown-haired woman",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "dark blue jacket",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "purple-shirted person",
+              "text": "This description receives weak visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "pizza",
+              "text": "This description receives partial visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "transparent glass display",
+              "text": "This description receives strong visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "brown-haired woman stands to the customer's right",
+              "text": "This relationship receives partial visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "purple-shirted person is cropped at the left edge",
+              "text": "This relationship receives partial visual support.",
+              "quote_claim": true
+            },
+            {
+              "claim": "pizza is inside the transparent glass display",
+              "text": "This relationship receives partial visual support.",
+              "quote_claim": true
+            }
+          ]
         },
         "B": {
           "blocks": [

@@ -5,6 +5,7 @@ single practice ordering, not tied to any real annotator) with a walkthrough not
 """
 import json, hashlib, random
 from pathlib import Path
+from task_a_presentation import presentation_fields
 
 MANIFEST_DIR = Path("/home/hpc/v141be/v141be14/projects/proj2_exp_metric/evaluation/explanation_annotation/manifests")
 APP = Path(__file__).resolve().parents[1]
@@ -32,8 +33,12 @@ for i, sid in enumerate(pool["sample_ids"]):
     for j, lab in enumerate(LABELS):
         sysname = order[j]
         sysrec = s[sysname]
-        entry = {"blocks": sysrec.get("task_a_blocks") or [],
-                "text": sysrec["task_a_text"], "word_count": sysrec.get("word_count")}
+        entry = (presentation_fields(sysrec) if sysname == "visexmem_9b" else
+                 {"summary": sysrec.get("task_a_summary"),
+                  "blocks": sysrec.get("task_a_blocks") or [],
+                  "details_blocks": sysrec.get("task_a_details_blocks") or [],
+                  "text": sysrec["task_a_text"],
+                  "word_count": sysrec.get("word_count")})
         if sysname in EVIDENCE_SYSTEMS:
             entry["evidence"] = sysrec["task_b_evidence"]
             entry["box_coord_system"] = sysrec.get("box_coord_system", "native_pixels_xyxy")

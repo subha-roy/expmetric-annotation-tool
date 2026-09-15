@@ -1,4 +1,4 @@
-/* VisExMEM Explanation Quality Annotation — static, no backend, no external dependency.
+/* Explanation Quality Annotation — static, no backend, no external dependency.
  *
  * Flow: login -> DASHBOARD -> sample. A sample has two tasks:
  *   Task A: rate all 4 blinded explanations (Explanation A/B/C/D), one at a time, no
@@ -16,8 +16,8 @@
  */
 'use strict';
 
-const APP_VERSION = '2.0.0';
-const CONTENT_VERSION = 'explanation-quality-v2-frozen-wording';
+const APP_VERSION = '2.1.0';
+const CONTENT_VERSION = 'explanation-quality-v5-task-a-support-only';
 const LABELS = ['A', 'B', 'C', 'D'];
 
 const TECH_REASONS = [
@@ -29,7 +29,7 @@ const TECH_REASONS = [
 ];
 
 /* FROZEN WORDING -- exact question text and 1-5 anchor labels, do not edit without
-   re-freezing. Task B is VisExMEM-9B only (see README / build scripts). */
+   re-freezing. */
 const TASKA_QS = [
   { key: 'diagnostic_correctness', name: 'Diagnostic Correctness',
     desc: 'How accurately does the explanation identify the relevant matches or mismatches between the image and caption?',
@@ -122,7 +122,13 @@ function blankTaskA() {
   return o;
 }
 function blankTiming() {
-  return { card_ms: { A: 0, B: 0, C: 0, D: 0 }, task_a_ms: 0, task_b_ms: 0, total_ms: 0 };
+  return {
+    card_ms: { A: 0, B: 0, C: 0, D: 0 },
+    task_a_ms: 0, task_b_ms: 0, total_ms: 0,
+    task_a_first_started_at: null, task_a_last_stopped_at: null,
+    task_b_first_started_at: null, task_b_last_stopped_at: null,
+    dropped_idle_ms: 0, dropped_idle_segments: 0, segments: [],
+  };
 }
 function blank(item) {
   const tb = {};
@@ -137,7 +143,7 @@ function blank(item) {
     // Set true the FIRST moment Task B reveals (i.e. the moment all 4 Task-A sets become
     // complete). Once true, Task A becomes permanently non-editable for this sample --
     // this is intentional and NOT reversible via "Edit / redo annotation", so that seeing
-    // VisExMEM's evidence regions in Task B can never retroactively contaminate the
+    // Evidence regions in Task B can never retroactively contaminate the
     // independently-recorded Task-A judgments (anchoring-bias prevention).
     task_a_locked: false,
     technical_issue: null, technical_note: '', skipped_for_now: false, status: 'pending',
@@ -154,27 +160,50 @@ function blank(item) {
  * inflating the estimate -- this is a best-effort PILOT measurement, not lab-grade.
  */
 const TIMING_MAX_SEGMENT_MS = 30 * 60 * 1000;
-function flushTiming() {
-  if (!S || !S.timingSeg) return;
+function flushTiming(stopReason = 'transition') {
+  if (!S || !S.timingSeg) return Promise.resolve();
   const seg = S.timingSeg; S.timingSeg = null;
   const r = S.ann[seg.sampleId];
-  if (!r) return;
-  const elapsed = Date.now() - seg.startedAt;
-  if (elapsed <= 0 || elapsed > TIMING_MAX_SEGMENT_MS) return;
+  if (!r) return Promise.resolve();
+  const endedAt = Date.now();
+  const elapsed = endedAt - seg.startedAt;
+  if (elapsed <= 0) return Promise.resolve();
   r.timing ||= blankTiming();
-  if (seg.kind === 'taskA') {
+  r.timing.segments ||= [];
+  const dropped = elapsed > TIMING_MAX_SEGMENT_MS;
+  r.timing.segments.push({
+    kind: seg.kind, label: seg.label, started_at: new Date(seg.startedAt).toISOString(),
+    stopped_at: new Date(endedAt).toISOString(), elapsed_ms: elapsed,
+    counted_ms: dropped ? 0 : elapsed, dropped_as_idle: dropped, stop_reason: stopReason,
+  });
+  if (dropped) {
+    r.timing.dropped_idle_ms = (r.timing.dropped_idle_ms || 0) + elapsed;
+    r.timing.dropped_idle_segments = (r.timing.dropped_idle_segments || 0) + 1;
+  } else if (seg.kind === 'taskA') {
     r.timing.card_ms[seg.label] = (r.timing.card_ms[seg.label] || 0) + elapsed;
     r.timing.task_a_ms = (r.timing.task_a_ms || 0) + elapsed;
   } else if (seg.kind === 'taskB') {
     r.timing.task_b_ms = (r.timing.task_b_ms || 0) + elapsed;
   }
-  r.timing.total_ms = (r.timing.total_ms || 0) + elapsed;
-  persist(seg.sampleId);
+  if (!dropped) r.timing.total_ms = (r.timing.total_ms || 0) + elapsed;
+  r.timing[seg.kind === 'taskA' ? 'task_a_last_stopped_at' : 'task_b_last_stopped_at'] =
+    new Date(endedAt).toISOString();
+  return persist(seg.sampleId);
 }
 function startTiming(kind, label) {
-  flushTiming();
-  if (!S || !items().length) return;
-  S.timingSeg = { kind, label, sampleId: cur().sample_id, startedAt: Date.now() };
+  flushTiming('transition');
+  if (!S || !items().length || document.hidden) return;
+  const startedAt = Date.now(), r = rec();
+  r.timing ||= blankTiming();
+  const firstKey = kind === 'taskA' ? 'task_a_first_started_at' : 'task_b_first_started_at';
+  if (!r.timing[firstKey]) r.timing[firstKey] = new Date(startedAt).toISOString();
+  S.timingSeg = { kind, label, sampleId: cur().sample_id, startedAt };
+}
+function resumeVisibleTiming() {
+  if (!S || document.hidden || $('sample').classList.contains('hidden')) return;
+  const r = rec();
+  if (r.task_a_locked && evidenceLabels(cur()).length) startTiming('taskB', null);
+  else startTiming('taskA', S.curTab);
 }
 const items = () => S.bundle.items;
 const cur = () => items()[S.idx];
@@ -275,23 +304,34 @@ function renderExplanationBlocks(host, ex) {
   // between blocks -- never one long paragraph. Falls back to a single block from
   // `ex.text` only if `ex.blocks` is missing/empty (should not happen once bundles are
   // rebuilt from the current generator).
-  const wrap = document.createElement('div'); wrap.className = 'explan-blocks';
-  const blocks = (ex.blocks && ex.blocks.length) ? ex.blocks
-    : (ex.text ? [{ claim: null, text: ex.text }] : []);
-  if (!blocks.length) {
-    const p = document.createElement('p'); p.className = 'explan-text';
-    p.textContent = '(no explanation text available)'; wrap.append(p);
-  } else {
-    blocks.forEach((b) => {
+  if (ex.summary) {
+    const summary = document.createElement('p');
+    summary.className = 'explan-summary';
+    summary.textContent = ex.summary;
+    host.append(summary);
+  }
+  const appendBlocks = (parent, items) => {
+    items.forEach((b) => {
       const blk = document.createElement('div'); blk.className = 'explan-block';
       if (b.claim) {
-        const c = document.createElement('p'); c.className = 'explan-claim'; c.textContent = b.claim;
+        const c = document.createElement('p'); c.className = 'explan-claim';
+        c.textContent = b.quote_claim ? `“${b.claim}”` : b.claim;
         blk.append(c);
       }
       const t = document.createElement('p'); t.className = 'explan-text'; t.textContent = b.text;
       blk.append(t);
-      wrap.append(blk);
+      parent.append(blk);
     });
+  };
+  const wrap = document.createElement('div'); wrap.className = 'explan-blocks';
+  const hasHiddenDetails = Boolean(ex.details_blocks && ex.details_blocks.length);
+  const blocks = (ex.blocks && ex.blocks.length) ? ex.blocks
+    : (!hasHiddenDetails && ex.text ? [{ claim: null, text: ex.text }] : []);
+  if (!blocks.length && !hasHiddenDetails) {
+    const p = document.createElement('p'); p.className = 'explan-text';
+    p.textContent = '(no explanation text available)'; wrap.append(p);
+  } else {
+    appendBlocks(wrap, blocks);
   }
   host.append(wrap);
 }
@@ -581,12 +621,6 @@ function renderTutorial() {
     const badge = document.createElement('span'); badge.className = 'explan-badge';
     badge.textContent = `Explanation ${l}`; lab.append(badge); card.append(lab);
     renderExplanationBlocks(card, e);
-    if (e.evidence && e.evidence.length) {
-      const note = document.createElement('p'); note.className = 'hint';
-      note.style.margin = '10px 0 0';
-      note.textContent = `This explanation has ${e.evidence.length} grounded evidence claim(s) -- in the real task these would open a Task B evidence panel after Task A is rated.`;
-      card.append(note);
-    }
     host.append(card);
   });
   setAll(['tutPrev'], 'disabled', TUT.i === 0);
@@ -730,7 +764,7 @@ async function exportFinal() {
     return;
   }
   p.payload_sha256 = await sha256Hex(JSON.stringify(p.annotations));
-  download(p, `visexmem_explanation_annotations_${p.annotator_id}_${stamp()}.json`);
+  download(p, `explanation_quality_annotations_${p.annotator_id}_${stamp()}.json`);
   $('doneHash').textContent = 'SHA-256: ' + p.payload_sha256;
   msg.textContent = 'Final file downloaded. Please email it back.';
 }
@@ -740,9 +774,8 @@ async function login() {
   const u = $('user').value.trim().toLowerCase(), p = $('pass').value, err = $('loginErr');
   err.classList.add('hidden');
   if (!u || !p) { err.textContent = 'Enter your username and passcode.'; err.classList.remove('hidden'); return; }
-  // Two independent index files: the (not-yet-frozen) candidate 75-sample/annotator
-  // assignment, and the separate pilot-mode index -- a pilot account is not part of the
-  // candidate assignment at all, so this never touches or depends on it.
+  // Two independent index files: the real assignment and the separate pilot-mode index.
+  // A pilot account is not part of the real assignment.
   let index = { annotators: {} };
   for (const path of ['data/index.json', 'data/pilot_index.json']) {
     try {
@@ -772,6 +805,8 @@ async function start(bundle) {
       }
     }
   }
+  const savedIdx = Number.parseInt(localStorage.getItem(dbName(bundle) + ':idx'), 10);
+  if (Number.isInteger(savedIdx) && savedIdx >= 0 && savedIdx < items().length) S.idx = savedIdx;
   $('login').classList.add('hidden'); $('app').classList.remove('hidden');
   $('whoName').textContent = bundle.annotator_name;
   chip('ok', 'Saved');
@@ -783,8 +818,16 @@ function wire() {
   $('loginBtn').addEventListener('click', login);
   $('pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
   $('menuBtn').addEventListener('click', () => $('menu').classList.toggle('hidden'));
-  $('logoutBtn').addEventListener('click', () => location.reload());
-  window.addEventListener('beforeunload', () => { try { flushTiming(); } catch {} });
+  $('logoutBtn').addEventListener('click', async () => {
+    try { await flushTiming('logout'); } catch {}
+    location.reload();
+  });
+  window.addEventListener('beforeunload', () => { try { flushTiming('unload'); } catch {} });
+  window.addEventListener('pagehide', () => { try { flushTiming('pagehide'); } catch {} });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) flushTiming('tab_hidden');
+    else resumeVisibleTiming();
+  });
 
   $('toDash').addEventListener('click', renderDash);
   $('toDashB').addEventListener('click', renderDash);
@@ -835,7 +878,7 @@ function wire() {
 
   $('backupBtn').addEventListener('click', () => {
     const p = buildExport(); p.export_kind = 'partial_backup';
-    download(p, `visexmem_explanation_backup_${p.annotator_id}_${stamp()}.json`);
+    download(p, `explanation_quality_backup_${p.annotator_id}_${stamp()}.json`);
     $('menuMsg').textContent = 'Backup downloaded.';
   });
   $('importBtn').addEventListener('click', () => $('importFile').click());
@@ -868,6 +911,10 @@ async function importBackup(e) {
       if (ex && ex.last_modified_at && inc.last_modified_at &&
           ex.last_modified_at > inc.last_modified_at) { skipped++; continue; }
       if (ex && ex.status === 'completed' && inc.status !== 'completed') { skipped++; continue; }
+      if (ex && ex.task_a_locked) {
+        inc.task_a_locked = true;
+        inc.task_a = JSON.parse(JSON.stringify(ex.task_a));
+      }
       S.ann[a.sample_id] = inc; await persist(a.sample_id); restored++;
     }
     renderDash();
@@ -887,9 +934,12 @@ function fromExport(a, it) {
   r.first_completed_at = a.first_completed_at ?? null;
   r.last_modified_at = a.last_modified_at ?? null;
   r.revision_count = a.revision_count || 0;
-  if (a.timing) r.timing = { card_ms: { ...blankTiming().card_ms, ...(a.timing.card_ms || {}) },
-                             task_a_ms: a.timing.task_a_ms || 0, task_b_ms: a.timing.task_b_ms || 0,
-                             total_ms: a.timing.total_ms || 0 };
+  if (a.timing) {
+    const empty = blankTiming();
+    r.timing = { ...empty, ...a.timing,
+                 card_ms: { ...empty.card_ms, ...(a.timing.card_ms || {}) },
+                 segments: Array.isArray(a.timing.segments) ? a.timing.segments : [] };
+  }
   (a.task_a || []).forEach((t) => {
     if (r.task_a[t.label]) r.task_a[t.label] = {
       diagnostic_correctness: t.diagnostic_correctness ?? null,

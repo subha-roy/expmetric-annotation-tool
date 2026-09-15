@@ -1,5 +1,5 @@
 """Build the PILOT account's bundle: the 10 timed pilot samples only, independent of the
-(not-yet-frozen) 75-sample candidate assignment and its blinding map. Writes to separate
+final real-HiWi assignment and its blinding map. Writes to separate
 files (data/bundle_pilot.json, data/pilot_index.json, private/pilot_credentials.md) so it
 never touches or depends on the candidate-assignment artifacts.
 """
@@ -7,6 +7,7 @@ from __future__ import annotations
 import base64, hashlib, json, os, random, secrets, string, time
 from pathlib import Path
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from task_a_presentation import presentation_fields
 
 ITER = 600_000
 ALPHABET = string.ascii_lowercase + string.digits
@@ -60,8 +61,10 @@ def main():
         for j, lab in enumerate(LABELS):
             sysname = order[j]
             sysrec = s[sysname]
-            entry = {"blocks": sysrec.get("task_a_blocks") or [],
-                    "text": sysrec.get("task_a_text"), "word_count": sysrec.get("word_count")}
+            entry = (presentation_fields(sysrec) if sysname == "visexmem_9b" else
+                     {"blocks": sysrec.get("task_a_blocks") or [],
+                      "text": sysrec.get("task_a_text"),
+                      "word_count": sysrec.get("word_count")})
             if sysname in EVIDENCE_SYSTEMS:
                 entry["evidence"] = sysrec.get("task_b_evidence", [])
                 entry["box_coord_system"] = sysrec.get("box_coord_system")
@@ -71,12 +74,11 @@ def main():
             "image": f'images/{Path(s["image_path"]).name}',
             "image_native_width": s.get("image_native_width"),
             "image_native_height": s.get("image_native_height"),
-            "is_common30": False,
             "explanations": explanations_by_label,
         })
 
     schema_version = "explanation-annotation-pilot-1.0.0"
-    app_version = "2.0.0"
+    app_version = "2.1.0"
     manifest_hash = sha_json({"sample_ids": sorted(sids), "seed": pilot["seed"], "kind": "pilot_10"})
     pw = code()
     payload = {"annotator_id": "pilot", "annotator_name": "Pilot (timed workload test)",

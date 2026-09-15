@@ -1,37 +1,37 @@
 {
-  "schema_version": "explanation-annotation-1.0.0",
-  "app_version": "1.0.0",
-  "manifest_hash": "354db673bb4a76169426782f75360d89a3d0c3e7e8bd18fb2193b93cdc324321",
+  "schema_version": "explanation-annotation-2.0.0",
+  "app_version": "2.1.0",
+  "manifest_hash": "ab1a3420b541854276c2767e224188fb752b1c45816960fb64e1f089b95b163e",
   "annotators": {
-    "damir": {
-      "name": "Damir",
-      "bundle": "data/bundle_damir.json",
-      "assignment_hash": "a66b20c733ae511c3d6ae2dbdfd20b33b9f6ca53cd4e4443b5f0c9db6d23cba3",
-      "assignment_size": 75
-    },
-    "brisca": {
-      "name": "Brisca",
-      "bundle": "data/bundle_brisca.json",
-      "assignment_hash": "509dd2af2b24f9901c7e9a65aa406eb06dcb2b01deb513f3ac1a2820beb2469e",
-      "assignment_size": 75
-    },
-    "omar": {
-      "name": "Omar",
-      "bundle": "data/bundle_omar.json",
-      "assignment_hash": "796951c08b80d17d919bfb41960106438260f2d285414b5282b5c599b33a32a5",
-      "assignment_size": 75
-    },
-    "sayeeda": {
-      "name": "Sayeeda",
-      "bundle": "data/bundle_sayeeda.json",
-      "assignment_hash": "97b18e005c27d06ff4b1977588be8f76bbcbb6dbff9610aeaa30b225034c644a",
-      "assignment_size": 75
-    },
     "annotator": {
       "name": "Annotator (test account)",
       "bundle": "data/bundle_annotator.json",
       "assignment_hash": "12398601c907adfc2227ee1f570d28dd6a50a74c9dfd5d8140144d169c7fc801",
       "assignment_size": 30
+    },
+    "damir": {
+      "name": "Damir",
+      "bundle": "data/bundle_damir.json",
+      "assignment_hash": "eae864178fcf20f7aff263d19c736747786815928c36d3b33069a1456a5e6265",
+      "assignment_size": 100
+    },
+    "brisca": {
+      "name": "Brisca",
+      "bundle": "data/bundle_brisca.json",
+      "assignment_hash": "d239b61e9c8de1dd846df5156e4c33fea920094363e144e0e3ab6c2af883c223",
+      "assignment_size": 100
+    },
+    "omar": {
+      "name": "Omar",
+      "bundle": "data/bundle_omar.json",
+      "assignment_hash": "a2796b9a40c2c7439bace350d23b3ce0e7e97f1e234921803c878d138d90e891",
+      "assignment_size": 100
+    },
+    "sayeeda": {
+      "name": "Sayeeda",
+      "bundle": "data/bundle_sayeeda.json",
+      "assignment_hash": "b9044c6940a5969fa7fa0b354a746912e013fd23a4df416c4496dd7ee5164552",
+      "assignment_size": 100
     }
   }
 }
