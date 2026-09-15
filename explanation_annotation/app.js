@@ -607,6 +607,54 @@ async function loadTutorial() {
   TUT.list = j.examples || [];
   return TUT.list;
 }
+function practiceRatingRow(host, name, rating, anchors, rationale) {
+  const row = document.createElement('div'); row.className = 'prac-rating-row';
+  const head = document.createElement('div'); head.className = 'prac-rating-head';
+  const nm = document.createElement('span'); nm.className = 'prac-rating-name';
+  nm.textContent = name;
+  const val = document.createElement('span'); val.className = 'prac-rating-value';
+  val.textContent = (typeof rating === 'number' && anchors) ? `${rating} — ${anchors[rating - 1]}` : String(rating);
+  head.append(nm, val); row.append(head);
+  const rat = document.createElement('p'); rat.className = 'prac-rating-rationale';
+  rat.textContent = rationale; row.append(rat);
+  host.append(row);
+}
+function renderPracticeRatings(host, title, questions, ratings, unsupportedQ) {
+  const wrap = document.createElement('div'); wrap.className = 'prac-ratings';
+  const h = document.createElement('p'); h.className = 'prac-ratings-title'; h.textContent = title;
+  wrap.append(h);
+  questions.forEach((q) => {
+    const r = ratings[q.key];
+    if (r) practiceRatingRow(wrap, q.name, r.rating, q.anchors, r.rationale);
+  });
+  if (unsupportedQ && ratings.unsupported_content) {
+    const u = ratings.unsupported_content;
+    practiceRatingRow(wrap, unsupportedQ.name, u.answer, null, u.rationale);
+  }
+  host.append(wrap);
+}
+function renderPracticeTaskB(host, ex) {
+  const tb = ex.task_b; if (!tb) return;
+  const heading = document.createElement('h3'); heading.className = 'prac-taskb-heading';
+  heading.textContent = `Task B example — Explanation ${tb.label}`;
+  host.append(heading);
+  const card = document.createElement('div'); card.className = 'evidence-claim';
+  const ct = document.createElement('p'); ct.className = 'evidence-claimtext';
+  ct.textContent = `Claim: “${tb.claim_text}”`; card.append(ct);
+  const wrap = document.createElement('div'); wrap.className = 'evidence-imgwrap';
+  const im = document.createElement('img'); im.alt = 'evidence region';
+  wrap.append(im); loadImage(im, ex.image);
+  (tb.evidence_boxes || []).forEach((box) => {
+    const pos = convertBox(box, tb.box_coord_system, ex.image_native_width, ex.image_native_height);
+    const d = document.createElement('div'); d.className = 'evidence-box';
+    d.style.left = pos.left + '%'; d.style.top = pos.top + '%';
+    d.style.width = pos.width + '%'; d.style.height = pos.height + '%';
+    wrap.append(d);
+  });
+  card.append(wrap);
+  renderPracticeRatings(card, 'Example Task-B ratings', TASKB_QS, tb.ratings, null);
+  host.append(card);
+}
 function renderTutorial() {
   const ex = TUT.list[TUT.i];
   textAll(['tutNow'], String(TUT.i + 1));
@@ -616,15 +664,17 @@ function renderTutorial() {
   $('tutImg').src = ex.image;
 
   const host = $('tutExplans'); host.textContent = '';
-  LABELS.forEach((l) => {
+  Object.keys(ex.explanations).forEach((l) => {
     const e = ex.explanations[l];
     const card = document.createElement('div'); card.className = 'explan-card';
     const lab = document.createElement('div'); lab.className = 'explan-label';
     const badge = document.createElement('span'); badge.className = 'explan-badge';
     badge.textContent = `Explanation ${l}`; lab.append(badge); card.append(lab);
     renderExplanationBlocks(card, e);
+    if (e.ratings) renderPracticeRatings(card, 'Example Task-A ratings', TASKA_QS, e.ratings, UNSUPPORTED_Q);
     host.append(card);
   });
+  renderPracticeTaskB(host, ex);
   setAll(['tutPrev'], 'disabled', TUT.i === 0);
   setAll(['tutNext'], 'disabled', TUT.i === TUT.list.length - 1);
   $('tutDone').textContent = TUT.i === TUT.list.length - 1 ? 'Start annotating' : 'Skip the examples';

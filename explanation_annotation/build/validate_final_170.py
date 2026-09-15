@@ -184,12 +184,31 @@ def main() -> None:
         n_evidence = sum(1 for l in LABELS if "evidence" in item["explanations"][l])
         assert n_evidence == 1
 
+    # FINAL practice tutorial: exactly 3 examples, each "Explanation A" (GPT-decomposed)
+    # + ONE second explanation (EXPERT or VIEScore), each with real Task-A ratings, plus
+    # one real Task-B rating example. Ratings/rationales are real GPT-5.6-sol API output
+    # (practice_ratings_3.json) -- traceability checked here, not regenerated.
+    practice_ratings = json.loads((MANIFESTS / "practice_ratings_3.json").read_text())["examples"]
+    assert len(practice_ratings) == 3
+    assert set(practice_ratings) <= tutorial  # drawn from the frozen 5-sample pool
+    assert not (set(practice_ratings) & ids) and not (set(practice_ratings) & pilot)
+
     tutorial_bundle = json.loads((APP / "examples/tutorial_examples.json").read_text())
-    assert len(tutorial_bundle["examples"]) == 5
+    assert len(tutorial_bundle["examples"]) == 3
     for example in tutorial_bundle["examples"]:
-        assert set(example["explanations"]) == set(LABELS)
-        n_evidence = sum(1 for l in LABELS if "evidence" in example["explanations"][l])
-        assert n_evidence == 1
+        assert set(example["explanations"]) == {"A", "B"}
+        for lab, exp in example["explanations"].items():
+            r = exp["ratings"]
+            for key in ("diagnostic_correctness", "visual_grounding", "clarity",
+                       "diagnostic_usefulness"):
+                assert 1 <= r[key]["rating"] <= 5 and r[key]["rationale"]
+            assert r["unsupported_content"]["answer"] in ("Yes", "No", "Unsure")
+            assert r["unsupported_content"]["rationale"]
+        tb = example["task_b"]
+        assert tb["label"] in example["explanations"]
+        assert tb["evidence_boxes"]
+        assert 1 <= tb["ratings"]["localization_accuracy"]["rating"] <= 5
+        assert 1 <= tb["ratings"]["sufficiency"]["rating"] <= 5
     assert not (pilot & tutorial)
 
     cell_counts = Counter((sample["direction"], sample["difficulty"]) for sample in samples)

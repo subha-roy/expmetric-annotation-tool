@@ -301,6 +301,20 @@ details.guide ul{margin:8px 0 0;padding-left:20px} details.guide li{margin-botto
 .gsec.worked h4{margin-top:0}
 .tutname{font-size:13.5px;color:var(--accent-dark);font-weight:600}
 
+/* ---------------- practice-only example ratings (compact, not the live Task A/B UI) ---------------- */
+.prac-ratings{margin-top:10px;padding:10px 12px;border-radius:8px;
+  background:var(--surface-2);border:1px solid var(--line)}
+.prac-ratings-title{margin:0 0 6px;font-size:11.5px;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--muted)}
+.prac-rating-row{padding:6px 0;border-top:1px solid var(--line)}
+.prac-rating-row:first-of-type{border-top:none;padding-top:0}
+.prac-rating-head{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+.prac-rating-name{font-weight:600;color:var(--ink)}
+.prac-rating-value{color:var(--accent-dark);font-weight:600;text-align:right}
+.prac-rating-rationale{margin:3px 0 0;font-size:12.5px;line-height:1.45;color:var(--ink-2)}
+.prac-taskb-heading{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--muted);margin:16px 0 8px}
+
 /* ---------------- worked examples on the dashboard ---------------- */
 .worked-home{background:var(--surface);border:1px solid var(--line);
   border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:18px}

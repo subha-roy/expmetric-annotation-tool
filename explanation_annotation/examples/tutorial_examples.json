@@ -1,16 +1,18 @@
 {
-  "schema": "explanation-annotation-practice-1.0.0",
-  "note": "5 worked practice examples, excluded from the real 170-sample study and from every annotator's assignment. Not counted toward completion.",
+  "schema": "explanation-annotation-practice-2.0.0",
+  "note": "3 worked practice examples, excluded from the real 170-sample study and from every annotator's assignment. Not counted toward completion. Ratings/rationales shown are real GPT-5.6-sol API output for teaching purposes only -- NOT gold/reference annotations.",
+  "model_id": "openai/gpt-5.6-sol",
   "examples": [
     {
       "example_id": "prac_1",
       "display_name": "Practice example 1",
       "image": "images/vxb_i2t_73d60934fb0f3c50.jpg",
+      "image_native_width": 640,
+      "image_native_height": 427,
       "text": "A skateboarder dressed in black performs an airborne jump over a red brick wall.",
-      "walkthrough_note": "Read the image and caption first, then each explanation on its own terms. Ask: does this explanation correctly say what the image does or doesn't support?",
+      "walkthrough_note": "Both explanations here are well grounded and confident -- notice how similar high ratings look across two very differently WRITTEN explanations. Judge the content against the image, not the writing style.",
       "explanations": {
         "A": {
-          "summary": null,
           "blocks": [
             {
               "claim": "A skateboarder is present.",
@@ -33,58 +35,32 @@
               "text": "The airborne skateboarder is visibly positioned above the sloping top of the brick wall. The skateboarder and board are clearly airborne directly over the brick wall."
             }
           ],
-          "details_blocks": [],
           "text": "A skateboarder is present. A person with both feet positioned over a skateboard is clearly visible. The image clearly shows a person riding a skateboard. The skateboarder is dressed in black. The skateboarder wears a predominantly black shirt, pants, cap, and shoes with small lighter accents. The skateboarder's visible clothing is predominantly black. A red brick wall is present. A large red brick wall occupies much of the foreground. A large wall made of visibly red bricks spans the foreground. The skateboarder performs an airborne jump. The skateboarder and skateboard are visibly suspended above the wall with open space beneath the board. Both the skateboarder and board are visibly airborne in a jumping pose. The airborne skateboarder is over the red brick wall. The airborne skateboarder is visibly positioned above the sloping top of the brick wall. The skateboarder and board are clearly airborne directly over the brick wall.",
           "word_count": 149,
-          "evidence": [
-            {
-              "part_id": "c0",
-              "text": "A red brick wall is present.",
-              "type": "object",
-              "stratum": "A_simple_object_or_attribute",
-              "evidence_boxes": [
-                [
-                  0.0,
-                  374.0,
-                  741.0,
-                  967.0
-                ]
-              ]
+          "ratings": {
+            "diagnostic_correctness": {
+              "rating": 5,
+              "rationale": "The explanation correctly verifies all key caption elements: a skateboarder in predominantly black clothing, airborne with the board, above a red brick wall."
             },
-            {
-              "part_id": "c1",
-              "text": "The airborne skateboarder is over the red brick wall.",
-              "type": "relation",
-              "stratum": "B_compositional_action_relation_count_negation",
-              "evidence_boxes": [
-                [
-                  547.0,
-                  159.0,
-                  759.0,
-                  799.0
-                ]
-              ]
+            "visual_grounding": {
+              "rating": 5,
+              "rationale": "Each claim is directly supported by visible details, including the rider\u2019s clothing, the suspended skateboard, open space beneath it, and the wall\u2019s red bricks and sloped top."
             },
-            {
-              "part_id": "c2",
-              "text": "The skateboarder performs an airborne jump.",
-              "type": "action",
-              "stratum": "C_additional_any_type",
-              "evidence_boxes": [
-                [
-                  570.0,
-                  159.0,
-                  759.0,
-                  480.0
-                ]
-              ]
+            "clarity": {
+              "rating": 4,
+              "rationale": "The explanation is clear and easy to follow, though it repeats the same observations several times."
+            },
+            "diagnostic_usefulness": {
+              "rating": 5,
+              "rationale": "It systematically addresses every meaningful component of the caption and establishes that the image fully supports it."
+            },
+            "unsupported_content": {
+              "answer": "No",
+              "rationale": "The explanation does not introduce any material claim that is unsupported by the image."
             }
-          ],
-          "evidence_source": "GPT self-reported visual evidence",
-          "box_coord_system": "normalized_0_1000_xyxy"
+          }
         },
         "B": {
-          "summary": null,
           "blocks": [
             {
               "claim": "Fluency",
@@ -99,25 +75,54 @@
               "text": "The caption provides a precise description of the key elements in the image, including the skateboarder's attire, the action of jumping, and the specific feature of the red brick wall. It effectively conveys the main details without omitting important aspects."
             }
           ],
-          "details_blocks": [],
           "text": "Fluency The caption is fluent and grammatically correct. It uses clear and straightforward language, making it easy to read and understand. Relevance The sentence accurately describes the visual content of the image, as it mentions a skateboarder performing an airborne jump, which aligns with the action depicted. Descriptiveness The caption provides a precise description of the key elements in the image, including the skateboarder's attire, the action of jumping, and the specific feature of the red brick wall. It effectively conveys the main details without omitting important aspects.",
-          "word_count": 88
-        },
-        "C": {
-          "summary": null,
-          "blocks": [
-            {
-              "claim": "Semantic Consistency",
-              "text": "The AI-generated image successfully captures the skateboarder dressed in black performing an airborne jump over a red brick wall, following the given prompt."
+          "word_count": 88,
+          "ratings": {
+            "diagnostic_correctness": {
+              "rating": 5,
+              "rationale": "The explanation correctly concludes that the caption fluently and accurately describes the skateboarder, black clothing, airborne action, and red brick wall."
             },
-            {
-              "claim": "Perceptual Quality",
-              "text": "The image has a high naturalness score of 8, indicating that the scene looks realistic. However, there are some artifacts present, such as blurred faces and an unusual body part. These factors contribute to a score of 9 for artifacts."
+            "visual_grounding": {
+              "rating": 5,
+              "rationale": "Every visual claim discussed is directly supported by the image, which clearly shows a black-clad skateboarder airborne above a red brick wall."
+            },
+            "clarity": {
+              "rating": 5,
+              "rationale": "The explanation is well organized, grammatical, and easy to understand."
+            },
+            "diagnostic_usefulness": {
+              "rating": 5,
+              "rationale": "It directly evaluates fluency, relevance, and descriptive coverage while identifying the principal caption-image correspondences."
+            },
+            "unsupported_content": {
+              "answer": "No",
+              "rationale": "The explanation introduces no substantive claims that conflict with or extend beyond the visible image and caption."
             }
-          ],
-          "details_blocks": [],
-          "text": "Semantic Consistency The AI-generated image successfully captures the skateboarder dressed in black performing an airborne jump over a red brick wall, following the given prompt. Perceptual Quality The image has a high naturalness score of 8, indicating that the scene looks realistic. However, there are some artifacts present, such as blurred faces and an unusual body part. These factors contribute to a score of 9 for artifacts.",
-          "word_count": 67
+          }
+        }
+      },
+      "task_b": {
+        "label": "A",
+        "evidence_source": "GPT self-reported visual evidence",
+        "claim_text": "The airborne skateboarder is over the red brick wall.",
+        "evidence_boxes": [
+          [
+            547.0,
+            159.0,
+            759.0,
+            799.0
+          ]
+        ],
+        "box_coord_system": "normalized_0_1000_xyxy",
+        "ratings": {
+          "localization_accuracy": {
+            "rating": 5,
+            "rationale": "The box accurately encloses the airborne skateboarder, skateboard, and the relevant section of the red brick wall beneath him."
+          },
+          "sufficiency": {
+            "rating": 5,
+            "rationale": "The highlighted region clearly shows the skateboarder in midair directly over the wall, fully supporting the claim."
+          }
         }
       }
     },
@@ -125,47 +130,12 @@
       "example_id": "prac_2",
       "display_name": "Practice example 2",
       "image": "images/VXM_T2I_000111.jpg",
+      "image_native_width": 1024,
+      "image_native_height": 768,
       "text": "a centered render of an goddess entangled in an alien bio - organic landscape adorned with thick cables and synthesizer parts is surrounded by sacred geometry, fat bio - mech tree roots, powerful, cinematic, beautifully lit, by beeple, by h. r. giger, 3 d, trending on artstation, octane render, 8 k",
-      "walkthrough_note": "Some explanations describe the image directly; others discuss the caption's wording, tone, or descriptiveness. Both are valid content for Diagnostic Correctness and Visual Grounding -- judge whichever claims each explanation actually makes.",
+      "walkthrough_note": "Explanation A stays cautious about what's actually visible, while Explanation B confidently asserts specific details (a resolution, a platform, an artist attribution) that the image alone cannot support -- watch how that drops its ratings and flags Unsupported Content.",
       "explanations": {
         "A": {
-          "summary": null,
-          "blocks": [
-            {
-              "claim": "Fluency",
-              "text": "The caption is quite fluent and grammatically correct, although it could be slightly more concise. The language used is descriptive and flows well, making it easy to read and understand."
-            },
-            {
-              "claim": "Relevance",
-              "text": "The caption is relevant as it describes the visual content of the image, mentioning elements such as the goddess, the alien landscape, and the surrounding elements. However, it could be more specific about the context of the image."
-            },
-            {
-              "claim": "Descriptiveness",
-              "text": "The caption provides a good level of detail, highlighting key aspects of the image, such as the goddess, the organic landscape, and the lighting. It effectively conveys the overall atmosphere and style of the artwork, making it informative enough for viewers to understand the image."
-            }
-          ],
-          "details_blocks": [],
-          "text": "Fluency The caption is quite fluent and grammatically correct, although it could be slightly more concise. The language used is descriptive and flows well, making it easy to read and understand. Relevance The caption is relevant as it describes the visual content of the image, mentioning elements such as the goddess, the alien landscape, and the surrounding elements. However, it could be more specific about the context of the image. Descriptiveness The caption provides a good level of detail, highlighting key aspects of the image, such as the goddess, the organic landscape, and the lighting. It effectively conveys the overall atmosphere and style of the artwork, making it informative enough for viewers to understand the image.",
-          "word_count": 116
-        },
-        "B": {
-          "summary": null,
-          "blocks": [
-            {
-              "claim": "Semantic Consistency",
-              "text": "The AI-generated image successfully follows the prompt by creating a centered render of an goddess entangled in an alien bio-organic landscape adorned with thick cables and synthesizer parts. The image is surrounded by sacred geometry, fat bio-mech tree roots, and is rendered in a powerful and cinematic style. The lighting is beautifully done and the image is rendered in 8K resolution, making it a trending piece on Artstation. The style of the image is reminiscent of H.R. Giger and Beeple, further indicating the success of the AI-generated image in following the prompt."
-            },
-            {
-              "claim": "Perceptual Quality",
-              "text": "The image is an AI-generated image that successfully captures the essence of a natural scene. The naturalness score of 8 indicates that the image has some minor artifacts, such as slightly blurred leaves and branches. However, the overall effect is still very natural. The artifacts score of 9 indicates that the image has no major artifacts, such as visible watermarks or distorted subjects. Overall, the image is highly effective in its representation of a natural scene."
-            }
-          ],
-          "details_blocks": [],
-          "text": "Semantic Consistency The AI-generated image successfully follows the prompt by creating a centered render of an goddess entangled in an alien bio-organic landscape adorned with thick cables and synthesizer parts. The image is surrounded by sacred geometry, fat bio-mech tree roots, and is rendered in a powerful and cinematic style. The lighting is beautifully done and the image is rendered in 8K resolution, making it a trending piece on Artstation. The style of the image is reminiscent of H.R. Giger and Beeple, further indicating the success of the AI-generated image in following the prompt. Perceptual Quality The image is an AI-generated image that successfully captures the essence of a natural scene. The naturalness score of 8 indicates that the image has some minor artifacts, such as slightly blurred leaves and branches. However, the overall effect is still very natural. The artifacts score of 9 indicates that the image has no major artifacts, such as visible watermarks or distorted subjects. Overall, the image is highly effective in its representation of a natural scene.",
-          "word_count": 172
-        },
-        "C": {
-          "summary": null,
           "blocks": [
             {
               "claim": "A goddess is present.",
@@ -224,79 +194,96 @@
               "text": "The forms have modeled depth, detailed procedural textures, dimensional shading, and rendered glow effects. The dimensional modeling, surface shading, and luminous effects strongly indicate a 3D render."
             }
           ],
-          "details_blocks": [],
           "text": "A goddess is present. Two abstract humanoid forms made of tendrils are visible, but neither is clearly identifiable as a goddess. The image shows two faceless root-like humanoids without clear visual markers identifying either as a goddess. The goddess is centered in the render. The two humanoid forms occupy the left and right sides while the center is largely open. No goddess occupies the center; the visible humanoid forms are positioned on opposite sides. An alien bio-organic landscape is present. The scene is filled with unfamiliar organic tendrils, root-like growths, and glowing structures. Dense alien-looking roots and living cable-like forms visibly compose the environment. The goddess is entangled in the alien bio-organic landscape. Humanoid forms are visibly integrated with the surrounding tendrils, but neither is clearly a goddess. The figures merge into the organic growth, though their identification as a goddess is visually uncertain. Thick cables are present. Numerous thick tubular strands coil across the figures and foreground. Clearly visible thick cable-like strands loop throughout the scene. Thick cables adorn the alien bio-organic landscape. Cable-like strands cover and weave through the organic structures and ground. The tubular cables visibly decorate and interlace the bio-organic environment. Synthesizer parts are present. No recognizable keyboards, knobs, sliders, panels, or other synthesizer components are visible. The image contains organic cables and roots but no visibly identifiable synthesizer parts. Synthesizer parts adorn the alien bio-organic landscape. No recognizable synthesizer components appear anywhere in the landscape. The landscape cannot visibly be adorned with synthesizer parts because none are shown. Sacred geometry is present. Two luminous circular emblems contain symmetrical geometric line patterns. The glowing circular symbols display ornate, symmetrical geometry suggestive of sacred geometry. Sacred geometry surrounds the centered scene. The geometric emblems are localized above the two side figures rather than surrounding the center. Only two upper circular symbols are visible, and they do not encircle the centered scene. Fat bio-mechanical tree roots are present. Large root-like tubular structures with mechanical cable qualities cover the ground and form the figures. Thick roots visibly combine organic branching with cable-like biomechanical textures. Fat bio-mechanical tree roots surround the centered scene. Thick intertwined roots occupy the foreground, both sides, and the area around the central opening. The central region is visibly bordered and underlaid by dense biomechanical roots. The scene has cinematic lighting. Bright cyan glows and focused green highlights contrast dramatically with a dark background. Strong colored glows, deep shadows, and selective highlights create visibly cinematic lighting. The image is a 3D render. The forms have modeled depth, detailed procedural textures, dimensional shading, and rendered glow effects. The dimensional modeling, surface shading, and luminous effects strongly indicate a 3D render.",
           "word_count": 443,
-          "evidence": [
+          "ratings": {
+            "diagnostic_correctness": {
+              "rating": 5,
+              "rationale": "The explanation accurately distinguishes visible elements from unsupported caption claims, especially the absence of a clearly identifiable centered goddess or synthesizer parts. Its assessments of the tendrils, roots, glowing geometric symbols, lighting, and rendered appearance match the image."
+            },
+            "visual_grounding": {
+              "rating": 5,
+              "rationale": "The claims are tied to specific visible details, including the two side-positioned root-like forms, cyan circular emblems, dense tubular strands, central opening, and dark high-contrast lighting."
+            },
+            "clarity": {
+              "rating": 4,
+              "rationale": "The explanation is clear and systematic, though somewhat repetitive because each caption element is restated before being assessed."
+            },
+            "diagnostic_usefulness": {
+              "rating": 5,
+              "rationale": "It clearly identifies which major caption components are supported, only loosely suggested, or contradicted by the image, making the caption-image alignment easy to assess."
+            },
+            "unsupported_content": {
+              "answer": "No",
+              "rationale": "The explanation does not introduce any clearly unfounded visual claims; descriptions such as humanoid, biomechanical, and sacred geometry are reasonable interpretations of the visible forms."
+            }
+          }
+        },
+        "B": {
+          "blocks": [
             {
-              "part_id": "c0",
-              "text": "Fat bio-mechanical tree roots are present.",
-              "type": "object",
-              "stratum": "A_simple_object_or_attribute",
-              "evidence_boxes": [
-                [
-                  0.0,
-                  410.0,
-                  430.0,
-                  950.0
-                ],
-                [
-                  525.0,
-                  390.0,
-                  960.0,
-                  925.0
-                ],
-                [
-                  0.0,
-                  700.0,
-                  1000.0,
-                  1000.0
-                ]
-              ]
+              "claim": "Semantic Consistency",
+              "text": "The AI-generated image successfully follows the prompt by creating a centered render of an goddess entangled in an alien bio-organic landscape adorned with thick cables and synthesizer parts. The image is surrounded by sacred geometry, fat bio-mech tree roots, and is rendered in a powerful and cinematic style. The lighting is beautifully done and the image is rendered in 8K resolution, making it a trending piece on Artstation. The style of the image is reminiscent of H.R. Giger and Beeple, further indicating the success of the AI-generated image in following the prompt."
             },
             {
-              "part_id": "c1",
-              "text": "The goddess is entangled in the alien bio-organic landscape.",
-              "type": "relation",
-              "stratum": "B_compositional_action_relation_count_negation",
-              "evidence_boxes": [
-                [
-                  20.0,
-                  65.0,
-                  410.0,
-                  855.0
-                ],
-                [
-                  555.0,
-                  100.0,
-                  950.0,
-                  850.0
-                ]
-              ]
-            },
-            {
-              "part_id": "c2",
-              "text": "Sacred geometry is present.",
-              "type": "object",
-              "stratum": "C_additional_any_type",
-              "evidence_boxes": [
-                [
-                  98.0,
-                  65.0,
-                  159.0,
-                  191.0
-                ],
-                [
-                  732.0,
-                  100.0,
-                  827.0,
-                  240.0
-                ]
-              ]
+              "claim": "Perceptual Quality",
+              "text": "The image is an AI-generated image that successfully captures the essence of a natural scene. The naturalness score of 8 indicates that the image has some minor artifacts, such as slightly blurred leaves and branches. However, the overall effect is still very natural. The artifacts score of 9 indicates that the image has no major artifacts, such as visible watermarks or distorted subjects. Overall, the image is highly effective in its representation of a natural scene."
             }
           ],
-          "evidence_source": "GPT self-reported visual evidence",
-          "box_coord_system": "normalized_0_1000_xyxy"
+          "text": "Semantic Consistency The AI-generated image successfully follows the prompt by creating a centered render of an goddess entangled in an alien bio-organic landscape adorned with thick cables and synthesizer parts. The image is surrounded by sacred geometry, fat bio-mech tree roots, and is rendered in a powerful and cinematic style. The lighting is beautifully done and the image is rendered in 8K resolution, making it a trending piece on Artstation. The style of the image is reminiscent of H.R. Giger and Beeple, further indicating the success of the AI-generated image in following the prompt. Perceptual Quality The image is an AI-generated image that successfully captures the essence of a natural scene. The naturalness score of 8 indicates that the image has some minor artifacts, such as slightly blurred leaves and branches. However, the overall effect is still very natural. The artifacts score of 9 indicates that the image has no major artifacts, such as visible watermarks or distorted subjects. Overall, the image is highly effective in its representation of a natural scene.",
+          "word_count": 172,
+          "ratings": {
+            "diagnostic_correctness": {
+              "rating": 2,
+              "rationale": "The explanation correctly notes the bio-organic roots, cable-like forms, luminous symbols, and dramatic lighting, but wrongly claims there is a centered goddess and identifiable synthesizer parts. It also presents unverifiable or false claims about 8K resolution, ArtStation popularity, and the scene being natural."
+            },
+            "visual_grounding": {
+              "rating": 2,
+              "rationale": "Some observations are visible, especially the tangled biomechanical roots and cinematic illumination, but major assertions such as the goddess, synthesizer components, leaves, and lack of distortion are not grounded in the image."
+            },
+            "clarity": {
+              "rating": 4,
+              "rationale": "The explanation is organized and easy to follow, though its arbitrary naturalness and artifact scores are introduced without a defined basis."
+            },
+            "diagnostic_usefulness": {
+              "rating": 2,
+              "rationale": "It identifies a few genuine stylistic correspondences but fails to flag important caption-image mismatches and relies heavily on unsupported promotional and technical claims."
+            },
+            "unsupported_content": {
+              "answer": "Yes",
+              "rationale": "The claims of a centered goddess, synthesizer parts, 8K resolution, ArtStation trending status, blurred leaves, and definitive Beeple/H.R. Giger attribution are unsupported by the visible image."
+            }
+          }
+        }
+      },
+      "task_b": {
+        "label": "A",
+        "evidence_source": "GPT self-reported visual evidence",
+        "claim_text": "The goddess is entangled in the alien bio-organic landscape.",
+        "evidence_boxes": [
+          [
+            20.0,
+            65.0,
+            410.0,
+            855.0
+          ],
+          [
+            555.0,
+            100.0,
+            950.0,
+            850.0
+          ]
+        ],
+        "box_coord_system": "normalized_0_1000_xyxy",
+        "ratings": {
+          "localization_accuracy": {
+            "rating": 5,
+            "rationale": "The boxes tightly encompass the humanoid, goddess-like forms and the dense organic cables and roots entwining their bodies."
+          },
+          "sufficiency": {
+            "rating": 4,
+            "rationale": "The highlighted regions clearly show humanoid forms embedded in an alien bio-organic tangle, though their identity specifically as a goddess is somewhat interpretive."
+          }
         }
       }
     },
@@ -304,11 +291,12 @@
       "example_id": "prac_3",
       "display_name": "Practice example 3",
       "image": "images/vxb_i2t_2b0bf329407964ce.jpg",
+      "image_native_width": 1024,
+      "image_native_height": 1024,
       "text": "A white freestanding bathtub with a dark towel draped over its near rim sits before a four-panel black folding screen that partially blocks three windows, while a curved metallic faucet and leafy green plants occupy the left side.",
-      "walkthrough_note": "Watch for whether an explanation names a SPECIFIC weak point (a particular claim or detail) versus staying vague. Specific, checkable statements support higher Diagnostic Usefulness than a generic 'mostly accurate' remark.",
+      "walkthrough_note": "Explanation B invents a specific visual detail (a watermark) that is not in the image at all. Compare that to the Task-B example below, where the highlighted boxes visibly show fewer panels than the claim states -- a good box location can still be an insufficient one.",
       "explanations": {
         "A": {
-          "summary": null,
           "blocks": [
             {
               "claim": "A white freestanding bathtub is present.",
@@ -355,365 +343,98 @@
               "text": "The plants are grouped along the left wall. The visible leafy plants are clustered on the left side of the image."
             }
           ],
-          "details_blocks": [],
           "text": "A white freestanding bathtub is present. Large white claw-foot bathtub in the foreground. A large white bathtub standing on visible feet occupies the foreground. A dark towel is draped over the near rim of the white freestanding bathtub. Dark towel hanging over the bathtub's front rim. A dark towel visibly folds over and hangs from the near rim of the white tub. A black folding screen is present. Large black grid-patterned folding screen behind the tub. A hinged black folding screen with rectangular grid panels is clearly visible. The black folding screen has four panels. Only three distinct hinged screen panels are visible. The visible screen consists of three distinct panels, with no fourth panel shown. The white freestanding bathtub is positioned in front of the black folding screen. The bathtub overlaps the lower portion of the screen. The tub visibly occupies the foreground while the folding screen stands behind it. There are three windows. Three adjacent framed window sections are visible. Three separate window sections can be identified from their frames and dividers. The black folding screen partially blocks the three windows. The screen overlaps a substantial portion of the window bank. The folding screen stands in front of the window area and obscures portions of the middle and right sections. A curved metallic faucet is present. Shiny arched faucet beside the tub. A reflective metallic faucet with a clearly curved spout is visible beside the tub. The curved metallic faucet is on the left side. The faucet appears at the left end of the bathtub. The curved faucet is visibly positioned on the left side of the scene and tub. Leafy green plants are present. Several leafy plants beside the bathtub. Multiple plants with abundant green leaves are clearly visible. The leafy green plants are on the left side. The plants are grouped along the left wall. The visible leafy plants are clustered on the left side of the image.",
           "word_count": 322,
-          "evidence": [
-            {
-              "part_id": "c0",
-              "text": "A black folding screen is present.",
-              "type": "object",
-              "stratum": "A_simple_object_or_attribute",
-              "evidence_boxes": [
-                [
-                  540.0,
-                  94.0,
-                  1000.0,
-                  867.0
-                ]
-              ]
+          "ratings": {
+            "diagnostic_correctness": {
+              "rating": 4,
+              "rationale": "The explanation correctly verifies nearly all caption elements and appropriately identifies that only three screen panels are visible, undermining the caption\u2019s \u201cfour-panel\u201d claim. However, it also directly asserts that the screen has four panels before contradicting that assertion."
             },
-            {
-              "part_id": "c1",
-              "text": "The black folding screen has four panels.",
-              "type": "count",
-              "stratum": "B_compositional_action_relation_count_negation",
-              "evidence_boxes": [
-                [
-                  541.0,
-                  159.0,
-                  706.0,
-                  613.0
-                ],
-                [
-                  704.0,
-                  97.0,
-                  842.0,
-                  837.0
-                ],
-                [
-                  834.0,
-                  94.0,
-                  1000.0,
-                  867.0
-                ]
-              ]
+            "visual_grounding": {
+              "rating": 5,
+              "rationale": "Its observations about the tub, towel, visible feet, screen, windows, faucet, and plants are well supported by the image, and the panel-count discrepancy is accurately grounded."
             },
-            {
-              "part_id": "c2",
-              "text": "Leafy green plants are present.",
-              "type": "object",
-              "stratum": "C_additional_any_type",
-              "evidence_boxes": [
-                [
-                  96.0,
-                  269.0,
-                  369.0,
-                  641.0
-                ]
-              ]
+            "clarity": {
+              "rating": 3,
+              "rationale": "The explanation is understandable but highly repetitive and internally inconsistent about whether the folding screen has three or four panels."
+            },
+            "diagnostic_usefulness": {
+              "rating": 4,
+              "rationale": "It thoroughly checks each caption component and isolates the key mismatch concerning the number of screen panels, though the repetition and contradiction reduce efficiency."
+            },
+            "unsupported_content": {
+              "answer": "Yes",
+              "rationale": "The statement that the folding screen has four panels is unsupported by the image, which visibly shows only three distinct panels."
             }
-          ],
-          "evidence_source": "GPT self-reported visual evidence",
-          "box_coord_system": "normalized_0_1000_xyxy"
+          }
         },
         "B": {
-          "summary": null,
           "blocks": [
             {
               "claim": "Perceptual Quality",
               "text": "The image has a high naturalness score of 8, indicating that the scene looks realistic and well-generated. However, there are some minor artifacts present, such as a slightly blurred plant in the background and a small watermark on the bottom right corner. These issues do not significantly detract from the overall quality of the image, but could be improved upon in future generations."
             }
           ],
-          "details_blocks": [],
           "text": "Perceptual Quality The image has a high naturalness score of 8, indicating that the scene looks realistic and well-generated. However, there are some minor artifacts present, such as a slightly blurred plant in the background and a small watermark on the bottom right corner. These issues do not significantly detract from the overall quality of the image, but could be improved upon in future generations.",
-          "word_count": 65
-        },
-        "C": {
-          "summary": null,
-          "blocks": [
-            {
-              "claim": "Fluency",
-              "text": "The caption is fluent and grammatically correct. It uses clear and straightforward language, making it easy to read and understand. The structure is coherent, and the sentences flow naturally."
+          "word_count": 65,
+          "ratings": {
+            "diagnostic_correctness": {
+              "rating": 2,
+              "rationale": "The image does look realistic, but the explanation invents a bottom-right watermark and provides an unexplained \u201cnaturalness score of 8.\u201d It also fails to assess whether the visible bathtub, towel, screen, windows, faucet, and plants support the caption."
             },
-            {
-              "claim": "Relevance",
-              "text": "The caption is relevant as it accurately describes the visual content of the image. It mentions key elements such as the bathtub, the towel, the folding screen, and the plants, which are all present in the image."
+            "visual_grounding": {
+              "rating": 2,
+              "rationale": "Only the general realism and possibly slight softness in parts of the plants are visually supported. No watermark is visible in the bottom-right corner, and the explanation is largely disconnected from the captioned content."
             },
-            {
-              "claim": "Descriptiveness",
-              "text": "The caption provides a detailed description of the scene, highlighting important features like the bathtub, the towel, and the folding screen. It effectively conveys the overall atmosphere and composition of the image, making it informative and engaging."
+            "clarity": {
+              "rating": 4,
+              "rationale": "The explanation is concise and grammatically clear, though the unsupported score and vague reference to generation artifacts reduce precision."
+            },
+            "diagnostic_usefulness": {
+              "rating": 1,
+              "rationale": "It does not perform the required caption-image comparison or identify that the caption is strongly supported by the visible scene. Its main alleged defect, a watermark, is not present."
+            },
+            "unsupported_content": {
+              "answer": "Yes",
+              "rationale": "The claimed bottom-right watermark is not visible, and the naturalness score of 8 has no stated basis or applicable scale."
             }
-          ],
-          "details_blocks": [],
-          "text": "Fluency The caption is fluent and grammatically correct. It uses clear and straightforward language, making it easy to read and understand. The structure is coherent, and the sentences flow naturally. Relevance The caption is relevant as it accurately describes the visual content of the image. It mentions key elements such as the bathtub, the towel, the folding screen, and the plants, which are all present in the image. Descriptiveness The caption provides a detailed description of the scene, highlighting important features like the bathtub, the towel, and the folding screen. It effectively conveys the overall atmosphere and composition of the image, making it informative and engaging.",
-          "word_count": 106
+          }
         }
-      }
-    },
-    {
-      "example_id": "prac_4",
-      "display_name": "Practice example 4",
-      "image": "images/VXM_T2I_000094.jpg",
-      "text": "Dark storm clouds gathering over a desolate cityscape",
-      "walkthrough_note": "Compare how differently the three explanations are written -- length, structure and tone vary a lot. None of that should affect your rating; judge only correctness, grounding, clarity and usefulness against the actual image and caption.",
-      "explanations": {
-        "A": {
-          "summary": null,
-          "blocks": [
-            {
-              "claim": "Fluency",
-              "text": "The caption is fluent and grammatically correct. It uses clear and straightforward language, making it easy to read and understand."
-            },
-            {
-              "claim": "Relevance",
-              "text": "The caption is relevant as it accurately describes the visual content of the image, which features dark storm clouds and a desolate cityscape. It captures the mood and atmosphere of the scene."
-            },
-            {
-              "claim": "Descriptiveness",
-              "text": "The caption provides a good level of detail by mentioning both the storm clouds and the desolate cityscape. It effectively conveys the key elements of the image, giving the viewer a clear idea of what to expect."
-            }
+      },
+      "task_b": {
+        "label": "A",
+        "evidence_source": "GPT self-reported visual evidence",
+        "claim_text": "The black folding screen has four panels.",
+        "evidence_boxes": [
+          [
+            541.0,
+            159.0,
+            706.0,
+            613.0
           ],
-          "details_blocks": [],
-          "text": "Fluency The caption is fluent and grammatically correct. It uses clear and straightforward language, making it easy to read and understand. Relevance The caption is relevant as it accurately describes the visual content of the image, which features dark storm clouds and a desolate cityscape. It captures the mood and atmosphere of the scene. Descriptiveness The caption provides a good level of detail by mentioning both the storm clouds and the desolate cityscape. It effectively conveys the key elements of the image, giving the viewer a clear idea of what to expect.",
-          "word_count": 92
-        },
-        "B": {
-          "summary": null,
-          "blocks": [
-            {
-              "claim": "Perceptual Quality",
-              "text": "The image is an AI-generated image that successfully captures the essence of a stormy city street. The naturalness score of 8 indicates that the scene looks somewhat artificial, but not overly so. The artifacts score of 9 suggests that the image is relatively free of obvious distortions or artifacts."
-            }
+          [
+            704.0,
+            97.0,
+            842.0,
+            837.0
           ],
-          "details_blocks": [],
-          "text": "Perceptual Quality The image is an AI-generated image that successfully captures the essence of a stormy city street. The naturalness score of 8 indicates that the scene looks somewhat artificial, but not overly so. The artifacts score of 9 suggests that the image is relatively free of obvious distortions or artifacts.",
-          "word_count": 51
-        },
-        "C": {
-          "summary": null,
-          "blocks": [
-            {
-              "claim": "Dark storm clouds are visible.",
-              "text": "Large, nearly black cloud formations dominate the sky. Large dark storm clouds visibly fill most of the sky."
-            },
-            {
-              "claim": "The dark storm clouds are gathering.",
-              "text": "Dense cloud masses appear clustered, but their movement cannot be observed. The clouds are densely clustered, though a static image cannot directly show them gathering."
-            },
-            {
-              "claim": "The cityscape is desolate.",
-              "text": "The streets are empty of people, littered with debris, and bordered by deteriorated buildings. Empty debris-strewn streets and visibly deteriorated buildings strongly convey desolation."
-            },
-            {
-              "claim": "The dark storm clouds are over the desolate cityscape.",
-              "text": "The storm-cloud-filled sky occupies the area directly above the empty urban streets and buildings. Dark storm clouds are clearly positioned above the empty, damaged-looking cityscape."
-            }
-          ],
-          "details_blocks": [],
-          "text": "Dark storm clouds are visible. Large, nearly black cloud formations dominate the sky. Large dark storm clouds visibly fill most of the sky. The dark storm clouds are gathering. Dense cloud masses appear clustered, but their movement cannot be observed. The clouds are densely clustered, though a static image cannot directly show them gathering. The cityscape is desolate. The streets are empty of people, littered with debris, and bordered by deteriorated buildings. Empty debris-strewn streets and visibly deteriorated buildings strongly convey desolation. The dark storm clouds are over the desolate cityscape. The storm-cloud-filled sky occupies the area directly above the empty urban streets and buildings. Dark storm clouds are clearly positioned above the empty, damaged-looking cityscape.",
-          "word_count": 116,
-          "evidence": [
-            {
-              "part_id": "c0",
-              "text": "Dark storm clouds are visible.",
-              "type": "object",
-              "stratum": "A_simple_object_or_attribute",
-              "evidence_boxes": [
-                [
-                  0.0,
-                  0.0,
-                  999.0,
-                  626.0
-                ]
-              ]
-            },
-            {
-              "part_id": "c1",
-              "text": "The dark storm clouds are gathering.",
-              "type": "action",
-              "stratum": "B_compositional_action_relation_count_negation",
-              "evidence_boxes": [
-                [
-                  0.0,
-                  0.0,
-                  758.0,
-                  430.0
-                ]
-              ]
-            },
-            {
-              "part_id": "c2",
-              "text": "The cityscape is desolate.",
-              "type": "attribute",
-              "stratum": "C_additional_any_type",
-              "evidence_boxes": [
-                [
-                  0.0,
-                  389.0,
-                  999.0,
-                  999.0
-                ]
-              ]
-            }
-          ],
-          "evidence_source": "GPT self-reported visual evidence",
-          "box_coord_system": "normalized_0_1000_xyxy"
-        }
-      }
-    },
-    {
-      "example_id": "prac_5",
-      "display_name": "Practice example 5",
-      "image": "images/vxb_i2t_dad593a10d8a2495.jpg",
-      "text": "At a crowded food-service counter, a customer in a gray hoodie stands centrally with their back to the camera and faces the light tan counter, while a brown-haired woman in a dark blue jacket stands to their right and a purple-shirted person is cropped at the left edge; a pizza is visible inside the transparent glass display resting on the counter.",
-      "walkthrough_note": "If two explanations seem to disagree with each other, that is expected -- rate each one independently against the image, never against what another explanation says.",
-      "explanations": {
-        "A": {
-          "summary": null,
-          "blocks": [
-            {
-              "claim": "A food-service counter is visible.",
-              "text": "A serving counter with glass shielding, food, and condiment bottles is clearly visible. The image clearly shows a serving counter with food and condiments."
-            },
-            {
-              "claim": "The food-service counter is light tan.",
-              "text": "The counter's large front panel is light tan wood. The visible front face of the counter is plainly light tan."
-            },
-            {
-              "claim": "The area at the food-service counter is crowded.",
-              "text": "Numerous customers and staff occupy the space around and behind the counter. Many closely spaced people are visibly gathered around the counter."
-            },
-            {
-              "claim": "A customer in a gray hoodie is visible.",
-              "text": "A large central customer wears a dark gray-blue hooded sweatshirt. A centrally visible customer is clearly wearing a hoodie that appears dark gray-blue."
-            },
-            {
-              "claim": "The customer in the gray hoodie stands centrally.",
-              "text": "The hooded customer occupies the central foreground. The hooded customer is positioned prominently near the image center."
-            },
-            {
-              "claim": "The customer in the gray hoodie has their back to the camera.",
-              "text": "The rear of the customer's head, shoulders, and hoodie faces the viewer. Only the back of the hooded customer's head and torso is visible."
-            },
-            {
-              "claim": "The customer in the gray hoodie faces the light tan counter.",
-              "text": "The customer stands with their back to the camera directly before the counter. The customer's body orientation is visibly toward the counter."
-            },
-            {
-              "claim": "A brown-haired woman in a dark blue jacket is visible.",
-              "text": "A brown-haired person at right wears a jacket that appears dark gray rather than clearly blue. The brown hair and jacket are visible, but the jacket is not clearly dark blue and gender is not definitive."
-            },
-            {
-              "claim": "The brown-haired woman in the dark blue jacket stands to the right of the customer in the gray hoodie.",
-              "text": "The brown-haired jacketed person is positioned immediately right of the central hooded customer. The referenced brown-haired person is visibly to the right, though the claimed jacket color is ambiguous."
-            },
-            {
-              "claim": "A person in a purple shirt is visible.",
-              "text": "A purple-shirted person is visible in the left foreground. A person wearing a distinctly purple shirt is clearly visible at left."
-            },
-            {
-              "claim": "The person in the purple shirt is cropped at the left edge.",
-              "text": "The person's body extends beyond the image's left boundary. The purple-shirted person is visibly cut off by the left frame edge."
-            },
-            {
-              "claim": "A pizza is visible.",
-              "text": "A baked pizza-like food item is visible in the lower-left display area. A pizza is clearly visible on a tray behind the counter glass."
-            },
-            {
-              "claim": "The pizza is inside a transparent glass display.",
-              "text": "The pizza sits behind the transparent panels of the counter display. Transparent glass panels visibly enclose the area containing the pizza."
-            },
-            {
-              "claim": "The transparent glass display rests on the counter.",
-              "text": "The display's glass panels and frame are mounted directly along the counter top. The transparent display is visibly supported by the top of the tan counter."
-            }
-          ],
-          "details_blocks": [],
-          "text": "A food-service counter is visible. A serving counter with glass shielding, food, and condiment bottles is clearly visible. The image clearly shows a serving counter with food and condiments. The food-service counter is light tan. The counter's large front panel is light tan wood. The visible front face of the counter is plainly light tan. The area at the food-service counter is crowded. Numerous customers and staff occupy the space around and behind the counter. Many closely spaced people are visibly gathered around the counter. A customer in a gray hoodie is visible. A large central customer wears a dark gray-blue hooded sweatshirt. A centrally visible customer is clearly wearing a hoodie that appears dark gray-blue. The customer in the gray hoodie stands centrally. The hooded customer occupies the central foreground. The hooded customer is positioned prominently near the image center. The customer in the gray hoodie has their back to the camera. The rear of the customer's head, shoulders, and hoodie faces the viewer. Only the back of the hooded customer's head and torso is visible. The customer in the gray hoodie faces the light tan counter. The customer stands with their back to the camera directly before the counter. The customer's body orientation is visibly toward the counter. A brown-haired woman in a dark blue jacket is visible. A brown-haired person at right wears a jacket that appears dark gray rather than clearly blue. The brown hair and jacket are visible, but the jacket is not clearly dark blue and gender is not definitive. The brown-haired woman in the dark blue jacket stands to the right of the customer in the gray hoodie. The brown-haired jacketed person is positioned immediately right of the central hooded customer. The referenced brown-haired person is visibly to the right, though the claimed jacket color is ambiguous. A person in a purple shirt is visible. A purple-shirted person is visible in the left foreground. A person wearing a distinctly purple shirt is clearly visible at left. The person in the purple shirt is cropped at the left edge. The person's body extends beyond the image's left boundary. The purple-shirted person is visibly cut off by the left frame edge. A pizza is visible. A baked pizza-like food item is visible in the lower-left display area. A pizza is clearly visible on a tray behind the counter glass. The pizza is inside a transparent glass display. The pizza sits behind the transparent panels of the counter display. Transparent glass panels visibly enclose the area containing the pizza. The transparent glass display rests on the counter. The display's glass panels and frame are mounted directly along the counter top. The transparent display is visibly supported by the top of the tan counter.",
-          "word_count": 457,
-          "evidence": [
-            {
-              "part_id": "c0",
-              "text": "A pizza is visible.",
-              "type": "object",
-              "stratum": "A_simple_object_or_attribute",
-              "evidence_boxes": [
-                [
-                  127.0,
-                  580.0,
-                  296.0,
-                  665.0
-                ]
-              ]
-            },
-            {
-              "part_id": "c1",
-              "text": "The pizza is inside a transparent glass display.",
-              "type": "relation",
-              "stratum": "B_compositional_action_relation_count_negation",
-              "evidence_boxes": [
-                [
-                  29.0,
-                  360.0,
-                  592.0,
-                  670.0
-                ]
-              ]
-            },
-            {
-              "part_id": "c2",
-              "text": "The person in the purple shirt is cropped at the left edge.",
-              "type": "relation",
-              "stratum": "C_additional_any_type",
-              "evidence_boxes": [
-                [
-                  0.0,
-                  421.0,
-                  173.0,
-                  952.0
-                ]
-              ]
-            }
-          ],
-          "evidence_source": "GPT self-reported visual evidence",
-          "box_coord_system": "normalized_0_1000_xyxy"
-        },
-        "B": {
-          "summary": null,
-          "blocks": [
-            {
-              "claim": "Fluency",
-              "text": "The caption is fluent and grammatically correct. It uses clear and straightforward language, making it easy to read and understand. The structure is coherent, and the sentences flow naturally."
-            },
-            {
-              "claim": "Relevance",
-              "text": "The caption is relevant as it accurately describes the scene depicted in the image. It mentions key elements such as the crowded food-service counter, the customers, and the pizza, which are all present in the visual content."
-            },
-            {
-              "claim": "Descriptiveness",
-              "text": "The caption provides a detailed description of the image, highlighting important aspects such as the customers' attire, the setting, and the presence of food. It effectively conveys the atmosphere and elements of the scene, making it informative and engaging."
-            }
-          ],
-          "details_blocks": [],
-          "text": "Fluency The caption is fluent and grammatically correct. It uses clear and straightforward language, making it easy to read and understand. The structure is coherent, and the sentences flow naturally. Relevance The caption is relevant as it accurately describes the scene depicted in the image. It mentions key elements such as the crowded food-service counter, the customers, and the pizza, which are all present in the visual content. Descriptiveness The caption provides a detailed description of the image, highlighting important aspects such as the customers' attire, the setting, and the presence of food. It effectively conveys the atmosphere and elements of the scene, making it informative and engaging.",
-          "word_count": 108
-        },
-        "C": {
-          "summary": null,
-          "blocks": [
-            {
-              "claim": "Semantic Consistency",
-              "text": "The AI-generated image accurately depicts a crowded food-service counter with a customer in a gray hoodie standing centrally with their back to the camera and facing the light tan counter, while a brown-haired woman in a dark blue jacket stands to their right and a purple-shirted person is cropped at the left edge. A pizza is also visible inside the transparent glass display resting on the counter, as described in the prompt."
-            },
-            {
-              "claim": "Perceptual Quality",
-              "text": "The image has a good balance of natural elements and artifacts. The people and objects in the image are well-rendered, but there are some minor artifacts such as slightly blurred faces and a small watermark on the image. Overall, the image has a natural feel with some minor imperfections."
-            }
-          ],
-          "details_blocks": [],
-          "text": "Semantic Consistency The AI-generated image accurately depicts a crowded food-service counter with a customer in a gray hoodie standing centrally with their back to the camera and facing the light tan counter, while a brown-haired woman in a dark blue jacket stands to their right and a purple-shirted person is cropped at the left edge. A pizza is also visible inside the transparent glass display resting on the counter, as described in the prompt. Perceptual Quality The image has a good balance of natural elements and artifacts. The people and objects in the image are well-rendered, but there are some minor artifacts such as slightly blurred faces and a small watermark on the image. Overall, the image has a natural feel with some minor imperfections.",
-          "word_count": 125
+          [
+            834.0,
+            94.0,
+            1000.0,
+            867.0
+          ]
+        ],
+        "box_coord_system": "normalized_0_1000_xyxy",
+        "ratings": {
+          "localization_accuracy": {
+            "rating": 4,
+            "rationale": "The boxes closely cover the black folding screen and its visible panel sections, though one box includes a substantial obscured area behind the bathtub."
+          },
+          "sufficiency": {
+            "rating": 2,
+            "rationale": "The highlighted area clearly shows only three distinct visible panels, so it does not adequately establish that the screen has four panels."
+          }
         }
       }
     }
