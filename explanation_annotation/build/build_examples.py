@@ -4,11 +4,14 @@ manifest and from every annotator's real assignment.
 
 FINAL practice-tutorial version: exactly 3 examples, each showing GPT-5.6 Sol Decomposed
 (always "Explanation A") next to ONE second explanation -- EXPERT or VIEScore-official
-("Explanation B") -- plus REAL Task-A ratings/rationales and, where available, one
-GPT-5.6-Sol-Decomposed Task-B evidence-box example with real ratings/rationale. Every
-rating/rationale is copied verbatim from evaluation/explanation_annotation/manifests/
-practice_ratings_3.json, itself the real, traceable output of a live GPT-5.6-sol API call
-(see generate_practice_ratings.py) -- nothing here is invented, and these are TUTORIAL
+("Explanation B") -- plus Task-A ratings/rationales, a one-line "final_comparison"
+teaching takeaway, and (where available) one GPT-5.6-Sol-Decomposed Task-B evidence-box
+example with real ratings/rationale. Everything is copied verbatim from
+evaluation/explanation_annotation/manifests/practice_ratings_3.json: Task-A
+ratings/rationale + final_comparison are the researcher's final reviewed values
+(finalize_practice_ratings.py), superseding the original live GPT-5.6-sol Task-A output
+that is still kept in provenance.raw_responses for audit; Task-B ratings are unchanged,
+still the original live API output (generate_practice_ratings.py). These are TUTORIAL
 labels, never gold/reference annotations, never merged into real study data.
 
 BASELINE STUDY (current): VisExMEM-9B is excluded, same as the real-HiWi bundles -- see
@@ -72,6 +75,7 @@ def main():
             "text": s["text"],
             "walkthrough_note": WALKTHROUGH_NOTES[sid],
             "explanations": explanations,
+            "final_comparison": gen.get("final_comparison"),
             "task_b": {
                 "label": "A",
                 "evidence_source": EVIDENCE_SOURCE_LABEL,
@@ -85,8 +89,10 @@ def main():
     out = {"schema": "explanation-annotation-practice-2.0.0",
           "note": "3 worked practice examples, excluded from the real 170-sample study "
                   "and from every annotator's assignment. Not counted toward completion. "
-                  "Ratings/rationales shown are real GPT-5.6-sol API output for teaching "
-                  "purposes only -- NOT gold/reference annotations.",
+                  "Task-A ratings/rationale and the final_comparison line are the "
+                  "researcher's final reviewed values; Task-B ratings are the original "
+                  "live GPT-5.6-sol API output. Teaching material only -- NOT "
+                  "gold/reference annotations.",
           "model_id": ratings_doc["model_id"],
           "examples": examples}
     outpath = APP / "examples" / "tutorial_examples.json"

@@ -674,6 +674,12 @@ function renderTutorial() {
     if (e.ratings) renderPracticeRatings(card, 'Example Task-A ratings', TASKA_QS, e.ratings, UNSUPPORTED_Q);
     host.append(card);
   });
+  if (ex.final_comparison) {
+    const fc = document.createElement('div'); fc.className = 'prac-final-comparison';
+    const h = document.createElement('p'); h.className = 'prac-ratings-title'; h.textContent = 'Final comparison';
+    const p = document.createElement('p'); p.className = 'prac-final-comparison-text'; p.textContent = ex.final_comparison;
+    fc.append(h, p); host.append(fc);
+  }
   renderPracticeTaskB(host, ex);
   setAll(['tutPrev'], 'disabled', TUT.i === 0);
   setAll(['tutNext'], 'disabled', TUT.i === TUT.list.length - 1);

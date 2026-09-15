@@ -1,6 +1,6 @@
 {
   "schema": "explanation-annotation-practice-2.0.0",
-  "note": "3 worked practice examples, excluded from the real 170-sample study and from every annotator's assignment. Not counted toward completion. Ratings/rationales shown are real GPT-5.6-sol API output for teaching purposes only -- NOT gold/reference annotations.",
+  "note": "3 worked practice examples, excluded from the real 170-sample study and from every annotator's assignment. Not counted toward completion. Task-A ratings/rationale and the final_comparison line are the researcher's final reviewed values; Task-B ratings are the original live GPT-5.6-sol API output. Teaching material only -- NOT gold/reference annotations.",
   "model_id": "openai/gpt-5.6-sol",
   "examples": [
     {
@@ -40,23 +40,23 @@
           "ratings": {
             "diagnostic_correctness": {
               "rating": 5,
-              "rationale": "The explanation correctly verifies all key caption elements: a skateboarder in predominantly black clothing, airborne with the board, above a red brick wall."
+              "rationale": "Correctly verifies every important caption component -- skateboarder, predominantly black clothing, airborne jump, red brick wall, and the skateboarder being above the wall -- using concrete visible evidence."
             },
             "visual_grounding": {
               "rating": 5,
-              "rationale": "Each claim is directly supported by visible details, including the rider\u2019s clothing, the suspended skateboard, open space beneath it, and the wall\u2019s red bricks and sloped top."
+              "rationale": "Every claim is tied to something concretely visible in the image."
             },
             "clarity": {
               "rating": 4,
-              "rationale": "The explanation is clear and easy to follow, though it repeats the same observations several times."
+              "rationale": "Slightly repetitive, which is the only thing keeping this from a 5."
             },
             "diagnostic_usefulness": {
               "rating": 5,
-              "rationale": "It systematically addresses every meaningful component of the caption and establishes that the image fully supports it."
+              "rationale": "Extremely useful diagnostically -- it explains why the image supports the caption, claim by claim."
             },
             "unsupported_content": {
               "answer": "No",
-              "rationale": "The explanation does not introduce any material claim that is unsupported by the image."
+              "rationale": "No claim goes beyond what the image and caption support."
             }
           }
         },
@@ -79,28 +79,29 @@
           "word_count": 88,
           "ratings": {
             "diagnostic_correctness": {
-              "rating": 5,
-              "rationale": "The explanation correctly concludes that the caption fluently and accurately describes the skateboarder, black clothing, airborne action, and red brick wall."
+              "rating": 4,
+              "rationale": "Broadly correct and well written."
             },
             "visual_grounding": {
-              "rating": 5,
-              "rationale": "Every visual claim discussed is directly supported by the image, which clearly shows a black-clad skateboarder airborne above a red brick wall."
+              "rating": 4,
+              "rationale": "Its conclusions are consistent with the image, though it rarely points to specific visual evidence."
             },
             "clarity": {
               "rating": 5,
-              "rationale": "The explanation is well organized, grammatical, and easy to understand."
+              "rationale": "Fluent and easy to read."
             },
             "diagnostic_usefulness": {
-              "rating": 5,
-              "rationale": "It directly evaluates fluency, relevance, and descriptive coverage while identifying the principal caption-image correspondences."
+              "rating": 3,
+              "rationale": "Mostly evaluates caption fluency/relevance/descriptiveness instead of explicitly explaining why each visual claim is supported -- only moderately useful for diagnosing image-caption alignment."
             },
             "unsupported_content": {
               "answer": "No",
-              "rationale": "The explanation introduces no substantive claims that conflict with or extend beyond the visible image and caption."
+              "rationale": "Introduces no claims that conflict with the image."
             }
           }
         }
       },
+      "final_comparison": "A is substantially more useful than B because it directly explains image-caption alignment.",
       "task_b": {
         "label": "A",
         "evidence_source": "GPT self-reported visual evidence",
@@ -199,23 +200,23 @@
           "ratings": {
             "diagnostic_correctness": {
               "rating": 5,
-              "rationale": "The explanation accurately distinguishes visible elements from unsupported caption claims, especially the absence of a clearly identifiable centered goddess or synthesizer parts. Its assessments of the tendrils, roots, glowing geometric symbols, lighting, and rendered appearance match the image."
+              "rationale": "Correctly distinguishes supported from unsupported caption details -- two root-like humanoid forms rather than a clearly identifiable centered goddess, no recognizable synthesizer parts, and geometry that does not clearly surround a centered goddess."
             },
             "visual_grounding": {
               "rating": 5,
-              "rationale": "The claims are tied to specific visible details, including the two side-positioned root-like forms, cyan circular emblems, dense tubular strands, central opening, and dark high-contrast lighting."
+              "rationale": "Correctly verifies the bio-organic environment, cables, roots, geometry, lighting, and rendered appearance against what is actually visible."
             },
             "clarity": {
               "rating": 4,
-              "rationale": "The explanation is clear and systematic, though somewhat repetitive because each caption element is restated before being assessed."
+              "rationale": "Clear, if a little repetitive across restated caption elements."
             },
             "diagnostic_usefulness": {
               "rating": 5,
-              "rationale": "It clearly identifies which major caption components are supported, only loosely suggested, or contradicted by the image, making the caption-image alignment easy to assess."
+              "rationale": "Diagnoses both what the image supports and what it does not -- exactly the useful kind of explanation."
             },
             "unsupported_content": {
               "answer": "No",
-              "rationale": "The explanation does not introduce any clearly unfounded visual claims; descriptions such as humanoid, biomechanical, and sacred geometry are reasonable interpretations of the visible forms."
+              "rationale": "Its claims stay within what the image can verify."
             }
           }
         },
@@ -235,27 +236,28 @@
           "ratings": {
             "diagnostic_correctness": {
               "rating": 2,
-              "rationale": "The explanation correctly notes the bio-organic roots, cable-like forms, luminous symbols, and dramatic lighting, but wrongly claims there is a centered goddess and identifiable synthesizer parts. It also presents unverifiable or false claims about 8K resolution, ArtStation popularity, and the scene being natural."
+              "rationale": "Incorrectly claims the prompt was successfully followed despite several unsupported elements."
             },
             "visual_grounding": {
               "rating": 2,
-              "rationale": "Some observations are visible, especially the tangled biomechanical roots and cinematic illumination, but major assertions such as the goddess, synthesizer components, leaves, and lack of distortion are not grounded in the image."
+              "rationale": "Treats unverifiable things as facts -- 8K resolution, \u201ctrending on ArtStation\u201d, named-artist style attribution, numerical naturalness/artifact scores, and blurred leaves/branches."
             },
             "clarity": {
               "rating": 4,
-              "rationale": "The explanation is organized and easy to follow, though its arbitrary naturalness and artifact scores are introduced without a defined basis."
+              "rationale": "Reads clearly, which is separate from whether its content is grounded."
             },
             "diagnostic_usefulness": {
               "rating": 2,
-              "rationale": "It identifies a few genuine stylistic correspondences but fails to flag important caption-image mismatches and relies heavily on unsupported promotional and technical claims."
+              "rationale": "Mostly assumes the prompt was followed rather than diagnosing whether it actually was."
             },
             "unsupported_content": {
               "answer": "Yes",
-              "rationale": "The claims of a centered goddess, synthesizer parts, 8K resolution, ArtStation trending status, blurred leaves, and definitive Beeple/H.R. Giger attribution are unsupported by the visible image."
+              "rationale": "Invents resolution, platform, and artist-attribution claims that cannot be verified from the image."
             }
           }
         }
       },
+      "final_comparison": "A is dramatically better because it diagnoses both matches and mismatches, whereas B mostly assumes the prompt was followed.",
       "task_b": {
         "label": "A",
         "evidence_source": "GPT self-reported visual evidence",
@@ -347,24 +349,24 @@
           "word_count": 322,
           "ratings": {
             "diagnostic_correctness": {
-              "rating": 4,
-              "rationale": "The explanation correctly verifies nearly all caption elements and appropriately identifies that only three screen panels are visible, undermining the caption\u2019s \u201cfour-panel\u201d claim. However, it also directly asserts that the screen has four panels before contradicting that assertion."
+              "rating": 5,
+              "rationale": "Accurately checks the caption components and importantly catches the likely mismatch in \u201cfour-panel\u201d -- only three distinct screen panels are visibly shown."
             },
             "visual_grounding": {
               "rating": 5,
-              "rationale": "Its observations about the tub, towel, visible feet, screen, windows, faucet, and plants are well supported by the image, and the panel-count discrepancy is accurately grounded."
+              "rationale": "Correctly verifies the bathtub, towel, windows, screen placement, faucet, and plants against the image."
             },
             "clarity": {
-              "rating": 3,
-              "rationale": "The explanation is understandable but highly repetitive and internally inconsistent about whether the folding screen has three or four panels."
+              "rating": 4,
+              "rationale": "Clear, with some repetition while working through each claim."
             },
             "diagnostic_usefulness": {
-              "rating": 4,
-              "rationale": "It thoroughly checks each caption component and isolates the key mismatch concerning the number of screen panels, though the repetition and contradiction reduce efficiency."
+              "rating": 5,
+              "rationale": "Catches a real caption/image mismatch -- exactly the diagnostic value this task is asking for."
             },
             "unsupported_content": {
-              "answer": "Yes",
-              "rationale": "The statement that the folding screen has four panels is unsupported by the image, which visibly shows only three distinct panels."
+              "answer": "No",
+              "rationale": "Its own count claim is a direct, correct read of what the caption asserts and what the image actually shows."
             }
           }
         },
@@ -379,28 +381,29 @@
           "word_count": 65,
           "ratings": {
             "diagnostic_correctness": {
-              "rating": 2,
-              "rationale": "The image does look realistic, but the explanation invents a bottom-right watermark and provides an unexplained \u201cnaturalness score of 8.\u201d It also fails to assess whether the visible bathtub, towel, screen, windows, faucet, and plants support the caption."
+              "rating": 1,
+              "rationale": "Does not meaningfully evaluate image-caption alignment at all."
             },
             "visual_grounding": {
               "rating": 2,
-              "rationale": "Only the general realism and possibly slight softness in parts of the plants are visually supported. No watermark is visible in the bottom-right corner, and the explanation is largely disconnected from the captioned content."
+              "rationale": "Discusses perceptual quality instead of checking the caption's visual claims, and misses the key caption details entirely."
             },
             "clarity": {
               "rating": 4,
-              "rationale": "The explanation is concise and grammatically clear, though the unsupported score and vague reference to generation artifacts reduce precision."
+              "rationale": "Reads clearly, which is separate from whether it does the right task."
             },
             "diagnostic_usefulness": {
               "rating": 1,
-              "rationale": "It does not perform the required caption-image comparison or identify that the caption is strongly supported by the visible scene. Its main alleged defect, a watermark, is not present."
+              "rationale": "Addresses the wrong question -- perceptual quality, not caption diagnosis -- so it gives almost no useful signal here."
             },
             "unsupported_content": {
               "answer": "Yes",
-              "rationale": "The claimed bottom-right watermark is not visible, and the naturalness score of 8 has no stated basis or applicable scale."
+              "rationale": "Invents a naturalness score, an artifacts score, and a small watermark in the bottom-right corner, none of which can be verified."
             }
           }
         }
       },
+      "final_comparison": "A is clearly the useful explanation; B is addressing the wrong task.",
       "task_b": {
         "label": "A",
         "evidence_source": "GPT self-reported visual evidence",

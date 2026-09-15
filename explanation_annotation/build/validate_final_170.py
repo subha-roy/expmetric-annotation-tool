@@ -193,17 +193,44 @@ def main() -> None:
     assert set(practice_ratings) <= tutorial  # drawn from the frozen 5-sample pool
     assert not (set(practice_ratings) & ids) and not (set(practice_ratings) & pilot)
 
+    # Researcher-supplied FINAL exact Task-A scores (2026-09-16) -- must match verbatim.
+    EXACT_TASKA = {
+        "prac_1": {"A": {"diagnostic_correctness": 5, "visual_grounding": 5, "clarity": 4,
+                         "diagnostic_usefulness": 5, "unsupported_content": "No"},
+                  "B": {"diagnostic_correctness": 4, "visual_grounding": 4, "clarity": 5,
+                         "diagnostic_usefulness": 3, "unsupported_content": "No"}},
+        "prac_2": {"A": {"diagnostic_correctness": 5, "visual_grounding": 5, "clarity": 4,
+                         "diagnostic_usefulness": 5, "unsupported_content": "No"},
+                  "B": {"diagnostic_correctness": 2, "visual_grounding": 2, "clarity": 4,
+                         "diagnostic_usefulness": 2, "unsupported_content": "Yes"}},
+        "prac_3": {"A": {"diagnostic_correctness": 5, "visual_grounding": 5, "clarity": 4,
+                         "diagnostic_usefulness": 5, "unsupported_content": "No"},
+                  "B": {"diagnostic_correctness": 1, "visual_grounding": 2, "clarity": 4,
+                         "diagnostic_usefulness": 1, "unsupported_content": "Yes"}},
+    }
+    EXACT_FINAL_COMPARISON = {
+        "prac_1": "A is substantially more useful than B because it directly explains "
+                  "image-caption alignment.",
+        "prac_2": "A is dramatically better because it diagnoses both matches and "
+                  "mismatches, whereas B mostly assumes the prompt was followed.",
+        "prac_3": "A is clearly the useful explanation; B is addressing the wrong task.",
+    }
+
     tutorial_bundle = json.loads((APP / "examples/tutorial_examples.json").read_text())
     assert len(tutorial_bundle["examples"]) == 3
     for example in tutorial_bundle["examples"]:
         assert set(example["explanations"]) == {"A", "B"}
+        exact = EXACT_TASKA[example["example_id"]]
         for lab, exp in example["explanations"].items():
             r = exp["ratings"]
             for key in ("diagnostic_correctness", "visual_grounding", "clarity",
                        "diagnostic_usefulness"):
                 assert 1 <= r[key]["rating"] <= 5 and r[key]["rationale"]
+                assert r[key]["rating"] == exact[lab][key]
             assert r["unsupported_content"]["answer"] in ("Yes", "No", "Unsure")
             assert r["unsupported_content"]["rationale"]
+            assert r["unsupported_content"]["answer"] == exact[lab]["unsupported_content"]
+        assert example["final_comparison"] == EXACT_FINAL_COMPARISON[example["example_id"]]
         tb = example["task_b"]
         assert tb["label"] in example["explanations"]
         assert tb["evidence_boxes"]
