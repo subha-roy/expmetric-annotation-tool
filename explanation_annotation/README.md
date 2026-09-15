@@ -1,5 +1,14 @@
 # VisExMEM Explanation Quality Annotation
 
+> **Current configuration: BASELINE STUDY.** VisExMEM-9B is deliberately excluded from
+> Task A and Task B — it is not being evaluated yet. Only three blinded systems are
+> live: GPT-5.6 Sol Decomposed, EXPERT, and VIEScore-official. Task B now rates GPT's own
+> self-reported evidence boxes (internally labeled "GPT self-reported visual evidence" —
+> never "causal evidence", never equated with VisExMEM's GroundingDINO-based grounding).
+> VisExMEM's source files and its original four-system build logic are left untouched for
+> a later, separate study; see git history for the four-system version of every file under
+> `build/`.
+
 A static annotation site (no server, no database, no tracking), same architecture as the
 original `app/` AGITA annotation tool: each annotator signs in with a username and a
 disposable access code, which decrypts only their own assignment bundle in the browser.
@@ -23,15 +32,15 @@ computing anything, not merely default to "all files found in `annotations/`".
 
 ## Blinding
 
-Every sample shows the 4 explanation systems as Explanation A/B/C/D in an order that is
-independently and deterministically randomized per (sample, annotator) pair. The label→system
-key is never written to any file the browser can reach — see
-`private/blinding_map.json` (gitignored).
+Every sample shows the 3 explanation systems (baseline: GPT-5.6 Sol Decomposed, EXPERT,
+VIEScore-official) as Explanation A/B/C in an order that is independently and
+deterministically randomized per (sample, annotator) pair. The label→system key is never
+written to any file the browser can reach — see `private/blinding_map.json` (gitignored).
 
-Once Task B (VisExMEM's evidence regions) is revealed for a sample, that sample's Task A
-answers become **permanently locked** (not editable, including via "Edit / redo
-annotation") — this prevents seeing the evidence boxes from retroactively changing the
-already-recorded Task-A judgments.
+Once Task B (GPT's own self-reported evidence regions — not VisExMEM's) is revealed for a
+sample, that sample's Task A answers become **permanently locked** (not editable,
+including via "Edit / redo annotation") — this prevents seeing the evidence boxes from
+retroactively changing the already-recorded Task-A judgments.
 
 ## Frozen artifacts — do not edit without an explicit, disclosed, versioned change
 
@@ -50,7 +59,7 @@ already-recorded Task-A judgments.
 ```
 build/build_blinding.py        # per-(sample,annotator) label->system permutation (private)
 build/build_examples.py        # public practice-example file
-build/build_bundles.py         # final 100-sample bundles for the four real HiWIs only
+build/build_bundles.py         # final 100-sample bundles for the four real HiWIs + annotator
 build/build_pilot_bundle.py    # separate, independent 10-sample TIMED PILOT bundle
 ```
 

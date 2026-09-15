@@ -1,14 +1,16 @@
 /* Explanation Quality Annotation — static, no backend, no external dependency.
  *
+ * BASELINE STUDY (current): VisExMEM-9B is excluded. Three blinded systems only.
+ *
  * Flow: login -> DASHBOARD -> sample. A sample has two tasks:
- *   Task A: rate all 4 blinded explanations (Explanation A/B/C/D), one at a time, no
+ *   Task A: rate all 3 blinded explanations (Explanation A/B/C), one at a time, no
  *           highlighted regions shown.
- *   Task B: unlocked only once every Task-A question is answered for all 4 labels;
+ *   Task B: unlocked only once every Task-A question is answered for all 3 labels;
  *           shows up to 3 evidence claims (with highlighted image regions) for ONLY the
  *           labels whose underlying system genuinely produced grounded evidence -- other
  *           labels simply have no Task B panel, which is expected and not a bug.
  *
- * The bundle NEVER contains which real system a label (A/B/C/D) corresponds to -- that
+ * The bundle NEVER contains which real system a label (A/B/C) corresponds to -- that
  * mapping exists only in the researcher's private/blinding_map.json, not here.
  *
  * Encrypted bundle -> Web Crypto -> IndexedDB. Nothing leaves the browser except the
@@ -17,8 +19,8 @@
 'use strict';
 
 const APP_VERSION = '2.1.0';
-const CONTENT_VERSION = 'explanation-quality-v5-task-a-support-only';
-const LABELS = ['A', 'B', 'C', 'D'];
+const CONTENT_VERSION = 'explanation-quality-v6-baseline-no-visexmem';
+const LABELS = ['A', 'B', 'C'];
 
 const TECH_REASONS = [
   ['image_failed', 'Image failed to load'],
@@ -140,7 +142,7 @@ function blank(item) {
   return {
     sample_id: item.sample_id, order: item.order,
     task_a: blankTaskA(), task_b: tb, timing: blankTiming(),
-    // Set true the FIRST moment Task B reveals (i.e. the moment all 4 Task-A sets become
+    // Set true the FIRST moment Task B reveals (i.e. the moment all 3 Task-A sets become
     // complete). Once true, Task A becomes permanently non-editable for this sample --
     // this is intentional and NOT reversible via "Edit / redo annotation", so that seeing
     // Evidence regions in Task B can never retroactively contaminate the
@@ -501,7 +503,7 @@ function renderExplanCard() {
   host.append(card);
 }
 
-/* ---- Task B: evidence-region rating, unlocked once all 4 Task-A sets are rated ---- */
+/* ---- Task B: evidence-region rating, unlocked once all 3 Task-A sets are rated ---- */
 function convertBox(box, coordSystem, natW, natH) {
   const [x1, y1, x2, y2] = box;
   let left, top, w, h;
@@ -524,7 +526,7 @@ function renderTaskB() {
 
   if (!allTaskADone(r)) {
     const lock = document.createElement('div'); lock.className = 'taskb-lock';
-    lock.textContent = 'Rate all 4 explanations above (Task A) to unlock the evidence-region task.';
+    lock.textContent = 'Rate all 3 explanations above (Task A) to unlock the evidence-region task.';
     host.append(lock);
     return;
   }

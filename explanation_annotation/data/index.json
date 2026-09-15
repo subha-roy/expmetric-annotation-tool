@@ -3,12 +3,6 @@
   "app_version": "2.1.0",
   "manifest_hash": "ab1a3420b541854276c2767e224188fb752b1c45816960fb64e1f089b95b163e",
   "annotators": {
-    "annotator": {
-      "name": "Annotator (test account)",
-      "bundle": "data/bundle_annotator.json",
-      "assignment_hash": "12398601c907adfc2227ee1f570d28dd6a50a74c9dfd5d8140144d169c7fc801",
-      "assignment_size": 30
-    },
     "damir": {
       "name": "Damir",
       "bundle": "data/bundle_damir.json",
@@ -32,6 +26,12 @@
       "bundle": "data/bundle_sayeeda.json",
       "assignment_hash": "b9044c6940a5969fa7fa0b354a746912e013fd23a4df416c4496dd7ee5164552",
       "assignment_size": 100
+    },
+    "annotator": {
+      "name": "Annotator (test account)",
+      "bundle": "data/bundle_annotator.json",
+      "assignment_hash": "12398601c907adfc2227ee1f570d28dd6a50a74c9dfd5d8140144d169c7fc801",
+      "assignment_size": 30
     }
   }
 }

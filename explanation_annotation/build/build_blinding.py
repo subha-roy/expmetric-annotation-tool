@@ -1,8 +1,12 @@
-"""Deterministic per-(sample, annotator) blinding: assigns the 4 systems to labels
-A/B/C/D independently for every (sample_id, account) pair, so no annotator ever sees a
+"""Deterministic per-(sample, annotator) blinding: assigns the 3 systems to labels
+A/B/C independently for every (sample_id, account) pair, so no annotator ever sees a
 consistent cross-sample ordering that could leak method identity. The mapping is PRIVATE
 -- it is baked into each annotator's own encrypted bundle at build time (as already-
 labelled content) and is never shipped anywhere as an explicit label->system table.
+
+BASELINE STUDY (current): VisExMEM-9B is excluded. Only GPT-5.6 Sol Decomposed, EXPERT,
+and VIEScore-official are blinded here. VisExMEM's own blinding logic returns in a later,
+separate study -- see git history for the four-system version.
 """
 import json, hashlib, random
 from pathlib import Path
@@ -10,8 +14,8 @@ from pathlib import Path
 APP = Path(__file__).resolve().parents[1]
 MANIFEST_DIR = Path("/home/hpc/v141be/v141be14/projects/proj2_exp_metric/evaluation/explanation_annotation/manifests")
 SEED = 20260915
-SYSTEMS = ["visexmem_9b", "gpt_decomposed", "expert", "viescore_official"]
-LABELS = ["A", "B", "C", "D"]
+SYSTEMS = ["gpt_decomposed", "expert", "viescore_official"]
+LABELS = ["A", "B", "C"]
 
 
 def order_for(sample_id, account):
@@ -34,7 +38,7 @@ def main():
         mapping[account] = {}
         for sid in rec["queue"]:
             order = order_for(sid, account)
-            mapping[account][sid] = {LABELS[i]: order[i] for i in range(4)}
+            mapping[account][sid] = {LABELS[i]: order[i] for i in range(len(LABELS))}
 
     out_path.write_text(json.dumps({"seed": SEED, "labels": LABELS, "systems": SYSTEMS,
                                     "mapping": mapping}, indent=2))
@@ -48,7 +52,7 @@ def main():
             for lab, sysname in lab_map.items():
                 c[(lab, sysname)] += 1
         n = len(sample_map)
-        print(f"{account}: {n} samples, label/system pair counts (expect ~{n/4:.1f} each):")
+        print(f"{account}: {n} samples, label/system pair counts (expect ~{n/len(SYSTEMS):.1f} each):")
         for lab in LABELS:
             row = {sysname: c[(lab, sysname)] for sysname in SYSTEMS}
             print(f"  {lab}: {row}")

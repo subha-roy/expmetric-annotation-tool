@@ -1,19 +1,22 @@
 """Public practice-example file (unencrypted, like the original app's
-examples/tutorial_examples.json) -- 5 samples EXCLUDED from the 120-sample manifest and
-from every annotator's real assignment, each system still blinded to A/B/C/D (fixed,
+examples/tutorial_examples.json) -- 5 samples EXCLUDED from the real manifest and
+from every annotator's real assignment, each system still blinded to A/B/C (fixed,
 single practice ordering, not tied to any real annotator) with a walkthrough note.
+
+BASELINE STUDY (current): VisExMEM-9B is excluded, same as the real-HiWi bundles -- see
+build_bundles.py's docstring for the full rationale. Task-B evidence is GPT-5.6 Sol
+Decomposed's own frozen self-reported boxes, never regenerated.
 """
 import json, hashlib, random
 from pathlib import Path
-from task_a_presentation import presentation_fields
 
 MANIFEST_DIR = Path("/home/hpc/v141be/v141be14/projects/proj2_exp_metric/evaluation/explanation_annotation/manifests")
 APP = Path(__file__).resolve().parents[1]
 SEED = 20260915
-SYSTEMS = ["visexmem_9b", "gpt_decomposed", "expert", "viescore_official"]
-LABELS = ["A", "B", "C", "D"]
-# PRIMARY evidence system only -- see build_bundles.py for why GPT's boxes are excluded.
-EVIDENCE_SYSTEMS = {"visexmem_9b"}
+SYSTEMS = ["gpt_decomposed", "expert", "viescore_official"]
+LABELS = ["A", "B", "C"]
+EVIDENCE_SYSTEMS = {"gpt_decomposed"}
+EVIDENCE_SOURCE_LABEL = "GPT self-reported visual evidence"
 
 
 def order_for(sample_id):
@@ -33,14 +36,14 @@ for i, sid in enumerate(pool["sample_ids"]):
     for j, lab in enumerate(LABELS):
         sysname = order[j]
         sysrec = s[sysname]
-        entry = (presentation_fields(sysrec) if sysname == "visexmem_9b" else
-                 {"summary": sysrec.get("task_a_summary"),
-                  "blocks": sysrec.get("task_a_blocks") or [],
-                  "details_blocks": sysrec.get("task_a_details_blocks") or [],
-                  "text": sysrec["task_a_text"],
-                  "word_count": sysrec.get("word_count")})
+        entry = {"summary": sysrec.get("task_a_summary"),
+                 "blocks": sysrec.get("task_a_blocks") or [],
+                 "details_blocks": sysrec.get("task_a_details_blocks") or [],
+                 "text": sysrec["task_a_text"],
+                 "word_count": sysrec.get("word_count")}
         if sysname in EVIDENCE_SYSTEMS:
-            entry["evidence"] = sysrec["task_b_evidence"]
+            entry["evidence"] = sysrec.get("task_b_evidence_secondary_only", [])
+            entry["evidence_source"] = EVIDENCE_SOURCE_LABEL
             entry["box_coord_system"] = sysrec.get("box_coord_system", "native_pixels_xyxy")
         explanations[lab] = entry
     examples.append({
@@ -52,7 +55,7 @@ for i, sid in enumerate(pool["sample_ids"]):
     })
 
 out = {"schema": "explanation-annotation-practice-1.0.0", "note":
-      "5 worked practice examples, excluded from the real 120-sample study and from "
+      "5 worked practice examples, excluded from the real 170-sample study and from "
       "every annotator's assignment. Not counted toward completion.",
       "examples": examples}
 outpath = APP / "examples" / "tutorial_examples.json"

@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Validate the frozen timed-pilot bundle and static annotation workflow."""
+"""Validate the frozen timed-pilot bundle and static annotation workflow.
+
+BASELINE STUDY (current): VisExMEM-9B is excluded; validates the 3-system content.
+"""
 from __future__ import annotations
 
 import copy
@@ -12,14 +15,15 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 from PIL import Image
-from refresh_visexmem_bundles import credentials, decrypt, order_for
-from task_a_presentation import presentation_fields
+from refresh_visexmem_bundles import credentials, decrypt
+from build_pilot_bundle import order_for, EVIDENCE_SOURCE_LABEL
 
 PROJ = Path("/home/hpc/v141be/v141be14/projects/proj2_exp_metric")
 APP = PROJ / "app/explanation_annotation"
 MANIFESTS = PROJ / "evaluation/explanation_annotation/manifests"
-LABELS = ["A", "B", "C", "D"]
-SYSTEMS = ["visexmem_9b", "gpt_decomposed", "expert", "viescore_official"]
+LABELS = ["A", "B", "C"]
+SYSTEMS = ["gpt_decomposed", "expert", "viescore_official"]
+EVIDENCE_SYSTEMS = {"gpt_decomposed"}
 SEED = 20260915
 
 
@@ -56,11 +60,11 @@ def baseline_fields(record: dict) -> dict:
 
 
 def expected_entry(record: dict, system: str) -> dict:
-    entry = (presentation_fields(record) if system == "visexmem_9b"
-             else baseline_fields(record))
-    if system == "visexmem_9b":
+    entry = baseline_fields(record)
+    if system in EVIDENCE_SYSTEMS:
         entry = copy.deepcopy(entry)
-        entry["evidence"] = record.get("task_b_evidence", [])
+        entry["evidence"] = record.get("task_b_evidence_secondary_only", [])
+        entry["evidence_source"] = EVIDENCE_SOURCE_LABEL
         entry["box_coord_system"] = record.get("box_coord_system")
     return entry
 
@@ -108,7 +112,7 @@ def main() -> None:
         require(item["order"] == index, f"order index changed: {sid}")
         require(set(item) == allowed_item_keys, f"unexpected item metadata: {sid}")
         require(not (set(item) & forbidden_item_keys), f"research metadata leak: {sid}")
-        require(set(item["explanations"]) == set(LABELS), f"four labels missing: {sid}")
+        require(set(item["explanations"]) == set(LABELS), f"three labels missing: {sid}")
 
         order = order_for(sid, "pilot")
         evidence_labels = []
@@ -179,7 +183,7 @@ def main() -> None:
         "pilot_samples": len(actual_ids),
         "real_study_overlap": 0,
         "assignment_id_hash": payload["assignment_hash"],
-        "task_a_labels_per_sample": 4,
+        "task_a_labels_per_sample": 3,
         "task_b_claim_counts": evidence_counts,
         "task_b_box_counts": box_counts,
         "max_task_b_claims": max(evidence_counts),
